@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Converter - Convert Anything</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #f5f7ff 50%, #f0f4ff 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: #333;
+            position: relative;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.08) 0%, transparent 50%);
+            animation: bgShift 15s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes bgShift {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        /* Particle Animation */
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Navigation Bar */
+        nav {
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.95) 0%, rgba(245, 247, 255, 0.95) 100%);
+            padding: 1.5rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            animation: slideDown 0.8s ease-out;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .nav-title {
+            color: #333;
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 20px rgba(102, 126, 234, 0.2);
+            animation: fadeInDown 0.8s ease-out, glow 3s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                filter: drop-shadow(0 0 5px rgba(102, 126, 234, 0.5));
+            }
+            50% {
+                filter: drop-shadow(0 0 20px rgba(102, 126, 234, 0.8));
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 0.9rem 1.5rem;
+            border: 2px solid rgba(102, 126, 234, 0.4);
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.95rem;
+            background-color: rgba(102, 126, 234, 0.05);
+            color: #333;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(102, 126, 234, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+            z-index: -1;
+        }
+
+        .nav-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-5px);
+            border-color: #667eea;
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.3);
+            color: #fff;
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: #667eea;
+            color: white;
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.3);
+            transform: scale(1.05) translateY(-5px);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            animation: fadeIn 1s ease-out;
+            position: relative;
+            z-index: 2;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Pages */
+        .page {
+            display: none;
+            animation: pageIn 0.8s ease-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes pageIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Home Page */
+        .home-page {
+            text-align: center;
+        }
+
+        .home-title {
+            font-size: 3.5rem;
+            color: #333;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: slideInLeft 1s ease-out, titlePulse 3s ease-in-out infinite;
+            font-weight: 900;
+            text-shadow: 0 0 30px rgba(102, 126, 234, 0.15);
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes titlePulse {
+            0%, 100% {
+                filter: drop-shadow(0 0 5px rgba(102, 126, 234, 0.4));
+            }
+            50% {
+                filter: drop-shadow(0 0 20px rgba(102, 126, 234, 0.8));
+            }
+        }
+
+        /* Text Carousel */
+        .text-carousel-container {
+            perspective: 1000px;
+            height: 120px;
+            margin: 2rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .text-carousel {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .carousel-text {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 900;
+            opacity: 0;
+            transform: rotateX(90deg) translateY(50px);
+            animation: carousel 8s ease-in-out infinite;
+            letter-spacing: 3px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 10px rgba(102, 126, 234, 0.6));
+        }
+
+        .carousel-text:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .carousel-text:nth-child(2) {
+            animation-delay: 2.666s;
+        }
+
+        .carousel-text:nth-child(3) {
+            animation-delay: 5.332s;
+        }
+
+        @keyframes carousel {
+            0% {
+                opacity: 0;
+                transform: rotateX(90deg) translateY(50px);
+            }
+            10% {
+                opacity: 1;
+                transform: rotateX(0deg) translateY(0);
+            }
+            40% {
+                opacity: 1;
+                transform: rotateX(0deg) translateY(0);
+            }
+            50% {
+                opacity: 0;
+                transform: rotateX(-90deg) translateY(-50px);
+            }
+            100% {
+                opacity: 0;
+                transform: rotateX(-90deg) translateY(-50px);
+            }
+        }
+
+        /* Animated Underline */
+        .animated-underline {
+            position: relative;
+            display: inline-block;
+            margin-top: 1rem;
+        }
+
+        .animated-underline::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 2px;
+            animation: slideWidth 3s ease-in-out infinite;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+        }
+
+        @keyframes slideWidth {
+            0%, 100% {
+                width: 100%;
+            }
+            50% {
+                width: 50%;
+            }
+        }
+
+        .converter-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+            margin: 4rem 0;
+        }
+
+        .card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(245, 247, 255, 0.9) 100%);
+            border-radius: 25px;
+            padding: 2.5rem;
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            animation: cardSlide 0.8s ease-out backwards;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
+            transition: left 0.6s ease;
+            z-index: 1;
+        }
+
+        .card:hover::before {
+            left: 100%;
+        }
+
+        .card:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+
+        .card:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+
+        .card:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+
+        @keyframes cardSlide {
+            from {
+                opacity: 0;
+                transform: translateY(40px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .card:hover {
+            transform: translateY(-20px) scale(1.05) rotateY(5deg);
+            border-color: #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.25) 0%, rgba(118, 75, 162, 0.25) 100%);
+            box-shadow: 0 25px 60px rgba(102, 126, 234, 0.4);
+        }
+
+        .card.length {
+            border-color: rgba(52, 152, 219, 0.5);
+        }
+
+        .card.length:hover {
+            box-shadow: 0 25px 60px rgba(52, 152, 219, 0.4);
+            border-color: #3498db;
+        }
+
+        .card.time {
+            border-color: rgba(46, 204, 113, 0.5);
+        }
+
+        .card.time:hover {
+            box-shadow: 0 25px 60px rgba(46, 204, 113, 0.4);
+            border-color: #2ecc71;
+        }
+
+        .card.mass {
+            border-color: rgba(231, 76, 60, 0.5);
+        }
+
+        .card.mass:hover {
+            box-shadow: 0 25px 60px rgba(231, 76, 60, 0.4);
+            border-color: #e74c3c;
+        }
+
+        .card-icon {
+            font-size: 4.5rem;
+            margin-bottom: 1.5rem;
+            animation: float 4s ease-in-out infinite;
+            display: inline-block;
+            filter: drop-shadow(0 0 15px rgba(102, 126, 234, 0.5));
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotateZ(0deg);
+            }
+            25% {
+                transform: translateY(-25px) rotateZ(5deg);
+            }
+            75% {
+                transform: translateY(-25px) rotateZ(-5deg);
+            }
+        }
+
+        .card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #333;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card p {
+            color: #666;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card:hover h3 {
+            color: #667eea;
+        }
+
+        .card:hover p {
+            color: #333;
+        }
+
+        .card-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1rem 1.8rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.4s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.7rem;
+            font-size: 1rem;
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .card-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: 0;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .card-btn:hover::after {
+            width: 300px;
+            height: 300px;
+        }
+
+        .card-btn:hover {
+            transform: scale(1.1) translateY(-3px);
+            box-shadow: 0 20px 50px rgba(102, 126, 234, 0.5);
+        }
+
+        .card-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Converter Pages */
+        .converter-page {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(245, 247, 255, 0.95) 100%);
+            border-radius: 30px;
+            padding: 3.5rem;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+            max-width: 700px;
+            margin: 2rem auto;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            backdrop-filter: blur(10px);
+            animation: pageIn 0.8s ease-out;
+        }
+
+        .converter-page h2 {
+            font-size: 2.8rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: slideInDown 0.8s ease-out, titleGlow 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 15px rgba(102, 126, 234, 0.4));
+        }
+
+        @keyframes titleGlow {
+            0%, 100% {
+                filter: drop-shadow(0 0 5px rgba(102, 126, 234, 0.4));
+            }
+            50% {
+                filter: drop-shadow(0 0 20px rgba(102, 126, 234, 0.8));
+            }
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .input-group {
+            margin-bottom: 2.5rem;
+            animation: inputFade 0.6s ease-out backwards;
+        }
+
+        .input-group:nth-child(2) {
+            animation-delay: 0.15s;
+        }
+
+        .input-group:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .input-group:nth-child(4) {
+            animation-delay: 0.45s;
+        }
+
+        @keyframes inputFade {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 0.9rem;
+            color: #333;
+            font-size: 1.15rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 1.2rem;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 15px;
+            font-size: 1.1rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255, 255, 255, 0.7);
+            color: #333;
+            backdrop-filter: blur(10px);
+        }
+
+        input[type="number"]::placeholder {
+            color: #aaa;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 30px rgba(102, 126, 234, 0.3);
+            transform: translateY(-5px) scale(1.02);
+        }
+
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1.2rem;
+            margin-top: 3rem;
+            animation: buttonFade 0.8s ease-out backwards 0.6s;
+        }
+
+        @keyframes buttonFade {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .btn {
+            flex: 1;
+            padding: 1.2rem;
+            border: none;
+            border-radius: 15px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: left 0.5s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-convert {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-convert:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 60px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-convert:active {
+            transform: translateY(-2px);
+        }
+
+        .btn-clear {
+            background: rgba(102, 126, 234, 0.1);
+            color: #333;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-clear:hover {
+            background: rgba(102, 126, 234, 0.15);
+            border-color: #667eea;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.2);
+        }
+
+        /* Info Box */
+        .info-box {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.08) 0%, rgba(255, 237, 78, 0.08) 100%);
+            border-left: 5px solid #ffd700;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-top: 3rem;
+            animation: slideUp 1s ease-out;
+            text-align: center;
+            font-weight: 600;
+            color: #d4a500;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            font-size: 1.15rem;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(102, 126, 234, 0.2);
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-title {
+                font-size: 1.6rem;
+            }
+
+            .home-title {
+                font-size: 2rem;
+            }
+
+            .carousel-text {
+                font-size: 1.8rem;
+            }
+
+            .text-carousel-container {
+                height: 80px;
+            }
+
+            .converter-cards {
+                grid-template-columns: 1fr;
+                gap: 1.8rem;
+            }
+
+            .converter-page {
+                padding: 2rem;
+            }
+
+            .converter-page h2 {
+                font-size: 2rem;
+            }
+
+            .container {
+                padding: 1.5rem;
+            }
+
+            .nav-btn {
+                padding: 0.7rem 1.2rem;
+                font-size: 0.85rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .home-title {
+                font-size: 1.5rem;
+            }
+
+            .carousel-text {
+                font-size: 1.3rem;
+            }
+
+            .card-icon {
+                font-size: 3.5rem;
+            }
+
+            .converter-page h2 {
+                font-size: 1.5rem;
+            }
+
+            nav {
+                padding: 1rem;
+            }
+
+            .nav-title {
+                font-size: 1.3rem;
+            }
+
+            .nav-buttons {
+                width: 100%;
+                gap: 0.5rem;
+            }
+
+            .nav-btn {
+                flex: 1;
+                padding: 0.6rem 0.8rem;
+                font-size: 0.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background Particles -->
+    <div id="particles"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="nav-title">⚡ CONVERTER</div>
+            <div class="nav-buttons">
+                <button class="nav-btn active" data-page="home">🏠 Home</button>
+                <button class="nav-btn" data-page="length">📏 Length</button>
+                <button class="nav-btn" data-page="time">⏱️ Time</button>
+                <button class="nav-btn" data-page="mass">⚖️ Mass</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Container -->
+    <div class="container">
+        <!-- Home Page -->
+        <div class="page active" id="home">
+            <div class="home-page">
+                <h1 class="home-title">✨ UNIT CONVERTER</h1>
+                
+                <!-- Text Carousel -->
+                <div class="text-carousel-container">
+                    <div class="text-carousel">
+                        <div class="carousel-text">🚀 Convert Length Instantly</div>
+                        <div class="carousel-text">⏱️ Transform Time Values</div>
+                        <div class="carousel-text">⚖️ Calculate Mass Perfectly</div>
+                    </div>
+                </div>
+                
+                <div class="animated-underline"></div>
+                
+                <div class="converter-cards">
+                    <!-- Length Card -->
+                    <div class="card length" data-page="length">
+                        <div class="card-icon">📏</div>
+                        <h3>Length Converter</h3>
+                        <p>Convert between kilometers, meters, and centimeters with lightning-fast precision.</p>
+                        <button class="card-btn">Explore →</button>
+                    </div>
+
+                    <!-- Time Card -->
+                    <div class="card time" data-page="time">
+                        <div class="card-icon">⏱️</div>
+                        <h3>Time Converter</h3>
+                        <p>Transform hours, minutes, and seconds instantly. Perfect for all your time needs.</p>
+                        <button class="card-btn">Explore →</button>
+                    </div>
+
+                    <!-- Mass Card -->
+                    <div class="card mass" data-page="mass">
+                        <div class="card-icon">⚖️</div>
+                        <h3>Mass Converter</h3>
+                        <p>Convert kilograms, grams, and milligrams with absolute accuracy and speed.</p>
+                        <button class="card-btn">Explore →</button>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    🌟 Click any converter or navigate using the menu to begin your conversion journey!
+                </div>
+            </div>
+        </div>
+
+        <!-- Length Converter Page -->
+        <div class="page" id="length">
+            <div class="converter-page">
+                <h2>📏 LENGTH CONVERTER</h2>
+                
+                <div class="input-group">
+                    <label for="km">Kilometers (km)</label>
+                    <input type="number" id="km" placeholder="Enter kilometers" step="0.000001">
+                </div>
+
+                <div class="input-group">
+                    <label for="m">Meters (m)</label>
+                    <input type="number" id="m" placeholder="Enter meters" step="0.000001">
+                </div>
+
+                <div class="input-group">
+                    <label for="cm">Centimeters (cm)</label>
+                    <input type="number" id="cm" placeholder="Enter centimeters" step="0.000001">
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-convert" onclick="convertLength()">⚡ Convert</button>
+                    <button class="btn btn-clear" onclick="clearLength()">✕ Clear</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Time Converter Page -->
+        <div class="page" id="time">
+            <div class="converter-page">
+                <h2>⏱️ TIME CONVERTER</h2>
+                
+                <div class="input-group">
+                    <label for="hours">Hours (h)</label>
+                    <input type="number" id="hours" placeholder="Enter hours" step="0.000001">
+                </div>
+
+                <div class="input-group">
+                    <label for="minutes">Minutes (min)</label>
+                    <input type="number" id="minutes" placeholder="Enter minutes" step="0.000001">
+                </div>
+
+                <div class="input-group">
+                    <label for="seconds">Seconds (s)</label>
+                    <input type="number" id="seconds" placeholder="Enter seconds" step="0.000001">
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-convert" onclick="convertTime()">⚡ Convert</button>
+                    <button class="btn btn-clear" onclick="clearTime()">✕ Clear</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mass Converter Page -->
+        <div class="page" id="mass">
+            <div class="converter-page">
+                <h2>⚖️ MASS CONVERTER</h2>
+                
+                <div class="input-group">
+                    <label for="kg">Kilograms (kg)</label>
+                    <input type="number" id="kg" placeholder="Enter kilograms" step="0.000001">
+                </div>
+
+                <div class="input-group">
+                    <label for="g">Grams (g)</label>
+                    <input type="number" id="g" placeholder="Enter grams" step="0.000001">
+                </div>
+
+                <div class="input-group">
+                    <label for="mg">Milligrams (mg)</label>
+                    <input type="number" id="mg" placeholder="Enter milligrams" step="0.000001">
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-convert" onclick="convertMass()">⚡ Convert</button>
+                    <button class="btn btn-clear" onclick="clearMass()">✕ Clear</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Particle Animation
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.width = Math.random() * 5 + 2 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.backgroundColor = `rgba(102, 126, 234, ${Math.random() * 0.15})`;
+                particle.style.borderRadius = '50%';
+                particle.style.animation = `particleFloat ${Math.random() * 15 + 10}s infinite`;
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes particleFloat {
+                0% { transform: translateY(0) translateX(0); opacity: 0; }
+                10% { opacity: 1; }
+                90% { opacity: 1; }
+                100% { transform: translateY(-100vh) translateX(100px); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        createParticles();
+
+        // Page Navigation
+        const navButtons = document.querySelectorAll('.nav-btn');
+        const cards = document.querySelectorAll('.card');
+        const pages = document.querySelectorAll('.page');
+
+        function showPage(pageId) {
+            pages.forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+
+            navButtons.forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[data-page="${pageId}"]`).classList.add('active');
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        navButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                showPage(btn.dataset.page);
+            });
+        });
+
+        cards.forEach(card => {
+            card.addEventListener('click', () => {
+                showPage(card.dataset.page);
+            });
+        });
+
+        // Length Converter with Real-time Updates
+        const kmInput = document.getElementById('km');
+        const mInput = document.getElementById('m');
+        const cmInput = document.getElementById('cm');
+
+        function updateLengthFields(meters) {
+            mInput.value = meters.toFixed(6).replace(/\.?0+$/, '');
+            kmInput.value = (meters / 1000).toFixed(6).replace(/\.?0+$/, '');
+            cmInput.value = (meters * 100).toFixed(6).replace(/\.?0+$/, '');
+        }
+
+        kmInput.addEventListener('input', function() {
+            const meters = (parseFloat(this.value) || 0) * 1000;
+            updateLengthFields(meters);
+        });
+
+        mInput.addEventListener('input', function() {
+            const meters = parseFloat(this.value) || 0;
+            updateLengthFields(meters);
+        });
+
+        cmInput.addEventListener('input', function() {
+            const meters = (parseFloat(this.value) || 0) / 100;
+            updateLengthFields(meters);
+        });
+
+        function convertLength() {
+            const meters = (parseFloat(kmInput.value) || 0) * 1000;
+            updateLengthFields(meters);
+        }
+
+        function clearLength() {
+            kmInput.value = '';
+            mInput.value = '';
+            cmInput.value = '';
+        }
+
+        // Time Converter with Real-time Updates
+        const hoursInput = document.getElementById('hours');
+        const minutesInput = document.getElementById('minutes');
+        const secondsInput = document.getElementById('seconds');
+
+        function updateTimeFields(seconds) {
+            hoursInput.value = (seconds / 3600).toFixed(6).replace(/\.?0+$/, '');
+            minutesInput.value = (seconds / 60).toFixed(6).replace(/\.?0+$/, '');
+            secondsInput.value = seconds.toFixed(6).replace(/\.?0+$/, '');
+        }
+
+        hoursInput.addEventListener('input', function() {
+            const seconds = (parseFloat(this.value) || 0) * 3600;
+            updateTimeFields(seconds);
+        });
+
+        minutesInput.addEventListener('input', function() {
+            const seconds = (parseFloat(this.value) || 0) * 60;
+            updateTimeFields(seconds);
+        });
+
+        secondsInput.addEventListener('input', function() {
+            const seconds = parseFloat(this.value) || 0;
+            updateTimeFields(seconds);
+        });
+
+        function convertTime() {
+            const seconds = (parseFloat(hoursInput.value) || 0) * 3600;
+            updateTimeFields(seconds);
+        }
+
+        function clearTime() {
+            hoursInput.value = '';
+            minutesInput.value = '';
+            secondsInput.value = '';
+        }
+
+        // Mass Converter with Real-time Updates
+        const kgInput = document.getElementById('kg');
+        const gInput = document.getElementById('g');
+        const mgInput = document.getElementById('mg');
+
+        function updateMassFields(grams) {
+            kgInput.value = (grams / 1000).toFixed(6).replace(/\.?0+$/, '');
+            gInput.value = grams.toFixed(6).replace(/\.?0+$/, '');
+            mgInput.value = (grams * 1000).toFixed(6).replace(/\.?0+$/, '');
+        }
+
+        kgInput.addEventListener('input', function() {
+            const grams = (parseFloat(this.value) || 0) * 1000;
+            updateMassFields(grams);
+        });
+
+        gInput.addEventListener('input', function() {
+            const grams = parseFloat(this.value) || 0;
+            updateMassFields(grams);
+        });
+
+        mgInput.addEventListener('input', function() {
+            const grams = (parseFloat(this.value) || 0) / 1000;
+            updateMassFields(grams);
+        });
+
+        function convertMass() {
+            const grams = (parseFloat(kgInput.value) || 0) * 1000;
+            updateMassFields(grams);
+        }
+
+        function clearMass() {
+            kgInput.value = '';
+            gInput.value = '';
+            mgInput.value = '';
+        }
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('[data-page]').forEach(element => {
+            element.addEventListener('click', (e) => {
+                e.preventDefault();
+            });
+        });
+    </script>
+</body>
+</html>
