@@ -1466,4 +1466,166 @@
     const topicsEl = document.getElementById("study-topics");
     const topicsList = getTopics(sub);
     topicsEl.innerHTML = topicsList.map((t,i)=>`<li style="animation-delay:${i*0.05}s"><span class="n">${i+1}</span>${t}</li>`).join("");
-    const kpEl = document.getElementById("study-keypoints
+    const kpEl = document.getElementById("study-keypoints");
+    kpEl.innerHTML = content.keyPoints.map(k=>`<li>${k}</li>`).join("");
+    document.getElementById("board-note").textContent = BOARD_EXTRA[state.board].note;
+
+    document.getElementById("quiz-intro-title").textContent = `${meta.label} Quiz`;
+    document.getElementById("quiz-intro-desc").textContent = `${maxScoreFor(sub)} questions · Class ${state.cls} level. Test what you know!`;
+
+    document.querySelectorAll(".tab-btn").forEach(b=>b.classList.toggle("active", b.getAttribute("data-tab")===targetTab));
+    document.querySelectorAll(".tab-panel").forEach(p=>p.classList.toggle("active", p.id==="panel-"+targetTab));
+
+    renderPracticePaper();
+    showScreen("subject");
+  }
+
+  document.querySelectorAll(".tab-btn").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active");
+      document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
+      document.getElementById("panel-"+btn.getAttribute("data-tab")).classList.add("active");
+    });
+  });
+
+  document.getElementById("btn-subject-back").addEventListener("click", async ()=>{
+    await showMainScreen("dashboard");
+  });
+
+  document.getElementById("btn-start-quiz").addEventListener("click", ()=>{
+    startQuiz(state.subject);
+  });
+
+  /* ---------------- Practice paper ---------------- */
+  function renderPracticePaper(){
+    const sub = state.subject;
+    const meta = META[sub];
+    const mcqs = getQuizFor(sub, 5);
+    const topics = getTopics(sub);
+    const shortQs = shuffle(topics).slice(0, Math.min(3, topics.length));
+    const longTopic = topics[rnd(0, topics.length-1)];
+
+    let mcqHtml = mcqs.map((item,i)=>{
+      const optsHtml = item.options.map((o,idx)=>`<div>${String.fromCharCode(97+idx)}) ${o.text}</div>`).join("");
+      return `<div class="paper-q"><strong>${i+1}.</strong> ${item.question}<div class="opts">${optsHtml}</div></div>`;
+    }).join("");
+
+    let shortHtml = shortQs.map((t,i)=>`<div class="paper-q"><strong>${i+1}.</strong> Explain briefly: ${t}.</div>`).join("");
+    let longHtml = `<div class="paper-q"><strong>1.</strong> Describe in detail: ${longTopic}, with suitable examples.</div>`;
+
+    let keyHtml = mcqs.map((item,i)=>{
+      const correctIdx = item.options.findIndex(o=>o.correct);
+      return `${i+1}. ${String.fromCharCode(97+correctIdx)}) ${item.options[correctIdx].text}`;
+    }).join(" &nbsp;·&nbsp; ");
+
+    document.getElementById("practice-container").innerHTML = `
+      <div class="paper-head">
+        <h2>${meta.label} Practice Paper</h2>
+        <p>Class ${state.cls} · ${boardLabel()}</p>
+      </div>
+      <div class="paper-block"><h4>Section A · Multiple Choice</h4>${mcqHtml}</div>
+      <div class="paper-block"><h4>Section B · Short Answer</h4>${shortHtml}</div>
+      <div class="paper-block"><h4>Section C · Long Answer</h4>${longHtml}</div>
+      <div class="paper-actions no-print">
+        <button class="btn-secondary" id="btn-toggle-key">Show Answer Key</button>
+        <button class="btn-secondary" id="btn-print-paper">Print / Save PDF</button>
+      </div>
+      <div class="answer-key" id="answer-key">${keyHtml}</div>
+    `;
+    document.getElementById("btn-toggle-key").addEventListener("click", ()=>{
+      const el = document.getElementById("answer-key");
+      el.classList.toggle("show");
+      document.getElementById("btn-toggle-key").textContent = el.classList.contains("show") ? "Hide Answer Key" : "Show Answer Key";
+    });
+    document.getElementById("btn-print-paper").addEventListener("click", ()=>{
+      screens.subject.classList.add("print-active");
+      window.print();
+      setTimeout(()=>screens.subject.classList.remove("print-active"), 500);
+    });
+  }
+
+  /* ---------------- Quiz runner ---------------- */
+  function startQuiz(subjectKey){
+    quiz.subject = subjectKey;
+    quiz.questions = getQuizFor(subjectKey, maxScoreFor(subjectKey));
+    quiz.index = 0; quiz.score = 0; quiz.answered = false;
+    renderDots(); renderQuestion();
+    showScreen("quiz");
+  }
+
+  function renderDots(){
+    const dots = document.getElementById("quiz-dots");
+    dots.innerHTML="";
+    quiz.questions.forEach((_,i)=>{
+      const d=document.createElement("div");
+      d.className="dot"+(i<quiz.index?" done":"")+(i===quiz.index?" current":"");
+      dots.appendChild(d);
+    });
+    document.getElementById("quiz-score").textContent = `Score: ${quiz.score}`;
+  }
+
+  function renderQuestion(){
+    quiz.answered=false;
+    const item = quiz.questions[quiz.index];
+    document.getElementById("quiz-question").textContent = item.question;
+    const optsEl = document.getElementById("quiz-options");
+    optsEl.innerHTML="";
+    item.options.forEach(opt=>{
+      const b=document.createElement("button");
+      b.className="opt-btn"; b.textContent=opt.text;
+      b.addEventListener("click", ()=>selectOption(b, opt));
+      optsEl.appendChild(b);
+    });
+  }
+
+  function selectOption(btn, opt){
+    if(quiz.answered) return;
+    quiz.answered=true;
+    const buttons = document.querySelectorAll(".opt-btn");
+    buttons.forEach(b=>b.disabled=true);
+    if(opt.correct){ btn.classList.add("correct"); quiz.score++; }
+    else{
+      btn.classList.add("wrong");
+      const correctBtn = [...buttons].find((b,i)=>quiz.questions[quiz.index].options[i].correct);
+      if(correctBtn) correctBtn.classList.add("correct");
+    }
+    const scoreChip = document.getElementById("quiz-score");
+    scoreChip.textContent = `Score: ${quiz.score}`;
+    scoreChip.classList.remove("bump"); void scoreChip.offsetWidth; scoreChip.classList.add("bump");
+    setTimeout(()=>{
+      quiz.index++;
+      if(quiz.index < quiz.questions.length){ renderDots(); renderQuestion(); }
+      else finishQuiz();
+    }, 800);
+  }
+
+  async function finishQuiz(){
+    const total = quiz.questions.length;
+    const score = quiz.score;
+    const pct = Math.round((score/total)*100);
+
+    const info = await loadSubjectProgress(quiz.subject);
+    info.attempts++;
+    if(score > info.best) info.best = score;
+    await saveSubjectProgress(quiz.subject, info);
+
+    document.getElementById("result-subject").textContent = `${META[quiz.subject].label.toUpperCase()} · CLASS ${state.cls}`;
+    document.getElementById("result-score").textContent = `${score} / ${total}`;
+    document.getElementById("result-stars").textContent = pct>=80 ? "⭐⭐⭐" : pct>=50 ? "⭐⭐" : "⭐";
+    const stamp = document.getElementById("result-stamp"); const msg = document.getElementById("result-msg");
+    if(pct>=80){ stamp.innerHTML="GREAT<br>JOB"; msg.textContent=`Excellent work, ${state.name}! 🎉`; setTimeout(fireConfetti, 150); }
+    else if(pct>=50){ stamp.innerHTML="WELL<br>DONE"; msg.textContent="Good effort — keep practicing!"; }
+    else{ stamp.innerHTML="TRY<br>AGAIN"; msg.textContent="Practice makes perfect. Give it another go!"; }
+    showScreen("result");
+  }
+
+  document.getElementById("btn-retry").addEventListener("click", ()=> startQuiz(quiz.subject));
+  document.getElementById("btn-back-dash").addEventListener("click", async ()=>{
+    await showMainScreen("dashboard");
+  });
+
+})();
+</script>
+</body>
+  </html>
