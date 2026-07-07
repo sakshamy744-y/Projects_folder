@@ -1,0 +1,1469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Gyan Ghar — Learn & Practice, Class 1–12</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Baloo+Da+2:wght@600;700;800&family=Fredoka:wght@500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FFF9EF; --paper:#FFFFFF; --ink:#2B2560; --ink-soft:#6C67A0;
+    --yellow:#FFC93C; --coral:#FF6B6B; --teal:#3DBFB8; --green:#3FA34D; --red:#E85C5C;
+    --line:#EDE6D6; --shadow:0 10px 24px rgba(43,37,96,0.10);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    background-image:radial-gradient(circle at 8% 12%, rgba(255,201,60,0.18) 0, transparent 40%),
+      radial-gradient(circle at 92% 85%, rgba(61,191,184,0.16) 0, transparent 42%);
+    color:var(--ink); font-family:'Poppins',sans-serif; min-height:100vh; -webkit-tap-highlight-color:transparent;
+  }
+  h1,h2,h3,.display{font-family:'Baloo 2','Baloo Da 2',sans-serif;}
+  .hi{font-family:'Baloo Da 2','Baloo 2',sans-serif;}
+  button{font-family:inherit;}
+  #app{max-width:520px;margin:0 auto;min-height:100vh;padding:0 0 40px;position:relative;}
+  .screen{display:none;padding:20px 18px 10px;animation:fadeUp .3s ease;}
+  .screen.active{display:block;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+  @media (prefers-reduced-motion: reduce){.screen{animation:none;} *{transition:none !important;}}
+
+  .brand{text-align:center;margin:22px 0 16px;}
+  .brand .badge{width:70px;height:70px;border-radius:20px;margin:0 auto 8px;background:linear-gradient(160deg,var(--yellow),var(--coral));display:flex;align-items:center;justify-content:center;font-size:32px;box-shadow:var(--shadow);transform:rotate(-6deg);}
+  .brand h1{font-size:27px;margin:0;color:var(--ink);}
+  .brand p{margin:4px 0 0;color:var(--ink-soft);font-size:13px;}
+
+  .card{background:var(--paper);border-radius:20px;padding:18px;box-shadow:var(--shadow);border:1px solid var(--line);}
+  label.field-label{display:block;font-weight:600;font-size:12px;color:var(--ink-soft);margin:0 0 8px;letter-spacing:.02em;text-transform:uppercase;}
+  input[type=text]{width:100%;padding:13px 15px;border-radius:14px;border:2px solid var(--line);font-size:16px;font-family:'Poppins';outline:none;background:#FFFDF8;color:var(--ink);}
+  input[type=text]:focus{border-color:var(--teal);box-shadow:0 0 0 4px rgba(61,191,184,0.18);}
+  .field-block{margin-bottom:16px;}
+  .info-note{font-size:11.5px;color:var(--ink-soft);margin-top:6px;line-height:1.4;}
+
+  .avatar-row{display:flex;gap:8px;flex-wrap:wrap;}
+  .avatar-opt{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:21px;border:3px solid transparent;background:#FFFDF8;cursor:pointer;}
+  .avatar-opt.selected{border-color:var(--coral);background:#FFF1EC;}
+
+  .board-row{display:flex;gap:8px;flex-wrap:wrap;}
+  .board-pill{padding:10px 14px;border-radius:14px;border:2px solid var(--line);background:#FFFDF8;font-weight:700;font-size:13px;cursor:pointer;color:var(--ink);}
+  .board-pill.selected{background:var(--ink);border-color:var(--ink);color:#fff;}
+
+  .class-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;}
+  .class-pill{padding:10px 0;border-radius:12px;border:2px solid var(--line);background:#FFFDF8;font-weight:700;font-size:14px;text-align:center;cursor:pointer;color:var(--ink);}
+  .class-pill.selected{background:var(--ink);border-color:var(--ink);color:#fff;}
+
+  .stream-row{display:flex;gap:8px;}
+  .stream-pill{flex:1;padding:11px 0;border-radius:14px;border:2px solid var(--line);background:#FFFDF8;font-weight:700;font-size:13px;text-align:center;cursor:pointer;color:var(--ink);}
+  .stream-pill.selected{background:var(--coral);border-color:var(--coral);color:#fff;}
+
+  .btn-primary{width:100%;margin-top:20px;padding:15px;border:none;border-radius:16px;background:var(--ink);color:#fff;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 8px 0 #1B1740;transition:transform .05s;}
+  .btn-primary:active{transform:translateY(4px);box-shadow:0 4px 0 #1B1740;}
+  .btn-primary:disabled{background:#C9C4E0;box-shadow:0 8px 0 #ABA6C9;cursor:not-allowed;}
+
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 4px;}
+  .who{display:flex;align-items:center;gap:10px;}
+  .who .av{width:42px;height:42px;border-radius:50%;background:#FFF1EC;display:flex;align-items:center;justify-content:center;font-size:20px;border:2px solid var(--coral);flex-shrink:0;}
+  .who .txt .name{font-weight:700;font-size:15px;line-height:1.1;}
+  .who .txt .grade{font-size:11.5px;color:var(--ink-soft);}
+  .icon-btn{width:38px;height:38px;border-radius:50%;border:none;background:var(--paper);box-shadow:var(--shadow);font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .section-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft);margin:20px 4px 10px;}
+
+  .subject-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+  .subject-card{background:var(--paper);border-radius:18px;padding:14px;box-shadow:var(--shadow);cursor:pointer;border:1px solid var(--line);position:relative;overflow:hidden;}
+  .subject-card .ic{font-size:26px;}
+  .subject-card h3{margin:7px 0 2px;font-size:15px;line-height:1.2;}
+  .subject-card .best{font-size:11.5px;color:var(--ink-soft);}
+  .subject-card::after{content:"";position:absolute;right:-18px;top:-18px;width:60px;height:60px;border-radius:50%;opacity:.15;background:var(--teal);}
+
+  .card-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;position:relative;z-index:1;}
+  .card-act-btn{border:1.5px solid var(--line);background:rgba(255,255,255,0.75);border-radius:10px;padding:7px 6px;font-size:10.5px;font-weight:700;color:var(--ink);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .card-act-btn:first-child{flex:1 1 100%;background:var(--ink);color:#fff;border-color:var(--ink);font-size:11.5px;padding:8px 6px;}
+  .card-act-btn:not(:first-child){flex:1;}
+  .card-act-btn:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(43,37,96,.15);}
+  body[data-theme="dark"] .card-act-btn{background:rgba(255,255,255,0.06);color:var(--ink);border-color:var(--line);}
+  body[data-theme="dark"] .card-act-btn:first-child{background:var(--coral);border-color:var(--coral);color:#fff;}
+
+  .progress-card{background:var(--paper);border-radius:20px;padding:16px;box-shadow:var(--shadow);border:1px solid var(--line);}
+  .progress-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--line);}
+  .progress-row:last-child{border-bottom:none;}
+  .progress-row .lbl{font-weight:600;font-size:13px;width:110px;flex-shrink:0;}
+  .bar-wrap{flex:1;margin:0 10px;height:8px;background:#F0ECE0;border-radius:6px;overflow:hidden;}
+  .bar-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--teal),var(--green));}
+  .pct{font-size:12px;font-weight:700;width:34px;text-align:right;}
+  .empty-note{text-align:center;color:var(--ink-soft);font-size:13px;padding:16px 0;}
+
+  .back-link{display:inline-flex;align-items:center;gap:4px;background:none;border:none;color:var(--ink-soft);font-weight:700;font-size:13px;cursor:pointer;padding:0 0 10px;}
+
+  /* Subject detail screen */
+  .subject-header{display:flex;align-items:center;gap:12px;padding:2px 0 14px;}
+  .subject-header .ic{font-size:32px;}
+  .subject-header h2{margin:0;font-size:19px;}
+  .subject-header .sub{font-size:11.5px;color:var(--ink-soft);}
+  .tabs{display:flex;gap:8px;margin-bottom:16px;}
+  .tab-btn{flex:1;padding:10px 0;border-radius:12px;border:2px solid var(--line);background:var(--paper);font-weight:700;font-size:12.5px;cursor:pointer;color:var(--ink-soft);}
+  .tab-btn.active{background:var(--ink);border-color:var(--ink);color:#fff;}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+
+  .section-label{font-weight:700;font-size:12.5px;text-transform:uppercase;letter-spacing:.03em;color:var(--ink-soft);margin:18px 0 8px;}
+  .section-label:first-child{margin-top:0;}
+  .topic-list{list-style:none;padding:0;margin:0;}
+  .topic-list li{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:8px;font-weight:600;font-size:13.5px;display:flex;gap:10px;align-items:center;}
+  .topic-list li .n{width:22px;height:22px;border-radius:50%;background:#F0ECE0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;}
+  .keypoints{list-style:disc;padding-left:20px;margin:0;}
+  .keypoints li{margin-bottom:8px;font-size:13.5px;line-height:1.45;}
+
+  .quiz-intro{text-align:center;padding:20px 6px;}
+  .quiz-intro .big{font-size:44px;margin-bottom:6px;}
+  .quiz-intro p{color:var(--ink-soft);font-size:13.5px;margin:6px 0 4px;}
+
+  /* Quiz runner */
+  .quiz-top{display:flex;align-items:center;gap:10px;padding:0 0 4px;}
+  .dots{display:flex;gap:6px;flex:1;}
+  .dot{flex:1;height:7px;border-radius:6px;background:#EFE9DA;}
+  .dot.done{background:var(--teal);}
+  .dot.current{background:var(--yellow);}
+  .score-chip{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:6px 12px;font-weight:700;font-size:12.5px;box-shadow:var(--shadow);white-space:nowrap;}
+  .q-card{margin:16px 0;background:var(--paper);border-radius:22px;padding:24px 18px;box-shadow:var(--shadow);border:1px solid var(--line);min-height:90px;display:flex;align-items:center;justify-content:center;text-align:center;}
+  .q-card p{font-size:18px;font-weight:700;margin:0;line-height:1.35;}
+  .options{display:grid;gap:11px;}
+  .opt-btn{padding:15px;border-radius:16px;border:2px solid var(--line);background:var(--paper);font-size:14.5px;font-weight:600;text-align:left;cursor:pointer;color:var(--ink);}
+  .opt-btn.correct{background:#EAF7EC;border-color:var(--green);color:#1F6B2C;}
+  .opt-btn.wrong{background:#FDECEC;border-color:var(--red);color:#A33333;}
+  .opt-btn:disabled{cursor:default;}
+
+  .report{background:var(--paper);border-radius:24px;padding:24px 20px;box-shadow:var(--shadow);border:1px solid var(--line);text-align:center;position:relative;overflow:hidden;}
+  .stamp{width:90px;height:90px;border-radius:50%;border:4px solid var(--coral);color:var(--coral);display:flex;align-items:center;justify-content:center;margin:6px auto 14px;font-family:'Baloo 2';font-weight:800;font-size:13px;transform:rotate(-8deg);text-transform:uppercase;letter-spacing:.02em;line-height:1.1;}
+  .stars{font-size:28px;letter-spacing:4px;margin:6px 0;}
+  .result-sub{color:var(--ink-soft);font-size:13.5px;margin-bottom:4px;}
+  .btn-row{display:flex;gap:10px;margin-top:18px;}
+  .btn-secondary{flex:1;padding:14px;border-radius:14px;border:2px solid var(--ink);background:transparent;color:var(--ink);font-weight:700;cursor:pointer;font-size:14px;}
+  .btn-row .btn-primary{margin-top:0;flex:1;}
+
+  /* Practice paper */
+  .paper-head{text-align:center;margin-bottom:14px;}
+  .paper-head h2{margin:0 0 2px;font-size:18px;}
+  .paper-head p{margin:0;font-size:12px;color:var(--ink-soft);}
+  .paper-block{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:15px;margin-bottom:12px;}
+  .paper-block h4{margin:0 0 10px;font-size:12.5px;text-transform:uppercase;letter-spacing:.03em;color:var(--ink-soft);}
+  .paper-q{margin-bottom:12px;font-size:13.5px;line-height:1.45;}
+  .paper-q:last-child{margin-bottom:0;}
+  .paper-q .opts{margin-top:5px;padding-left:16px;color:var(--ink-soft);font-size:12.5px;}
+  .paper-q .opts div{margin-bottom:2px;}
+  .paper-actions{display:flex;gap:10px;margin:6px 0 14px;}
+  .answer-key{display:none;font-size:13px;color:var(--ink-soft);line-height:1.6;}
+  .answer-key.show{display:block;}
+
+  @media print{
+    .no-print{display:none !important;}
+    body{background:#fff;}
+    #app{max-width:100%;}
+    .screen{display:none !important;padding:0;}
+    .screen.print-active{display:block !important;}
+    .paper-block{box-shadow:none;border:1px solid #ccc;}
+  }
+
+  @media (max-width:360px){
+    .class-grid{gap:5px;}
+    .class-pill{padding:9px 0;font-size:13px;}
+  }
+
+  /* ================= FANCY / ANIMATED LAYER ================= */
+  h1,h2,h3,.display{font-family:'Fredoka','Baloo 2','Baloo Da 2',sans-serif;}
+
+  button{transition:transform .15s ease, box-shadow .15s ease, background-color .15s ease, border-color .15s ease, color .15s ease, opacity .15s ease;}
+  button:active{transform:scale(.95);}
+  .back-link{transition:transform .15s ease, color .15s ease;}
+  .back-link:active{transform:scale(.95) translateX(-2px);}
+  .tab-btn:active{transform:scale(.96);}
+  .nav-btn:active{transform:scale(.92);}
+
+  .blob{position:fixed;border-radius:50%;filter:blur(4px);opacity:.35;z-index:0;pointer-events:none;}
+  .blob1{width:220px;height:220px;background:radial-gradient(circle,var(--yellow),transparent 70%);top:-60px;left:-60px;animation:floatA 14s ease-in-out infinite;}
+  .blob2{width:260px;height:260px;background:radial-gradient(circle,var(--teal),transparent 70%);bottom:-80px;right:-70px;animation:floatB 17s ease-in-out infinite;}
+  .blob3{width:160px;height:160px;background:radial-gradient(circle,var(--coral),transparent 70%);top:40%;right:-50px;animation:floatA 20s ease-in-out infinite reverse;}
+  @keyframes floatA{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(20px,30px) scale(1.08);}}
+  @keyframes floatB{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-25px,-20px) scale(1.1);}}
+  #app{position:relative;z-index:1;}
+
+  .brand h1{
+    background:linear-gradient(90deg,var(--coral),var(--yellow),var(--teal),var(--coral));
+    background-size:300% auto;-webkit-background-clip:text;background-clip:text;color:transparent;
+    animation:shine 6s linear infinite;
+  }
+  @keyframes shine{to{background-position:300% center;}}
+  .brand .badge{animation:bounceIn .7s cubic-bezier(.36,1.5,.5,1), floatBadge 3.5s ease-in-out 1s infinite;}
+  @keyframes bounceIn{0%{transform:scale(0) rotate(-6deg);opacity:0;}70%{transform:scale(1.15) rotate(-6deg);opacity:1;}100%{transform:scale(1) rotate(-6deg);}}
+  @keyframes floatBadge{0%,100%{transform:translateY(0) rotate(-6deg);}50%{transform:translateY(-6px) rotate(-3deg);}}
+
+  .card{animation:cardIn .45s cubic-bezier(.25,1,.4,1) both;}
+  @keyframes cardIn{from{opacity:0;transform:translateY(16px) scale(.97);}to{opacity:1;transform:translateY(0) scale(1);}}
+
+  .avatar-opt,.board-pill,.class-pill,.stream-pill,.board-opt-big,.stream-opt-big{transition:transform .15s ease, box-shadow .15s ease, background .15s ease, border-color .15s ease;}
+  .avatar-opt:active,.board-pill:active,.class-pill:active,.stream-pill:active,.board-opt-big:active,.stream-opt-big:active{transform:scale(.96);}
+  .avatar-opt.selected{animation:pop .3s ease;}
+  .board-pill.selected,.class-pill.selected{animation:pop .3s ease;box-shadow:0 4px 14px rgba(43,37,96,0.25);}
+  .stream-pill.selected{animation:pop .3s ease;box-shadow:0 4px 14px rgba(255,107,107,0.3);}
+  @keyframes pop{0%{transform:scale(.85);}55%{transform:scale(1.08);}100%{transform:scale(1);}}
+
+  .btn-primary{position:relative;overflow:hidden;transition:transform .12s ease, box-shadow .12s ease;}
+  .btn-primary:not(:disabled):hover{transform:translateY(-2px);box-shadow:0 10px 0 #1B1740;}
+  .btn-primary:not(:disabled)::after{
+    content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;
+    background:linear-gradient(120deg,transparent,rgba(255,255,255,.35),transparent);
+    transform:skewX(-20deg);animation:sweep 3s ease-in-out infinite;
+  }
+  @keyframes sweep{0%{left:-60%;}50%{left:120%;}100%{left:120%;}}
+
+  .subject-card{transition:transform .18s ease, box-shadow .18s ease;animation:cardIn .4s both;}
+  .subject-card:active{transform:scale(.96);}
+  .subject-card:hover{transform:translateY(-4px) rotate(-.5deg);box-shadow:0 16px 30px rgba(43,37,96,0.16);}
+  .subject-card .ic{display:inline-block;transition:transform .25s ease;}
+  .subject-card:hover .ic{transform:scale(1.2) rotate(-8deg);}
+
+  .icon-btn{transition:transform .2s ease;}
+  .icon-btn:active{transform:rotate(180deg);}
+
+  .bar-fill{transition:width 1s cubic-bezier(.25,1,.4,1);}
+
+  .screen.active{animation:screenIn .32s cubic-bezier(.25,1,.4,1);}
+  @keyframes screenIn{from{opacity:0;transform:translateX(14px);}to{opacity:1;transform:translateX(0);}}
+
+  .tab-btn{transition:transform .15s ease, background .15s ease, color .15s ease;}
+  .tab-btn.active{animation:pop .25s ease;}
+  .tab-panel.active{animation:fadeUp .3s ease;}
+
+  .topic-list li{transition:transform .15s ease;animation:slideIn .35s both;}
+  .topic-list li:hover{transform:translateX(4px);}
+  @keyframes slideIn{from{opacity:0;transform:translateX(-10px);}to{opacity:1;transform:translateX(0);}}
+
+  .q-card{animation:cardIn .35s ease both;}
+  .opt-btn{transition:transform .12s ease, background .2s ease, border-color .2s ease;}
+  .opt-btn:not(:disabled):active{transform:scale(.97);}
+  .opt-btn.correct{animation:correctPulse .5s ease;}
+  .opt-btn.wrong{animation:wrongShake .4s ease;}
+  @keyframes correctPulse{0%{transform:scale(1);}40%{transform:scale(1.04);}100%{transform:scale(1);}}
+  @keyframes wrongShake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+
+  .dot{transition:background .3s ease;}
+  .score-chip{transition:transform .2s ease;}
+  .score-chip.bump{animation:pop .3s ease;}
+
+  .stamp{animation:stampIn .5s cubic-bezier(.3,1.6,.5,1) .15s both;}
+  @keyframes stampIn{from{opacity:0;transform:scale(2) rotate(-8deg);}to{opacity:1;transform:scale(1) rotate(-8deg);}}
+  .stars{animation:fadeUp .5s ease .3s both;}
+  .report{animation:cardIn .4s ease both;}
+
+  .board-note{background:linear-gradient(135deg,rgba(255,201,60,0.16),rgba(61,191,184,0.14));border:1px dashed var(--line);border-radius:14px;padding:10px 12px;font-size:12px;color:var(--ink-soft);margin-bottom:14px;}
+
+  #confetti-canvas{position:fixed;inset:0;pointer-events:none;z-index:50;}
+
+  @media (prefers-reduced-motion: reduce){
+    .blob,.brand h1,.brand .badge,.card,.subject-card,.screen.active,.opt-btn.correct,.opt-btn.wrong,.stamp,.stars,.report,.topic-list li{animation:none !important;}
+  }
+
+  /* ================= MODERN APP LAYER ================= */
+  html{transition:background-color .4s ease;}
+  body{transition:background-color .4s ease, color .4s ease;}
+  body[data-theme="dark"]{
+    --bg:#181530; --paper:#241F42; --ink:#F3F1FF; --ink-soft:#B4AEDD; --line:#39335E;
+    background-image:radial-gradient(circle at 8% 12%, rgba(255,201,60,0.10) 0, transparent 40%),
+      radial-gradient(circle at 92% 85%, rgba(61,191,184,0.12) 0, transparent 42%);
+  }
+  body[data-theme="dark"] input[type=text]{background:#1E1A38;color:var(--ink);}
+  body[data-theme="dark"] .opt-btn{background:var(--paper);}
+  body[data-theme="dark"] .bar-wrap{background:#332D5C;}
+  body[data-theme="dark"] .board-note{background:linear-gradient(135deg,rgba(255,201,60,0.10),rgba(61,191,184,0.10));}
+
+  #splash{
+    position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    background:linear-gradient(160deg,#2B2560,#443B8C);color:#fff;
+    animation:splashOut .5s ease 1.6s forwards;
+  }
+  .splash-badge{width:84px;height:84px;border-radius:24px;background:linear-gradient(160deg,var(--yellow),var(--coral));display:flex;align-items:center;justify-content:center;font-size:40px;box-shadow:0 12px 30px rgba(0,0,0,.3);animation:bounceIn .7s cubic-bezier(.36,1.5,.5,1);}
+  .splash-title{font-family:'Fredoka','Baloo 2',sans-serif;font-size:28px;font-weight:700;margin-top:14px;animation:fadeUp .5s ease .2s both;}
+  .splash-sub{font-size:13px;opacity:.8;margin-top:4px;animation:fadeUp .5s ease .35s both;}
+  .splash-bar{width:120px;height:5px;border-radius:6px;background:rgba(255,255,255,.25);margin-top:22px;overflow:hidden;}
+  .splash-bar-fill{height:100%;width:0%;background:#fff;border-radius:6px;animation:loadBar 1.4s ease .1s forwards;}
+  @keyframes loadBar{to{width:100%;}}
+  @keyframes splashOut{to{opacity:0;visibility:hidden;pointer-events:none;}}
+
+  /* Glassmorphism for main surfaces */
+  .card,.subject-card,.progress-card,.report,.paper-block,.q-card,.profile-card{
+    background:rgba(255,255,255,0.72);
+    -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px);
+    border:1px solid rgba(255,255,255,0.5);
+  }
+  body[data-theme="dark"] .card,body[data-theme="dark"] .subject-card,body[data-theme="dark"] .progress-card,
+  body[data-theme="dark"] .report,body[data-theme="dark"] .paper-block,body[data-theme="dark"] .q-card,
+  body[data-theme="dark"] .profile-card{
+    background:rgba(36,31,66,0.72); border:1px solid rgba(255,255,255,0.08);
+  }
+
+  #app{padding-bottom:0;}
+  #app.with-nav{padding-bottom:78px;}
+
+  .page-head{padding:6px 2px 14px;}
+  .page-head h2{margin:0 0 2px;font-size:21px;}
+  .page-head p{margin:0;font-size:13px;color:var(--ink-soft);}
+
+  .bottom-nav{
+    display:none;position:fixed;left:50%;bottom:14px;transform:translateX(-50%);
+    width:calc(100% - 32px);max-width:488px;
+    background:rgba(255,255,255,0.85);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);
+    border:1px solid rgba(255,255,255,0.6);border-radius:22px;
+    box-shadow:0 14px 34px rgba(43,37,96,0.18);
+    padding:8px;z-index:40;
+    grid-template-columns:1fr 1fr 1fr;position:fixed;
+  }
+  body[data-theme="dark"] .bottom-nav{background:rgba(36,31,66,0.85);border:1px solid rgba(255,255,255,0.08);}
+  .bottom-nav.show{display:grid;}
+  .nav-indicator{
+    position:absolute;top:8px;bottom:8px;width:calc(33.333% - 5.33px);left:8px;border-radius:16px;
+    background:var(--ink);z-index:0;transition:transform .35s cubic-bezier(.3,1.2,.4,1);
+  }
+  .nav-btn{
+    position:relative;z-index:1;background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:2px;
+    padding:9px 0;font-size:10.5px;font-weight:700;color:var(--ink-soft);cursor:pointer;border-radius:16px;transition:color .3s ease;
+  }
+  .nav-btn.active{color:#fff;}
+  .nav-ic{font-size:19px;transition:transform .3s ease;}
+  .nav-btn.active .nav-ic{transform:translateY(-2px) scale(1.1);}
+
+  .profile-top{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
+  .av-lg{width:58px;height:58px;border-radius:50%;background:#FFF1EC;display:flex;align-items:center;justify-content:center;font-size:28px;border:3px solid var(--coral);flex-shrink:0;}
+  .profile-name{font-weight:700;font-size:17px;}
+  .profile-meta{font-size:12.5px;color:var(--ink-soft);margin-top:2px;}
+  .profile-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);margin-bottom:18px;font-size:13.5px;font-weight:600;}
+  .btn-secondary.sm{flex:none;padding:8px 14px;font-size:12.5px;border-radius:12px;}
+
+  /* ================= SIGN-IN WIZARD ================= */
+  .wizard-card{overflow:hidden;padding-bottom:16px;}
+  .wizard-progress{display:flex;align-items:center;gap:6px;margin-bottom:20px;}
+  .wp-dot{flex:1;height:6px;border-radius:6px;background:#EFE9DA;position:relative;overflow:hidden;}
+  body[data-theme="dark"] .wp-dot{background:#332D5C;}
+  .wp-dot::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--coral),var(--yellow));transform:scaleX(0);transform-origin:left;transition:transform .45s cubic-bezier(.3,1,.4,1);border-radius:6px;}
+  .wp-dot.filled::after{transform:scaleX(1);}
+  .wp-dot.current::after{transform:scaleX(1);animation:dotGlow 1.2s ease-in-out infinite;}
+  @keyframes dotGlow{0%,100%{filter:brightness(1);}50%{filter:brightness(1.3);}}
+
+  .wizard-viewport{overflow:hidden;}
+  .wizard-track{display:flex;transition:transform .45s cubic-bezier(.3,1,.4,1);}
+  .wizard-step{flex:0 0 100%;min-width:100%;padding:2px 2px 4px;text-align:center;}
+  .wizard-step .field-block{text-align:left;}
+  .wizard-step .avatar-row,.wizard-step .class-grid{justify-content:center;}
+
+  .wizard-ic{font-size:40px;margin-bottom:8px;animation:bounceIn .5s cubic-bezier(.36,1.5,.5,1);}
+  .wizard-q{font-family:'Fredoka','Baloo 2',sans-serif;font-size:19px;font-weight:600;margin-bottom:16px;color:var(--ink);}
+
+  .avatar-preview{
+    width:76px;height:76px;border-radius:50%;margin:0 auto 14px;background:#FFF1EC;border:3px solid var(--coral);
+    display:flex;align-items:center;justify-content:center;font-size:36px;
+    animation:floatBadge 3.5s ease-in-out infinite;
+  }
+  .avatar-preview.bump{animation:pop .35s ease;}
+
+  .board-row-big{display:flex;flex-direction:column;gap:10px;text-align:left;}
+  .board-opt-big{
+    display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:16px;border:2px solid var(--line);
+    background:#FFFDF8;cursor:pointer;transition:transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+  }
+  body[data-theme="dark"] .board-opt-big{background:var(--paper);}
+  .board-opt-big .ic{font-size:24px;}
+  .board-opt-big .txt{flex:1;}
+  .board-opt-big .txt b{display:block;font-size:14.5px;}
+  .board-opt-big .txt span{font-size:11.5px;color:var(--ink-soft);}
+  .board-opt-big .tick{width:20px;height:20px;border-radius:50%;border:2px solid var(--line);flex-shrink:0;position:relative;}
+  .board-opt-big.selected{border-color:var(--coral);box-shadow:0 6px 16px rgba(255,107,107,0.18);transform:translateY(-1px);}
+  .board-opt-big.selected .tick{border-color:var(--coral);background:var(--coral);}
+  .board-opt-big.selected .tick::after{content:"✓";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:800;animation:pop .25s ease;}
+
+  .stream-row-big{display:flex;flex-direction:column;gap:10px;}
+  .stream-opt-big{
+    padding:16px;border-radius:16px;border:2px solid var(--line);background:#FFFDF8;cursor:pointer;text-align:left;
+    display:flex;align-items:center;gap:12px;transition:transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+  }
+  body[data-theme="dark"] .stream-opt-big{background:var(--paper);}
+  .stream-opt-big .ic{font-size:22px;}
+  .stream-opt-big b{font-size:14.5px;}
+  .stream-opt-big.selected{border-color:var(--teal);box-shadow:0 6px 16px rgba(61,191,184,0.2);transform:translateY(-1px);}
+
+  .wizard-nav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:6px;}
+  .wizard-nav .btn-primary{width:auto;margin-top:0;flex:none;padding:14px 26px;}
+  .wizard-nav .btn-secondary{width:auto;flex:none;border:none;background:none;color:var(--ink-soft);font-weight:700;padding:14px 6px;}
+</style>
+</head>
+<body>
+<div class="blob blob1 no-print"></div>
+<div class="blob blob2 no-print"></div>
+<div class="blob blob3 no-print"></div>
+<canvas id="confetti-canvas" class="no-print"></canvas>
+<div id="splash" class="no-print">
+  <div class="splash-badge">📚</div>
+  <div class="splash-title">Gyan Ghar</div>
+  <div class="splash-sub">Learn · Practice · Grow</div>
+  <div class="splash-bar"><div class="splash-bar-fill"></div></div>
+</div>
+<div id="app">
+
+  <!-- SIGN IN -->
+  <section class="screen active" id="screen-signin">
+    <div class="brand">
+      <div class="badge">📚</div>
+      <h1>Gyan Ghar</h1>
+      <p>Study material, quizzes & practice papers — Class 1 to 12</p>
+    </div>
+
+    <div class="card wizard-card">
+      <div class="wizard-progress" id="wizard-progress"></div>
+
+      <div class="wizard-viewport">
+        <div class="wizard-track" id="wizard-track">
+
+          <div class="wizard-step" data-step="0">
+            <div class="avatar-preview" id="avatar-preview">🙂</div>
+            <div class="wizard-q">What's your name?</div>
+            <div class="field-block">
+              <input type="text" id="input-name" placeholder="e.g. Aarav" maxlength="24" autocomplete="off">
+            </div>
+            <label class="field-label">Pick your avatar</label>
+            <div class="avatar-row" id="avatar-row"></div>
+          </div>
+
+          <div class="wizard-step" data-step="1">
+            <div class="wizard-ic">🏫</div>
+            <div class="wizard-q">Which board are you on?</div>
+            <div class="board-row-big" id="board-row"></div>
+            <div class="info-note">Core concepts shown here are common across boards. State Board content follows the same general curriculum.</div>
+          </div>
+
+          <div class="wizard-step" data-step="2">
+            <div class="wizard-ic">🎒</div>
+            <div class="wizard-q">Which class are you in?</div>
+            <div class="class-grid" id="class-grid"></div>
+          </div>
+
+          <div class="wizard-step" data-step="3">
+            <div class="wizard-ic">🎯</div>
+            <div class="wizard-q">Pick your stream</div>
+            <div class="stream-row-big" id="stream-row"></div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="wizard-nav">
+        <button class="btn-secondary" id="wiz-back" style="visibility:hidden;">← Back</button>
+        <button class="btn-primary" id="wiz-next" disabled>Next →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- DASHBOARD (HOME) -->
+  <section class="screen" id="screen-dashboard">
+    <div class="topbar">
+      <div class="who">
+        <div class="av" id="dash-avatar">🙂</div>
+        <div class="txt">
+          <div class="name" id="dash-name">—</div>
+          <div class="grade" id="dash-grade">—</div>
+        </div>
+      </div>
+      <button class="icon-btn no-print" id="btn-theme-toggle" title="Toggle theme">🌙</button>
+    </div>
+
+    <div class="section-title">Your subjects</div>
+    <div class="subject-grid" id="subject-grid"></div>
+  </section>
+
+  <!-- PROGRESS -->
+  <section class="screen" id="screen-progress">
+    <div class="page-head"><h2>My Progress</h2><p>Track how you're doing in each subject</p></div>
+    <div class="progress-card" id="progress-card"></div>
+  </section>
+
+  <!-- PROFILE -->
+  <section class="screen" id="screen-profile">
+    <div class="page-head"><h2>Profile</h2><p>Your learning setup</p></div>
+    <div class="card profile-card">
+      <div class="profile-top">
+        <div class="av-lg" id="profile-avatar">🙂</div>
+        <div>
+          <div class="profile-name" id="profile-name">—</div>
+          <div class="profile-meta" id="profile-meta">—</div>
+        </div>
+      </div>
+      <div class="profile-row"><span>Theme</span>
+        <button class="btn-secondary sm" id="btn-theme-toggle-2">🌙 Dark mode</button>
+      </div>
+      <button class="btn-primary" id="btn-switch-user">🔄 Switch Student</button>
+    </div>
+  </section>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav no-print" id="bottom-nav">
+    <div class="nav-indicator" id="nav-indicator"></div>
+    <button class="nav-btn active" data-nav="dashboard"><span class="nav-ic">🏠</span><span>Home</span></button>
+    <button class="nav-btn" data-nav="progress"><span class="nav-ic">📊</span><span>Progress</span></button>
+    <button class="nav-btn" data-nav="profile"><span class="nav-ic">👤</span><span>Profile</span></button>
+  </nav>
+
+  <!-- SUBJECT DETAIL -->
+  <section class="screen" id="screen-subject">
+    <button class="back-link no-print" id="btn-subject-back">← Subjects</button>
+    <div class="subject-header">
+      <div class="ic" id="subj-ic">📘</div>
+      <div>
+        <h2 id="subj-title">Subject</h2>
+        <div class="sub" id="subj-sub">Class —</div>
+      </div>
+    </div>
+    <div class="tabs no-print">
+      <button class="tab-btn active" data-tab="study">Study</button>
+      <button class="tab-btn" data-tab="quiz">Quiz</button>
+      <button class="tab-btn" data-tab="practice">Practice Paper</button>
+    </div>
+
+    <div class="tab-panel active" id="panel-study">
+      <div class="board-note" id="board-note"></div>
+      <div class="section-label">Chapters / Topics</div>
+      <ul class="topic-list" id="study-topics"></ul>
+      <div class="section-label">Key concepts</div>
+      <ul class="keypoints" id="study-keypoints"></ul>
+    </div>
+
+    <div class="tab-panel" id="panel-quiz">
+      <div class="quiz-intro">
+        <div class="big">🎯</div>
+        <h3 id="quiz-intro-title">Ready for a quiz?</h3>
+        <p id="quiz-intro-desc">Test what you know with a quick quiz.</p>
+        <button class="btn-primary" id="btn-start-quiz">Start Quiz</button>
+        <button class="back-link" id="btn-quiz-to-chapters" style="margin-top:10px;">📖 Review Chapters First</button>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="panel-practice">
+      <div id="practice-container"></div>
+    </div>
+  </section>
+
+  <!-- QUIZ RUNNER -->
+  <section class="screen" id="screen-quiz">
+    <div class="quiz-top">
+      <div class="dots" id="quiz-dots"></div>
+      <div class="score-chip" id="quiz-score">Score: 0</div>
+    </div>
+    <div class="q-card"><p id="quiz-question">Question</p></div>
+    <div class="options" id="quiz-options"></div>
+  </section>
+
+  <!-- RESULT -->
+  <section class="screen" id="screen-result">
+    <div class="report">
+      <div class="result-sub" id="result-subject">SUBJECT · CLASS</div>
+      <div class="stamp" id="result-stamp">GREAT<br>JOB</div>
+      <h2 id="result-score">0 / 0</h2>
+      <div class="stars" id="result-stars">⭐⭐⭐</div>
+      <p class="result-sub" id="result-msg">Nicely done!</p>
+      <div class="btn-row">
+        <button class="btn-secondary" id="btn-back-dash">Subjects</button>
+        <button class="btn-primary" id="btn-retry">Try Again</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------------- Storage helper ---------------- */
+  const memoryStore = {};
+  const Store = {
+    async get(key){
+      try{ const r = await window.storage.get(key, false); return r ? JSON.parse(r.value) : null; }
+      catch(e){ return memoryStore[key] ?? null; }
+    },
+    async set(key, value){
+      try{ await window.storage.set(key, JSON.stringify(value), false); }
+      catch(e){ memoryStore[key] = value; }
+    }
+  };
+
+  function rnd(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+    return a;
+  }
+  function makeOptionsObj(item){
+    const opts = shuffle(item.o.map((text,i)=>({text, correct:i===item.a})));
+    return {question:item.q, options:opts};
+  }
+
+  const AVATARS = ["🙂","👧","👦","🧒","👩‍🎓","👨‍🎓","🦁","🐼"];
+
+  /* ---------------- Subject metadata ---------------- */
+  const META = {
+    hindi:{icon:"🕉️",label:"Hindi"}, english:{icon:"🔤",label:"English"}, math:{icon:"🔢",label:"Math"},
+    evs:{icon:"🌱",label:"EVS"}, computer:{icon:"💻",label:"Computer"}, science:{icon:"🔬",label:"Science"},
+    socialScience:{icon:"🌍",label:"Social Science"}, physics:{icon:"⚛️",label:"Physics"},
+    chemistry:{icon:"🧪",label:"Chemistry"}, biology:{icon:"🧬",label:"Biology"},
+    computerScience:{icon:"💻",label:"Computer Science"}, accountancy:{icon:"📒",label:"Accountancy"},
+    businessStudies:{icon:"💼",label:"Business Studies"}, economics:{icon:"📈",label:"Economics"},
+    history:{icon:"🏛️",label:"History"}, politicalScience:{icon:"⚖️",label:"Political Science"},
+    geography:{icon:"🗺️",label:"Geography"}
+  };
+
+  /* ---------------- Bands ---------------- */
+  const BANDS = {
+    b1_2:{label:"Class 1–2", subjects:["hindi","english","math","evs"]},
+    b3_5:{label:"Class 3–5", subjects:["hindi","english","math","evs","computer"]},
+    b6_8:{label:"Class 6–8", subjects:["hindi","english","math","science","socialScience","computer"]},
+    b9_10:{label:"Class 9–10", subjects:["hindi","english","math","science","socialScience","computer"]},
+    b11_12_sci:{label:"Class 11–12 · Science", subjects:["english","hindi","physics","chemistry","biology","math","computerScience"]},
+    b11_12_com:{label:"Class 11–12 · Commerce", subjects:["english","hindi","accountancy","businessStudies","economics","math"]},
+    b11_12_arts:{label:"Class 11–12 · Arts", subjects:["english","hindi","history","politicalScience","economics","geography"]}
+  };
+
+  function getBand(cls, stream){
+    if(cls<=2) return "b1_2";
+    if(cls<=5) return "b3_5";
+    if(cls<=8) return "b6_8";
+    if(cls<=10) return "b9_10";
+    if(stream==="commerce") return "b11_12_com";
+    if(stream==="arts") return "b11_12_arts";
+    return "b11_12_sci";
+  }
+
+  const ECONOMICS = {
+    topics:["Introduction to Economics","Demand and Supply","National Income","Money and Banking","Indian Economic Development"],
+    keyPoints:["Economics studies how people and societies use limited resources","Demand and supply together determine market price","National income measures the total value of goods and services produced in a year","Banks accept deposits and provide loans, supporting the economy","India's economy has grown through agriculture, industry and services"],
+    quiz:[
+      {q:"When price rises, demand generally?", o:["Falls","Rises","Stays the same","Doubles"], a:0},
+      {q:"The total value of goods and services produced in a year is called?", o:["National income","Personal income","Bank deposit","Market price"], a:0},
+      {q:"Which of these is a function of a commercial bank?", o:["Accepting deposits","Printing currency","Setting tax rates","Making laws"], a:0},
+      {q:"Economics is mainly concerned with?", o:["Allocation of scarce resources","Only stock markets","Only farming","Only government"], a:0},
+      {q:"Which sector includes banking and IT services?", o:["Service sector","Agriculture sector","Industrial sector","Mining sector"], a:0}
+    ]
+  };
+  const ENGLISH_SR = {
+    topics:["Advanced Writing Skills (Report, Article)","Literature: Prose, Poetry & Drama","Note-making and Summarizing","Grammar: Advanced Usage"],
+    keyPoints:["A report is usually written in a factual, third-person style","Summarizing means condensing main ideas in fewer words","Literary devices like metaphor and imagery add depth to writing","An article is written for publication in a magazine or newspaper"],
+    quiz:[
+      {q:"A report should generally be written in which style?", o:["Factual and third-person","First person only","Poetic style","Informal slang"], a:0},
+      {q:"Summarizing means?", o:["Condensing main ideas","Copying the text","Adding new ideas","Translating text"], a:0},
+      {q:"Which of these is a literary device?", o:["Metaphor","Molecule","Equation","Circuit"], a:0},
+      {q:"An article is generally written for?", o:["Publication in a magazine or newspaper","A private diary","A legal contract","A shopping list"], a:0},
+      {q:"Choose the correct usage.", o:["Neither of the boys were present","Neither of the boys was present","Neither of the boy were present","Neither of boys was present"], a:1}
+    ]
+  };
+  const HINDI_SR = {
+    topics:["उच्च स्तरीय व्याकरण","गद्य एवं पद्य विश्लेषण","निबंध एवं पत्र लेखन (उन्नत)","हिंदी साहित्य का परिचय"],
+    keyPoints:["व्याकरण भाषा की शुद्धता और स्पष्टता सुनिश्चित करता है","गद्य और पद्य विश्लेषण में भाव, शैली और उद्देश्य को समझना ज़रूरी है","निबंध लेखन में तर्कपूर्ण और क्रमबद्ध विचार होने चाहिए","हिंदी साहित्य में कविता, कहानी और नाटक प्रमुख विधाएँ हैं"],
+    quiz:[
+      {q:"'साहस' का पर्यायवाची शब्द है:", o:["हिम्मत","डर","शांति","क्रोध"], a:0},
+      {q:"मुहावरा 'आँखों में धूल झोंकना' का अर्थ है:", o:["धोखा देना","मदद करना","सोना","देखना"], a:0},
+      {q:"'लेखक' का स्त्रीलिंग रूप क्या है?", o:["लेखिका","लेखनी","लेखनीय","लेखवती"], a:0},
+      {q:"इनमें से कौन सा शब्द तत्सम है?", o:["अग्नि","आग","आगि","अगिन"], a:0},
+      {q:"'निश्चय' शब्द में उपसर्ग है:", o:["नि","चय","श्चय","निश्च"], a:0}
+    ]
+  };
+
+  const CONTENT = {
+    b1_2:{
+      hindi:{topics:["स्वर और व्यंजन","गिनती और सरल शब्द","सरल वाक्य निर्माण","लघु कहानियाँ"],
+        keyPoints:["स्वर: अ, आ, इ, ई, उ, ऊ, ऋ, ए, ऐ, ओ, औ (कुल 11 स्वर)","व्यंजन: क, ख, ग, घ जैसे 33 से अधिक व्यंजन होते हैं","शब्दों को जोड़कर सरल वाक्य बनते हैं","कहानियाँ नैतिक शिक्षा देती हैं"],
+        quiz:[
+          {q:"'अ' किसका उदाहरण है?", o:["स्वर","व्यंजन","अंक","चिन्ह"], a:0},
+          {q:"'क' किसका उदाहरण है?", o:["स्वर","व्यंजन","मात्रा","शब्द"], a:1},
+          {q:"इनमें से कौन सा स्वर है?", o:["क","अ","ख","ग"], a:1},
+          {q:"'आम' शब्द का पहला अक्षर कौन सा है?", o:["अ","आ","इ","ई"], a:1},
+          {q:"'इमली' शब्द किस स्वर से शुरू होता है?", o:["अ","आ","इ","उ"], a:2}
+        ]},
+      english:{topics:["Alphabet (A–Z)","Nouns and Naming Words","Simple Sentences","Rhymes and Stories"],
+        keyPoints:["The English alphabet has 26 letters, 5 of which are vowels","A noun names a person, place, animal or thing","A sentence expresses a complete thought","Rhyming words have the same ending sound"],
+        quiz:[
+          {q:"What letter comes after A?", o:["B","C","D","Z"], a:0},
+          {q:"Which one is a fruit?", o:["Car","Apple","Dog","Chair"], a:1},
+          {q:"How many letters are in the English alphabet?", o:["24","25","26","27"], a:2},
+          {q:"What is the first letter of 'Ball'?", o:["A","B","C","D"], a:1},
+          {q:"Which word rhymes with 'Cat'?", o:["Dog","Hat","Sun","Cup"], a:1}
+        ]},
+      math:{topics:["Counting 1–20","Addition within 10","Subtraction within 10","Basic Shapes"],
+        keyPoints:["Numbers can be counted, compared and ordered","Addition means putting groups together","Subtraction means taking away or finding the difference","Common shapes include circle, square, triangle and rectangle"]},
+      evs:{topics:["My Family","Plants Around Us","Animals and Their Homes","Good Habits"],
+        keyPoints:["Plants need sunlight, water and air to grow","Animals live in homes like nests, burrows and dens","Washing hands before meals keeps us healthy","Family members support and care for each other"],
+        quiz:[
+          {q:"Which part of the plant makes food?", o:["Leaf","Root","Flower","Stem"], a:0},
+          {q:"Where does a bird usually live?", o:["Nest","Den","Burrow","Cave"], a:0},
+          {q:"What should we do before eating food?", o:["Wash hands","Watch TV","Sleep","Run"], a:0},
+          {q:"Which of these is a domestic animal?", o:["Cow","Lion","Tiger","Fox"], a:0},
+          {q:"Which season comes right after summer in India?", o:["Rainy season","Winter","Spring","Autumn"], a:0}
+        ]}
+    },
+    b3_5:{
+      hindi:{topics:["मात्राएँ और शब्द रचना","पर्यायवाची और विलोम शब्द","संज्ञा और सर्वनाम","अनुच्छेद और कहानी लेखन"],
+        keyPoints:["मात्राएँ स्वरों के संक्षिप्त रूप हैं जो व्यंजन के साथ जुड़ती हैं","पर्यायवाची शब्दों का अर्थ समान होता है; विलोम शब्दों का अर्थ विपरीत होता है","संज्ञा किसी नाम को दर्शाती है; सर्वनाम संज्ञा के स्थान पर प्रयोग होता है","एक अच्छे अनुच्छेद में एक मुख्य विचार स्पष्ट होना चाहिए"],
+        quiz:[
+          {q:"'सूरज' का पर्यायवाची शब्द कौन सा है?", o:["सूर्य","चाँद","तारा","बादल"], a:0},
+          {q:"'बड़ा' शब्द का विलोम क्या है?", o:["ऊँचा","मोटा","छोटा","लंबा"], a:2},
+          {q:"इनमें से कौन सा शब्द संज्ञा है?", o:["दौड़ना","सुंदर","किताब","तेज़"], a:2},
+          {q:"'रात' का विलोम शब्द क्या है?", o:["दिन","शाम","सुबह","दोपहर"], a:0},
+          {q:"'गाय' शब्द में कितने अक्षर हैं?", o:["1","2","3","4"], a:1}
+        ]},
+      english:{topics:["Nouns, Pronouns and Verbs","Tenses (Past, Present, Future)","Adjectives and Adverbs","Reading Comprehension"],
+        keyPoints:["A pronoun replaces a noun, e.g. he, she, it, they","Tenses show when an action happens: past, present or future","Adjectives describe nouns; adverbs describe verbs","Reading comprehension improves by finding the main idea and details"],
+        quiz:[
+          {q:"Choose the plural of 'Cat'.", o:["Cats","Cates","Caties","Cat's"], a:0},
+          {q:"Opposite of 'Big' is:", o:["Small","Tall","Fast","Loud"], a:0},
+          {q:"Choose the correct article: ___ apple is red.", o:["A","An","The","No article"], a:1},
+          {q:"Past tense of 'Go' is:", o:["Goed","Went","Gone","Going"], a:1},
+          {q:"Choose the correct sentence.", o:["She go to school","She goes to school","She going school","She gone school"], a:1}
+        ]},
+      math:{topics:["Multiplication Tables","Division","Fractions (Basics)","Perimeter and Area","Measurement (Length, Weight, Time)"],
+        keyPoints:["Multiplication is repeated addition","Division splits a number into equal groups","A fraction represents a part of a whole","Perimeter is the total length around a shape; area is the space inside it"]},
+      evs:{topics:["The Water Cycle","Our Environment","Food and Nutrition","Transport and Communication"],
+        keyPoints:["Water evaporates, forms clouds, and falls back as rain in a continuous cycle","A clean environment keeps us healthy and safe","A balanced diet includes proteins, carbohydrates, fats, vitamins and minerals","Transport and communication connect people and places"],
+        quiz:[
+          {q:"What happens to water when it is heated by the sun?", o:["It evaporates","It freezes","It disappears forever","It turns to stone"], a:0},
+          {q:"Which of these is part of a balanced diet?", o:["Proteins, carbohydrates, vitamins","Only sweets","Only water","Only rice"], a:0},
+          {q:"Which mode of transport travels on water?", o:["Boat","Car","Train","Bicycle"], a:0},
+          {q:"A clean environment mainly helps to keep us?", o:["Healthy","Rich","Tall","Fast"], a:0},
+          {q:"Which of these best describes 'communication'?", o:["Sharing information with others","Growing plants","Cooking food","Building houses"], a:0}
+        ]},
+      computer:{topics:["Parts of a Computer","Input and Output Devices","Uses of Computers","Introduction to Typing and Paint"],
+        keyPoints:["A computer has hardware (physical parts) and software (programs)","Keyboard and mouse are input devices; monitor and printer are output devices","Computers help us learn, play and communicate","Typing practice improves speed and accuracy"],
+        quiz:[
+          {q:"Which of these is an input device?", o:["Keyboard","Monitor","Printer","Speaker"], a:0},
+          {q:"Which part shows output on the screen?", o:["Monitor","Mouse","Keyboard","CPU"], a:0},
+          {q:"CPU stands for?", o:["Central Processing Unit","Computer Processing Unit","Central Program Unit","Control Processing Unit"], a:0},
+          {q:"Which device is used to print documents?", o:["Printer","Scanner","Speaker","Mouse"], a:0},
+          {q:"Software is a set of?", o:["Programs","Wires","Chips","Screens"], a:0}
+        ]}
+    },
+    b6_8:{
+      hindi:{topics:["व्याकरण: संज्ञा, सर्वनाम, विशेषण","मुहावरे और लोकोक्तियाँ","अनुच्छेद और पत्र लेखन","कहानी और कविता की समझ"],
+        keyPoints:["व्याकरण भाषा के सही प्रयोग के नियम सिखाता है","मुहावरे किसी विशेष अर्थ को रोचक ढंग से व्यक्त करते हैं","औपचारिक पत्र में शिष्टाचार और स्पष्टता ज़रूरी है","कविता में भाव और लय दोनों महत्वपूर्ण होते हैं"],
+        quiz:[
+          {q:"'क्रिया' किसे कहते हैं?", o:["कार्य को दर्शाने वाला शब्द","नाम बताने वाला शब्द","विशेषता बताने वाला शब्द","स्थान बताने वाला शब्द"], a:0},
+          {q:"'सुबह' का विलोम शब्द है:", o:["शाम","रात","दोपहर","दिन"], a:0},
+          {q:"'राजा' का स्त्रीलिंग रूप क्या है?", o:["रानी","राजाइन","राज्ञी","राजिका"], a:0},
+          {q:"इनमें से कौन सा सर्वनाम है?", o:["वह","सुंदर","दौड़ना","किताब"], a:0},
+          {q:"'परिश्रम' का पर्यायवाची शब्द है:", o:["मेहनत","आलस्य","नींद","खेल"], a:0}
+        ]},
+      english:{topics:["Tenses in Detail","Active and Passive Voice","Reported Speech","Letter and Essay Writing"],
+        keyPoints:["Active voice focuses on the doer; passive voice focuses on the receiver of the action","Reported speech conveys what someone said without quoting directly","A good essay has an introduction, body and conclusion","Formal letters follow a set structure and polite tone"],
+        quiz:[
+          {q:"Choose correct tense: She ___ to school every day.", o:["go","goes","going","gone"], a:1},
+          {q:"Antonym of 'Difficult' is:", o:["Hard","Easy","Tough","Complex"], a:1},
+          {q:"Which word is a preposition?", o:["Under","Run","Happy","Book"], a:0},
+          {q:"Choose the correctly spelled word.", o:["Recieve","Receive","Receve","Receeve"], a:1},
+          {q:"Plural of 'Child' is:", o:["Childs","Childes","Children","Childrens"], a:2}
+        ]},
+      math:{topics:["Integers","Fractions and Decimals","Simple Equations","Ratio and Proportion","Basic Geometry"],
+        keyPoints:["Integers include positive numbers, negative numbers and zero","An equation is solved by keeping both sides balanced","Ratio compares two quantities; proportion shows two ratios are equal","Basic geometric shapes have properties like sides, angles and symmetry"]},
+      science:{topics:["Nutrition in Plants and Animals","Fibre to Fabric","Heat and Temperature","Acids, Bases and Salts","Electric Current and Circuits","Motion and Force"],
+        keyPoints:["Plants prepare food through photosynthesis using sunlight, water and carbon dioxide","Heat flows from a hotter object to a colder one until temperatures equalize","Acids taste sour and turn blue litmus red; bases taste bitter and turn red litmus blue","A complete circuit is needed for current to flow and light a bulb","Force can change the speed or direction of a moving object"],
+        quiz:[
+          {q:"Which gas do plants absorb for photosynthesis?", o:["Carbon dioxide","Oxygen","Nitrogen","Hydrogen"], a:0},
+          {q:"Litmus paper turns red in the presence of?", o:["Acid","Base","Salt","Water"], a:0},
+          {q:"Which of these is a good conductor of electricity?", o:["Copper","Wood","Plastic","Rubber"], a:0},
+          {q:"The SI unit of force is?", o:["Newton","Joule","Watt","Pascal"], a:0},
+          {q:"Fabric is made from which raw material?", o:["Fibre","Metal","Plastic","Sand"], a:0}
+        ]},
+      socialScience:{topics:["Our Past – Early Civilizations","Geography: Climate and Vegetation","Democracy and Government","Understanding Diversity in India"],
+        keyPoints:["Early civilizations grew near rivers because of water for farming and transport","Climate is the average weather of a region over a long period","Democracy is a government of the people, by the people, for the people","India is diverse in languages, religions and cultures but united as one nation"],
+        quiz:[
+          {q:"Early civilizations usually developed near?", o:["Rivers","Deserts","Mountains","Forests"], a:0},
+          {q:"Which of these best defines 'climate'?", o:["Average weather over years","Weather of a single day","Temperature at noon","Rainfall in a week"], a:0},
+          {q:"India is often called a country of?", o:["Unity in diversity","Single culture","One language","One religion"], a:0},
+          {q:"In a democracy, the government is chosen by?", o:["The people","The king","The army","One family"], a:0},
+          {q:"The Indus Valley Civilization is known for its?", o:["Planned cities","Space travel","Computers","Airplanes"], a:0}
+        ]},
+      computer:{topics:["Number Systems","Introduction to Programming","MS Word and MS Excel Basics","Internet and Email Safety"],
+        keyPoints:["Computers store data using binary (0s and 1s)","A program is a set of instructions written in a programming language","MS Word is used for documents; MS Excel is used for spreadsheets and calculations","Never share personal passwords or information with strangers online"],
+        quiz:[
+          {q:"Computers store data using which number system?", o:["Binary","Decimal","Roman","Octal"], a:0},
+          {q:"MS Excel is mainly used for?", o:["Spreadsheets and calculations","Drawing","Video editing","Typing letters only"], a:0},
+          {q:"Which of these is a safe internet practice?", o:["Using strong passwords","Sharing your password","Clicking unknown links","Talking to strangers"], a:0},
+          {q:"A set of instructions for a computer is called a?", o:["Program","Mouse","Chip","Screen"], a:0},
+          {q:"Which extension is used for MS Word documents?", o:[".docx",".xlsx",".pptx",".mp3"], a:0}
+        ]}
+    },
+    b9_10:{
+      hindi:{topics:["व्याकरण: समास और अलंकार","गद्य और पद्य बोध","निबंध लेखन","औपचारिक एवं अनौपचारिक पत्र"],
+        keyPoints:["समास दो या अधिक शब्दों के मेल से बनता है","अलंकार भाषा को अधिक प्रभावशाली और सुंदर बनाते हैं","निबंध में विषय से जुड़े विचारों को क्रमबद्ध तरीके से लिखा जाता है","पत्र लेखन में स्पष्टता और शिष्टता आवश्यक है"],
+        quiz: HINDI_SR.quiz},
+      english:{topics:["Advanced Grammar: Clauses","Reading Comprehension","Formal Letter and Application Writing","Literature: Prose and Poetry Analysis"],
+        keyPoints:["A clause has a subject and a verb, and can be independent or dependent","Comprehension involves inference, main idea and vocabulary in context","Formal applications should be clear, polite and to the point","Literary analysis looks at theme, tone and literary devices"],
+        quiz:[
+          {q:"Synonym of 'Brave' is:", o:["Courageous","Fearful","Weak","Shy"], a:0},
+          {q:"Choose the passive voice of: 'She writes a letter.'", o:["A letter is written by her.","A letter was written by her.","A letter writes by her.","A letter is writing by her."], a:0},
+          {q:"Antonym of 'Ancient' is:", o:["Modern","Old","Historic","Traditional"], a:0},
+          {q:"Identify the adverb: 'She sings beautifully.'", o:["Beautifully","Sings","She","None"], a:0},
+          {q:"Idiom 'Break the ice' means:", o:["To start a conversation","To break something","To get angry","To finish work"], a:0}
+        ]},
+      math:{topics:["Polynomials","Linear Equations in Two Variables","Quadratic Equations","Trigonometry Basics","Mensuration"],
+        keyPoints:["A polynomial is an expression with variables and coefficients","Linear equations in two variables have infinite solutions forming a line","Quadratic equations can be solved by factoring or the quadratic formula","Trigonometric ratios relate the angles and sides of a right triangle"]},
+      science:{topics:["Chemical Reactions and Equations","Life Processes","Electricity and Magnetism","Light: Reflection and Refraction","Periodic Classification of Elements"],
+        keyPoints:["A chemical reaction forms new substances with different properties","Life processes include nutrition, respiration, transportation and excretion","Ohm's law relates voltage, current and resistance in a circuit","Light reflects off mirrors and refracts (bends) when passing between media","Elements are arranged in the periodic table by increasing atomic number"],
+        quiz:[
+          {q:"Which law states V = IR?", o:["Ohm's Law","Newton's Law","Boyle's Law","Faraday's Law"], a:0},
+          {q:"Photosynthesis takes place mainly in the?", o:["Leaves","Roots","Stem","Flower"], a:0},
+          {q:"The process of breaking down food for energy is called?", o:["Respiration","Excretion","Reflection","Refraction"], a:0},
+          {q:"The modern periodic table arranges elements by?", o:["Atomic number","Atomic mass","Color","Density"], a:0},
+          {q:"A concave mirror is commonly used in?", o:["Vehicle headlights","Rear-view mirrors","Sunglasses","Windows"], a:0}
+        ]},
+      socialScience:{topics:["Nationalism in India","Federalism and Political Parties","Resources and Development","Globalisation and the Indian Economy"],
+        keyPoints:["The Non-Cooperation and Civil Disobedience movements were key phases of India's freedom struggle","Federalism divides power between central and state governments","Resources are classified as renewable and non-renewable","Globalisation has increased trade and connections between countries"],
+        quiz:[
+          {q:"Who led the Non-Cooperation Movement in India?", o:["Mahatma Gandhi","Bhagat Singh","Subhas Chandra Bose","Jawaharlal Nehru"], a:0},
+          {q:"Federalism divides power between?", o:["Centre and states","Only states","Only centre","Villages only"], a:0},
+          {q:"Which of these is a renewable resource?", o:["Solar energy","Coal","Petroleum","Natural gas"], a:0},
+          {q:"Globalisation mainly refers to increasing?", o:["International trade and connections","Border restrictions","Isolation of countries","Local-only trade"], a:0},
+          {q:"India gained independence in the year?", o:["1947","1950","1930","1857"], a:0}
+        ]},
+      computer:{topics:["Programming Fundamentals (Python Basics)","Database Concepts","Networking Basics","Cyber Safety and Ethics"],
+        keyPoints:["Python uses simple, readable syntax for writing programs","A database stores organized data that can be searched and updated","A network connects computers to share data and resources","Cyber ethics includes respecting privacy and avoiding piracy or hacking"],
+        quiz:[
+          {q:"Which symbol is used for comments in Python?", o:["#","//","<!-- -->","**"], a:0},
+          {q:"A collection of organized data is called a?", o:["Database","Network","Browser","Firewall"], a:0},
+          {q:"Which device connects multiple computers in a network?", o:["Router","Monitor","Keyboard","Speaker"], a:0},
+          {q:"Copying someone's work without permission is called?", o:["Plagiarism","Networking","Debugging","Encryption"], a:0},
+          {q:"print() in Python is used to?", o:["Display output","Take input","Delete a file","Import a module"], a:0}
+        ]}
+    },
+    b11_12_sci:{
+      english: ENGLISH_SR, hindi: HINDI_SR, economics: ECONOMICS,
+      physics:{topics:["Units and Measurements","Laws of Motion","Work, Energy and Power","Thermodynamics","Current Electricity","Optics"],
+        keyPoints:["SI units provide a standard system for measuring physical quantities","Newton's three laws describe motion and the effect of forces","Energy can change form but is never created or destroyed","Thermodynamics studies heat, work and energy transfer","Ohm's law relates current, voltage and resistance"],
+        quiz:[
+          {q:"The SI unit of force is?", o:["Newton","Joule","Watt","Pascal"], a:0},
+          {q:"Newton's first law is also called the law of?", o:["Inertia","Gravitation","Motion","Energy"], a:0},
+          {q:"Work done is measured in?", o:["Joule","Newton","Watt","Ampere"], a:0},
+          {q:"The first law of thermodynamics is related to?", o:["Conservation of energy","Conservation of momentum","Conservation of mass","Conservation of charge"], a:0},
+          {q:"Which lens is used to correct short-sightedness (myopia)?", o:["Concave lens","Convex lens","Bifocal lens","Cylindrical lens"], a:0}
+        ]},
+      chemistry:{topics:["Structure of Atom","Periodic Table and Periodicity","Chemical Bonding","Thermodynamics in Chemistry","Equilibrium","Organic Chemistry Basics"],
+        keyPoints:["An atom consists of protons, neutrons and electrons","Elements in the same group have similar chemical properties","Chemical bonds form to achieve stable electron configurations","Equilibrium is reached when forward and backward reaction rates are equal","Organic chemistry studies carbon-containing compounds"],
+        quiz:[
+          {q:"Which particle has a negative charge?", o:["Electron","Proton","Neutron","Nucleus"], a:0},
+          {q:"Elements in the same group of the periodic table have similar?", o:["Chemical properties","Atomic mass","Number of neutrons","Color"], a:0},
+          {q:"A covalent bond is formed by?", o:["Sharing of electrons","Transfer of electrons","Loss of protons","Gain of neutrons"], a:0},
+          {q:"At equilibrium, the rate of forward and backward reactions is?", o:["Equal","Zero","Maximum for forward","Maximum for backward"], a:0},
+          {q:"Organic chemistry is mainly the study of compounds containing?", o:["Carbon","Iron","Sodium","Oxygen only"], a:0}
+        ]},
+      biology:{topics:["Cell: The Unit of Life","Genetics and Evolution","Human Physiology","Plant Physiology","Biotechnology Basics"],
+        keyPoints:["The cell is the basic structural and functional unit of life","Genes carry hereditary information from parents to offspring","Human physiology studies functions of organs and organ systems","Photosynthesis and respiration are key plant physiological processes","Biotechnology uses living organisms to develop useful products"],
+        quiz:[
+          {q:"The powerhouse of the cell is the?", o:["Mitochondria","Nucleus","Ribosome","Golgi body"], a:0},
+          {q:"DNA is found mainly in the?", o:["Nucleus","Cytoplasm","Cell wall","Vacuole"], a:0},
+          {q:"Which blood cells help fight infection?", o:["White blood cells","Red blood cells","Platelets","Plasma cells"], a:0},
+          {q:"Photosynthesis occurs in the presence of?", o:["Sunlight","Darkness","Only water","Only soil"], a:0},
+          {q:"The study of heredity is called?", o:["Genetics","Ecology","Anatomy","Physiology"], a:0}
+        ]},
+      computerScience:{topics:["Python Programming","Data Structures Basics","Database Management (SQL)","Computer Networks","Boolean Algebra"],
+        keyPoints:["Python supports data types like int, float, string and list","Data structures like lists and stacks organize and store data efficiently","SQL is used to create, read, update and delete data in databases","Computer networks allow devices to communicate and share resources","Boolean algebra deals with logical operations: AND, OR, NOT"],
+        quiz:[
+          {q:"Which keyword is used to define a function in Python?", o:["def","function","define","func"], a:0},
+          {q:"SQL is mainly used to interact with?", o:["Databases","Networks","Hardware","Operating systems"], a:0},
+          {q:"A stack follows which principle?", o:["LIFO","FIFO","Random access","Sequential only"], a:0},
+          {q:"Which operator returns True only if both conditions are true?", o:["AND","OR","NOT","XOR"], a:0},
+          {q:"An IP address is used to identify a?", o:["Device on a network","Software license","File type","Font style"], a:0}
+        ]},
+      math:{topics:["Quadratic Equations & Functions","Trigonometric Identities","Permutations and Combinations","Differentiation Basics","Integration Basics","Probability"],
+        keyPoints:["The quadratic formula solves any equation of the form ax²+bx+c=0","Trigonometric identities relate sine, cosine and tangent functions","Differentiation finds the rate of change of a function","Integration finds the area under a curve or reverses differentiation","Probability measures the likelihood of an event occurring"]}
+    },
+    b11_12_com:{
+      english: ENGLISH_SR, hindi: HINDI_SR, economics: ECONOMICS,
+      accountancy:{topics:["Introduction to Accounting","Journal, Ledger and Trial Balance","Depreciation","Financial Statements","Accounting for Partnership"],
+        keyPoints:["Accounting records, classifies and summarizes financial transactions","Every transaction is recorded first in the journal, then posted to the ledger","Depreciation is the reduction in value of an asset over time","Financial statements include the balance sheet and profit & loss account","A partnership involves two or more people sharing profits and losses"],
+        quiz:[
+          {q:"The book of original entry is called the?", o:["Journal","Ledger","Trial Balance","Balance Sheet"], a:0},
+          {q:"Depreciation refers to?", o:["Decrease in asset value over time","Increase in profit","Increase in liabilities","Cash received"], a:0},
+          {q:"Which statement shows a firm's profit or loss?", o:["Profit & Loss Account","Balance Sheet","Trial Balance","Cash Book"], a:0},
+          {q:"A trial balance is prepared to check?", o:["Arithmetical accuracy of accounts","Total sales","Total employees","Market value"], a:0},
+          {q:"In a partnership, profits are shared as per the?", o:["Partnership deed","Government rules","Bank policy","Customer choice"], a:0}
+        ]},
+      businessStudies:{topics:["Nature and Purpose of Business","Forms of Business Organisation","Business Environment","Principles of Management","Marketing Management"],
+        keyPoints:["Business involves the exchange of goods and services for profit","Common forms include sole proprietorship, partnership and company","The business environment includes economic, social and legal factors","Management involves planning, organizing, staffing, directing and controlling","Marketing focuses on identifying and satisfying customer needs"],
+        quiz:[
+          {q:"A business owned and run by one person is called a?", o:["Sole proprietorship","Partnership","Company","Cooperative"], a:0},
+          {q:"Which of these is a function of management?", o:["Planning","Selling","Advertising","Manufacturing"], a:0},
+          {q:"The 4 Ps of marketing include Product, Price, Place and?", o:["Promotion","Profit","People","Policy"], a:0},
+          {q:"A company has ___ legal existence from its owners.", o:["Separate","No","Shared","Temporary"], a:0},
+          {q:"External factors affecting business form the?", o:["Business environment","Internal policy","Marketing mix","Balance sheet"], a:0}
+        ]},
+      math:{topics:["Percentages, Profit & Loss","Simple and Compound Interest","Linear Equations","Quadratic Equations","Basic Statistics"],
+        keyPoints:["Profit or loss percentage is calculated on the cost price","Compound interest is calculated on principal plus accumulated interest","Statistics involves organizing, analyzing and interpreting data"]}
+    },
+    b11_12_arts:{
+      english: ENGLISH_SR, hindi: HINDI_SR, economics: ECONOMICS,
+      history:{topics:["Early Societies and Civilizations","The Mughal Empire","Colonialism and the Indian Freedom Struggle","World Wars and Their Impact","Post-Independence India"],
+        keyPoints:["Early societies developed agriculture, trade and early forms of government","The Mughal Empire was known for its architecture, administration and culture","India's freedom struggle involved movements led by leaders like Gandhi and Bose","World Wars reshaped global politics and economies in the 20th century","Post-independence India adopted a democratic constitution in 1950"],
+        quiz:[
+          {q:"The Mughal Empire in India was established by?", o:["Babur","Akbar","Aurangzeb","Humayun"], a:0},
+          {q:"India's Constitution came into effect in the year?", o:["1950","1947","1930","1857"], a:0},
+          {q:"Which movement is associated with the 'Salt March'?", o:["Civil Disobedience Movement","Quit India Movement","Non-Cooperation Movement","Swadeshi Movement"], a:0},
+          {q:"World War II ended in the year?", o:["1945","1918","1939","1950"], a:0},
+          {q:"Who is known as the 'Father of the Nation' in India?", o:["Mahatma Gandhi","Jawaharlal Nehru","Sardar Patel","B.R. Ambedkar"], a:0}
+        ]},
+      politicalScience:{topics:["Indian Constitution and Its Features","Political Theory: Rights and Justice","Federalism in India","International Relations Basics","Political Parties and Elections"],
+        keyPoints:["The Indian Constitution establishes India as a sovereign, socialist, secular, democratic republic","Rights protect individual freedom while justice ensures fairness in society","Federalism divides powers between the union and state governments","International relations study interactions between nations and organisations","Elections allow citizens to choose their representatives in a democracy"],
+        quiz:[
+          {q:"India's Constitution describes the country as sovereign, socialist, secular and?", o:["Democratic republic","Monarchy","Dictatorship","Colony"], a:0},
+          {q:"Who is regarded as the chief architect of the Indian Constitution?", o:["B.R. Ambedkar","Mahatma Gandhi","Jawaharlal Nehru","Sardar Patel"], a:0},
+          {q:"Federalism divides power between the union and?", o:["States","Villages","Districts only","Political parties"], a:0},
+          {q:"Free and fair elections are essential for a?", o:["Democracy","Monarchy","Dictatorship","Empire"], a:0},
+          {q:"The United Nations was formed to promote?", o:["International peace and cooperation","Only trade","Only sports","Only education"], a:0}
+        ]},
+      geography:{topics:["Physical Geography of India","Climate and Natural Vegetation","Population and Human Settlements","Resources and Development","Map Reading Skills"],
+        keyPoints:["India has varied physical features: mountains, plains, plateaus and coasts","The Indian climate is largely monsoon-driven","Population distribution depends on climate, resources and economic opportunities","Resources are classified as renewable and non-renewable","Maps use scale, symbols and direction to represent geographic information"],
+        quiz:[
+          {q:"Which mountain range lies to the north of India?", o:["The Himalayas","The Aravallis","The Western Ghats","The Vindhyas"], a:0},
+          {q:"India's climate is mainly influenced by the?", o:["Monsoon winds","Polar winds","Desert winds","Ocean currents only"], a:0},
+          {q:"Which of these is a renewable resource?", o:["Solar energy","Coal","Petroleum","Natural gas"], a:0},
+          {q:"A map's scale mainly helps to show?", o:["Distance relationships","Only colors","Only names","Population count"], a:0},
+          {q:"Which river is often called the 'Ganga of the South'?", o:["Godavari","Yamuna","Indus","Brahmaputra"], a:0}
+        ]},
+      math:{topics:["Percentages, Profit & Loss","Simple and Compound Interest","Linear Equations","Quadratic Equations","Basic Statistics"],
+        keyPoints:["Percentages help compare quantities on a common scale of 100","Compound interest is calculated on principal plus accumulated interest","Statistics involves organizing, analyzing and interpreting data"]}
+    }
+  };
+
+  /* ---------------- Per-class study material topics ---------------- */
+  const TOPICS_BY_CLASS = {
+    1:{ hindi:["स्वर और व्यंजन","सरल शब्द निर्माण","चित्र देखकर वाक्य बनाना","छोटी कविताएँ"],
+        english:["Alphabet A–Z","Naming Words (Nouns)","Simple Sentences","Rhymes and Stories"],
+        evs:["My Family and Home","Plants Around Us","Animals and Their Homes","Good Habits and Hygiene"] },
+    2:{ hindi:["मात्राएँ","सरल वाक्य रचना","विलोम शब्द","कहानी सुनना और बताना"],
+        english:["Vowels and Consonants","Singular and Plural Words","Simple Present Tense","Picture Reading"],
+        evs:["Our Neighbourhood","Water and Its Uses","Food We Eat","Means of Transport"] },
+    3:{ hindi:["संयुक्ताक्षर और मात्राएँ","पर्यायवाची शब्द","संज्ञा की पहचान","अनुच्छेद लेखन (परिचय)"],
+        english:["Nouns and Pronouns","Action Words (Verbs)","Adjectives","Short Comprehension Passages"],
+        evs:["Our Environment","Plants and Their Parts","Animals: Wild and Domestic","Water Cycle (Intro)"],
+        computer:["What is a Computer?","Parts of a Computer","Using the Mouse and Keyboard","Introduction to Paint"] },
+    4:{ hindi:["विलोम और पर्यायवाची शब्द","सर्वनाम और विशेषण","मुहावरों का परिचय","पत्र लेखन (अनौपचारिक)"],
+        english:["Tenses: Past, Present, Future","Articles (a, an, the)","Adjectives and Adverbs","Paragraph Writing"],
+        evs:["Adaptations in Plants and Animals","Air and Water Pollution","Food and Nutrition","Transport and Communication"],
+        computer:["Input and Output Devices","Hardware and Software","Uses of Computers in Daily Life","Typing Practice"] },
+    5:{ hindi:["संज्ञा, सर्वनाम, विशेषण (विस्तार)","मुहावरे और लोकोक्तियाँ","निबंध लेखन (परिचय)","औपचारिक पत्र लेखन"],
+        english:["Tenses (Advanced)","Prepositions and Conjunctions","Comprehension Passages","Letter Writing (Informal)"],
+        evs:["Natural Resources","Weather and Climate (Intro)","Health and Hygiene","Our Country: States and Culture"],
+        computer:["Computer Memory Basics","Introduction to MS Word","MS Paint (Advanced)","Internet Basics"] },
+    6:{ hindi:["वर्ण विचार और शब्द भेद","संधि और समास (परिचय)","अनुच्छेद और पत्र लेखन","कहानी और कविता की समझ"],
+        english:["Nouns, Pronouns, Verbs (Advanced)","Tenses in Detail","Reported Speech (Intro)","Letter and Paragraph Writing"],
+        science:["Food: Where Does It Come From?","Components of Food","Fibre to Fabric","Sorting Materials into Groups","Motion and Measurement of Distances"],
+        socialScience:["What, Where, How and When (History)","The Earth in the Solar System (Geography)","Understanding Diversity (Civics)","Early Civilizations"],
+        computer:["Number Systems","Introduction to Programming Concepts","MS Word Basics","Internet and Email Safety"] },
+    7:{ hindi:["कारक और वाक्य रचना","मुहावरे-लोकोक्तियाँ (विस्तार)","निबंध लेखन (विस्तार)","गद्यांश और पद्यांश बोध"],
+        english:["Active and Passive Voice","Direct and Indirect Speech","Clauses (Intro)","Essay and Letter Writing"],
+        science:["Nutrition in Plants and Animals","Heat and Temperature","Acids, Bases and Salts","Physical and Chemical Changes","Weather, Climate and Adaptations"],
+        socialScience:["Tracing Changes Through a Thousand Years","Environment and Its Components","Role of Government in Health","Medieval India: Kingdoms and Rulers"],
+        computer:["Algorithms and Flowcharts","Introduction to Block Programming","MS Excel Basics","Responsible Internet Use"] },
+    8:{ hindi:["समास और अलंकार (परिचय)","शब्द शक्ति","औपचारिक पत्र और आवेदन","साहित्यिक गद्य-पद्य विश्लेषण"],
+        english:["Modals and Determiners","Reported Speech (Advanced)","Editing and Omission Exercises","Formal Letter Writing"],
+        science:["Crop Production and Management","Cell Structure and Functions","Force and Pressure","Chemical Effects of Electric Current","Pollution of Air and Water"],
+        socialScience:["How, When and Where (Modern India)","Resources: Land, Soil, Water","The Indian Constitution","Colonialism and Its Impact"],
+        computer:["Introduction to HTML","Programming Logic: Loops & Conditions","MS PowerPoint Basics","Cyber Safety and Ethics"] },
+    9:{ hindi:["समास और अलंकार (विस्तार)","रचना के भेद","निबंध लेखन (उच्च स्तर)","गद्य और पद्य बोध (विस्तार)"],
+        english:["Clauses and Sentence Structure","Tenses (Exam-Level Practice)","Reading Comprehension (Advanced)","Formal Letter and Application Writing"],
+        science:["Matter in Our Surroundings","Is Matter Around Us Pure?","Atoms and Molecules","The Fundamental Unit of Life","Motion and Force"],
+        socialScience:["The French Revolution","India: Size and Location (Geography)","Democracy and Diversity","Poverty as a Challenge"],
+        computer:["Programming Fundamentals (Python Basics)","Database Concepts","Networking Basics","Cyber Safety and Ethics"] },
+    10:{ hindi:["व्याकरण की समीक्षा","पत्र और आवेदन लेखन","निबंध लेखन (परीक्षा स्तर)","साहित्य: गद्य और पद्य विश्लेषण"],
+        english:["Grammar Review: Error Correction","Advanced Reading Comprehension","Formal Writing: Letters, Notices, Articles","Literature: Prose and Poetry Analysis"],
+        science:["Chemical Reactions and Equations","Acids, Bases and Salts (Advanced)","Life Processes","Electricity","Light: Reflection and Refraction"],
+        socialScience:["Nationalism in India","Federalism and Political Parties","Resources and Development","Globalisation and the Indian Economy"],
+        computer:["Python Programming (Advanced)","Working with Databases: SQL Intro","Networking and the Internet","Societal Impact of IT"] },
+    11:{ hindi:["हिंदी गद्य और पद्य का परिचय","निबंध और पत्र लेखन (उन्नत)","व्याकरण: उच्च स्तर","भाषा कौशल विकास"],
+        english:["Advanced Writing: Report and Article","Note-Making and Summarizing","Literature: Prose, Poetry & Drama","Grammar: Advanced Usage"],
+        physics:["Units and Measurements","Kinematics","Laws of Motion","Work, Energy and Power"],
+        chemistry:["Structure of Atom","Periodic Table and Periodicity","Chemical Bonding","States of Matter"],
+        biology:["Diversity of Living Organisms","Cell: The Unit of Life","Plant Physiology","Human Physiology (Intro)"],
+        computerScience:["Python Programming Basics","Data Structures: Lists & Stacks","Boolean Algebra","Computer Networks (Intro)"],
+        accountancy:["Introduction to Accounting","Basic Accounting Terms","Journal, Ledger and Trial Balance","Bank Reconciliation Statement"],
+        businessStudies:["Nature and Purpose of Business","Forms of Business Organisation","Private, Public and Global Enterprises","Business Services"],
+        economics:["Introduction to Economics","Statistics for Economics","Demand and Supply","Indian Economy: An Overview"],
+        history:["Early Societies and Civilizations","Empires and Kingdoms","The Mughal Empire","Colonialism in India"],
+        politicalScience:["Indian Constitution: An Introduction","Rights and Duties","Election and Representation","Local Government"],
+        geography:["Physical Geography: Landforms","Climate and Weather Systems","Natural Vegetation and Wildlife","Map Reading Skills"] },
+    12:{ hindi:["हिंदी साहित्य का गहन अध्ययन","आलोचनात्मक निबंध लेखन","व्याकरण एवं रचना (उच्च स्तर)","बोर्ड परीक्षा हेतु अभ्यास"],
+        english:["Advanced Writing: Debate and Speech","Literary Criticism Basics","Grammar and Composition (Board-Level)","Comprehensive Literature Study"],
+        physics:["Electrostatics","Current Electricity","Magnetic Effects of Current","Optics and Modern Physics"],
+        chemistry:["Solutions","Electrochemistry","Chemical Kinetics","Organic Chemistry: Alcohols & Acids"],
+        biology:["Reproduction","Genetics and Evolution","Biology in Human Welfare","Biotechnology"],
+        computerScience:["Python (Advanced) and File Handling","Database Management: SQL","Data Structures (Advanced)","Networking and Communication Technologies"],
+        accountancy:["Accounting for Partnership","Company Accounts: Shares and Debentures","Financial Statements Analysis","Cash Flow Statement"],
+        businessStudies:["Principles and Functions of Management","Business Finance and Marketing","Consumer Protection","Entrepreneurship Development"],
+        economics:["National Income Accounting","Money and Banking","Government Budget and the Economy","Balance of Payments"],
+        history:["The Freedom Struggle","Framing of the Indian Constitution","Post-Independence India","World History: Wars and Their Impact"],
+        politicalScience:["Political Theories: Rights and Justice","Federalism in India","International Relations Basics","Contemporary World Politics"],
+        geography:["Human Geography: Population","Settlement Patterns","Resources and Development","Geography of India: States and Regions"] }
+  };
+  const MATH_TOPICS = {
+    1:["Numbers 1–20","Addition within 10","Subtraction within 10","Shapes & Patterns"],
+    2:["Numbers up to 100","Addition & Subtraction within 100","Multiplication Tables (2–5)","Measurement Basics"],
+    3:["Numbers up to 1000","Multiplication Tables (2–10)","Division Basics","Fractions: Halves & Quarters"],
+    4:["Large Numbers & Place Value","Multiplication & Division","Fractions & Decimals","Perimeter and Area"],
+    5:["Factors and Multiples","Fractions and Decimals (Advanced)","Percentage Basics","Volume and Capacity"],
+    6:["Knowing Our Numbers","Integers","Fractions and Decimals","Basic Geometrical Ideas"],
+    7:["Integers (Advanced)","Fractions and Rational Numbers","Simple Equations","Lines and Angles"],
+    8:["Rational Numbers","Linear Equations in One Variable","Understanding Quadrilaterals","Mensuration"],
+    9:["Number Systems","Polynomials","Coordinate Geometry","Linear Equations in Two Variables"],
+    10:["Real Numbers","Quadratic Equations","Trigonometry","Circles and Mensuration"]
+  };
+  const MATH_TOPICS_SCI = {
+    11:["Sets and Functions","Trigonometric Functions","Complex Numbers","Permutations and Combinations"],
+    12:["Relations and Functions","Matrices and Determinants","Differentiation","Integration and Probability"]
+  };
+  const MATH_TOPICS_COM = {
+    11:["Percentages, Profit & Loss","Simple & Compound Interest","Linear Programming Basics","Statistics"],
+    12:["Time Value of Money","Matrices for Business","Correlation and Regression Basics","Index Numbers"]
+  };
+  const BOARD_EXTRA = {
+    cbse:{tag:"NCERT-aligned (CBSE)", extra:"NCERT Exemplar & In-Text Questions Practice", note:"This material follows an NCERT-aligned CBSE approach, with emphasis on exemplar problems and concept-based questions."},
+    icse:{tag:"ICSE / ISC-aligned", extra:"Detailed Grammar, Composition & Structured Answers", note:"This material follows the ICSE/ISC approach, with extra focus on detailed answers, grammar precision and structured composition."},
+    state:{tag:"State Board-aligned", extra:"Regional Language Context & Local Examples", note:"This material follows a general State Board approach, with regional context and locally relevant examples."}
+  };
+  function getTopics(subjectKey){
+    const cls = state.cls;
+    let topics;
+    if(subjectKey==="math"){
+      if(cls<=10) topics = MATH_TOPICS[cls];
+      else topics = (state.stream==="science" ? MATH_TOPICS_SCI : MATH_TOPICS_COM)[cls];
+    } else {
+      topics = (TOPICS_BY_CLASS[cls] && TOPICS_BY_CLASS[cls][subjectKey]) || CONTENT[state.band][subjectKey].topics;
+    }
+    return [...topics, BOARD_EXTRA[state.board].extra];
+  }
+
+  /* ---------------- Confetti (lightweight) ---------------- */
+  function fireConfetti(){
+    const canvas = document.getElementById("confetti-canvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+    const colors = ["#FFC93C","#FF6B6B","#3DBFB8","#3FA34D","#2B2560"];
+    const pieces = Array.from({length:70}, ()=>({
+      x: Math.random()*canvas.width, y: -20 - Math.random()*canvas.height*0.3,
+      w: 6+Math.random()*6, h: 8+Math.random()*8,
+      color: colors[Math.floor(Math.random()*colors.length)],
+      vy: 2+Math.random()*3, vx: -2+Math.random()*4,
+      rot: Math.random()*360, vr: -8+Math.random()*16
+    }));
+    let frame=0;
+    function draw(){
+      frame++;
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      pieces.forEach(p=>{
+        p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr;
+        ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot*Math.PI/180);
+        ctx.fillStyle=p.color; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+        ctx.restore();
+      });
+      if(frame<130) requestAnimationFrame(draw);
+      else ctx.clearRect(0,0,canvas.width,canvas.height);
+    }
+    draw();
+  }
+
+  /* ---------------- Math question generators ---------------- */
+  function toOptions(answer){
+    let wrongPool;
+    if(typeof answer==="number"){
+      const wrongs=new Set();
+      let guard=0;
+      while(wrongs.size<3 && guard<50){
+        guard++;
+        const delta=rnd(1,6)*(Math.random()<0.5?-1:1);
+        const w=answer+delta;
+        if(w!==answer && w>=0) wrongs.add(w);
+      }
+      wrongPool=[...wrongs].map(String);
+    } else {
+      const pool=["0","1","0.5","-1","2","10"].filter(v=>v!==String(answer));
+      wrongPool=shuffle(pool).slice(0,3);
+    }
+    return shuffle([{text:String(answer),correct:true}, ...wrongPool.map(w=>({text:w,correct:false}))]);
+  }
+
+  function algoMathItem(cls){
+    let a,b,op,answer,text;
+    if(cls<=2){
+      a=rnd(1,9); b=rnd(1,9); op=Math.random()<0.5?"+":"-";
+      if(op==="-" && a<b){ const t=a; a=b; b=t; }
+      answer = op==="+" ? a+b : a-b;
+      text = `${a} ${op} ${b} = ?`;
+    } else if(cls<=5){
+      const type=rnd(0,2);
+      if(type===0){
+        a=rnd(10,60); b=rnd(1,40); op=Math.random()<0.5?"+":"-";
+        if(op==="-" && a<b){ const t=a; a=b; b=t; }
+        answer = op==="+" ? a+b : a-b;
+        text = `${a} ${op} ${b} = ?`;
+      } else if(type===1){ a=rnd(2,10); b=rnd(2,10); answer=a*b; text=`${a} × ${b} = ?`; }
+      else { b=rnd(2,10); answer=rnd(2,10); a=b*answer; text=`${a} ÷ ${b} = ?`; }
+    } else if(cls<=8){
+      const type=rnd(0,2);
+      if(type===0){
+        a=rnd(-20,20); b=rnd(-20,20); op=Math.random()<0.5?"+":"-";
+        answer = op==="+" ? a+b : a-b;
+        text = `(${a}) ${op} (${b}) = ?`;
+      } else if(type===1){
+        const x=rnd(1,15); a=rnd(2,9); const c=a*x+rnd(0,10); const bb=c-a*x;
+        text = `If ${a}x + ${bb} = ${c}, x = ?`; answer=x;
+      } else {
+        const of=rnd(20,200); const pct=[10,20,25,50][rnd(0,3)];
+        answer=Math.round(of*pct/100); text=`${pct}% of ${of} = ?`;
+      }
+    } else {
+      const type=rnd(0,2);
+      if(type===0){
+        const r1=rnd(1,8), r2=rnd(1,8); const sum=r1+r2, prod=r1*r2;
+        text=`One of the roots of x² − ${sum}x + ${prod} = 0 is?`; answer=r1;
+      } else if(type===1){
+        const table=[["sin 0°","0"],["sin 90°","1"],["cos 0°","1"],["cos 90°","0"],["tan 0°","0"]];
+        const pick=table[rnd(0,table.length-1)]; text=`${pick[0]} = ?`; answer=pick[1];
+      } else {
+        const l=rnd(4,20), w=rnd(2,15); answer=l*w; text=`Area of a rectangle with length ${l} and width ${w} = ?`;
+      }
+    }
+    return {text, answer};
+  }
+
+  function generateAlgoMath(cls, count){
+    const qs=[];
+    for(let i=0;i<count;i++){
+      const {text,answer}=algoMathItem(cls);
+      qs.push({question:text, options:toOptions(answer)});
+    }
+    return qs;
+  }
+
+  const MATH_SR_SCI=[
+    {q:"sin 30° = ?", o:["1/2","1","0","√3/2"], a:0},
+    {q:"cos 60° = ?", o:["1/2","1","0","√3/2"], a:0},
+    {q:"tan 45° = ?", o:["1","0","√3","1/2"], a:0},
+    {q:"The derivative of x³ is?", o:["3x²","x²","3x","x³"], a:0},
+    {q:"The derivative of a constant is?", o:["0","1","The constant itself","Infinity"], a:0},
+    {q:"∫x dx = ?", o:["x²/2 + C","x + C","2x + C","x³/3 + C"], a:0},
+    {q:"The number of ways to arrange 3 distinct books on a shelf is?", o:["6","3","9","12"], a:0},
+    {q:"nCr represents the number of ways to?", o:["Choose r items from n","Arrange n items","Sum n numbers","Multiply n numbers"], a:0},
+    {q:"If a die is thrown once, the probability of getting a 4 is?", o:["1/6","1/2","1/3","1/4"], a:0},
+    {q:"The quadratic formula solves equations of the form?", o:["ax² + bx + c = 0","ax + b = 0","a/x = b","ax³ = b"], a:0}
+  ];
+  const MATH_SR_COM=[
+    {q:"If cost price is ₹500 and profit is ₹100, profit % is?", o:["20%","10%","25%","15%"], a:0},
+    {q:"Simple Interest on ₹1000 at 10% for 2 years is?", o:["₹200","₹100","₹1000","₹2000"], a:0},
+    {q:"Compound Interest is calculated on?", o:["Principal plus accumulated interest","Only the original principal","Only the profit","The selling price"], a:0},
+    {q:"If selling price is ₹1200 and cost price is ₹1000, profit is?", o:["₹200","₹100","₹1000","₹2200"], a:0},
+    {q:"In statistics, the average of a data set is called the?", o:["Mean","Median","Mode","Range"], a:0},
+    {q:"The middle value in a sorted data set is called the?", o:["Median","Mean","Mode","Range"], a:0},
+    {q:"Loss percentage is calculated on the?", o:["Cost price","Selling price","Marked price","Discount"], a:0},
+    {q:"A discount of 10% on ₹500 reduces the price by?", o:["₹50","₹100","₹10","₹500"], a:0},
+    {q:"The value that occurs most frequently in a data set is called the?", o:["Mode","Mean","Median","Range"], a:0},
+    {q:"If principal = ₹2000, rate = 5%, time = 1 year, Simple Interest = ?", o:["₹100","₹200","₹50","₹1000"], a:0}
+  ];
+
+  function getQuizFor(subjectKey, count){
+    if(subjectKey==="math"){
+      if(state.cls<=10) return generateAlgoMath(state.cls, count);
+      const bank = state.band==="b11_12_sci" ? MATH_SR_SCI : MATH_SR_COM;
+      return shuffle(bank).slice(0,count).map(makeOptionsObj);
+    }
+    const bank = CONTENT[state.band][subjectKey].quiz || [];
+    return shuffle(bank).slice(0,count).map(makeOptionsObj);
+  }
+  function maxScoreFor(subjectKey){ return subjectKey==="math" ? 8 : 5; }
+
+  /* ---------------- App state ---------------- */
+  const state = { name:null, avatar:AVATARS[0], board:"cbse", cls:null, stream:"science", band:null, subject:null };
+  const quiz = { subject:null, questions:[], index:0, score:0, answered:false };
+
+  const screens = {
+    signin: document.getElementById("screen-signin"),
+    dashboard: document.getElementById("screen-dashboard"),
+    progress: document.getElementById("screen-progress"),
+    profile: document.getElementById("screen-profile"),
+    subject: document.getElementById("screen-subject"),
+    quiz: document.getElementById("screen-quiz"),
+    result: document.getElementById("screen-result")
+  };
+  const MAIN_TABS = ["dashboard","progress","profile"];
+  const appEl = document.getElementById("app");
+  const bottomNav = document.getElementById("bottom-nav");
+  const navIndicator = document.getElementById("nav-indicator");
+
+  function showScreen(name){
+    Object.values(screens).forEach(s=>s.classList.remove("active"));
+    screens[name].classList.add("active");
+    if(!MAIN_TABS.includes(name)){
+      bottomNav.classList.remove("show");
+      appEl.classList.remove("with-nav");
+    }
+  }
+
+  async function showMainScreen(name){
+    showScreen(name);
+    bottomNav.classList.add("show");
+    appEl.classList.add("with-nav");
+    const idx = MAIN_TABS.indexOf(name);
+    document.querySelectorAll(".nav-btn").forEach((b,i)=>{
+      b.classList.toggle("active", i===idx);
+    });
+    navIndicator.style.transform = `translateX(${idx*100}%)`;
+    if(name==="progress") await refreshProgress();
+    if(name==="profile") populateProfile();
+  }
+
+  document.querySelectorAll(".nav-btn").forEach(btn=>{
+    btn.addEventListener("click", ()=> showMainScreen(btn.getAttribute("data-nav")));
+  });
+
+  /* ---------------- Theme ---------------- */
+  async function applyTheme(theme){
+    document.body.setAttribute("data-theme", theme);
+    document.querySelectorAll("#btn-theme-toggle, #btn-theme-toggle-2").forEach(b=>{
+      if(b) b.textContent = b.id==="btn-theme-toggle" ? (theme==="dark"?"☀️":"🌙") : (theme==="dark"?"☀️ Light mode":"🌙 Dark mode");
+    });
+    await Store.set("theme", theme);
+  }
+  async function toggleTheme(){
+    const current = document.body.getAttribute("data-theme")==="dark" ? "dark" : "light";
+    await applyTheme(current==="dark" ? "light" : "dark");
+  }
+  (async ()=>{
+    const saved = await Store.get("theme");
+    if(saved==="dark") await applyTheme("dark");
+  })();
+  document.getElementById("btn-theme-toggle").addEventListener("click", toggleTheme);
+  document.getElementById("btn-theme-toggle-2").addEventListener("click", toggleTheme);
+
+  function populateProfile(){
+    document.getElementById("profile-avatar").textContent = state.avatar;
+    document.getElementById("profile-name").textContent = state.name;
+    document.getElementById("profile-meta").textContent = `Class ${state.cls} · ${boardLabel()}${(state.cls>=11)?" · "+state.stream.charAt(0).toUpperCase()+state.stream.slice(1):""}`;
+  }
+
+  /* Hide splash once its exit animation finishes */
+  setTimeout(()=>{ const s=document.getElementById("splash"); if(s) s.style.display="none"; }, 2200);
+
+  /* ---------------- Sign-in wizard ---------------- */
+  const avatarRow = document.getElementById("avatar-row");
+  const avatarPreview = document.getElementById("avatar-preview");
+  AVATARS.forEach((emoji,i)=>{
+    const d=document.createElement("div");
+    d.className="avatar-opt"+(i===0?" selected":"");
+    d.textContent=emoji;
+    d.addEventListener("click", ()=>{
+      document.querySelectorAll(".avatar-opt").forEach(el=>el.classList.remove("selected"));
+      d.classList.add("selected"); state.avatar=emoji;
+      avatarPreview.textContent = emoji;
+      avatarPreview.classList.remove("bump"); void avatarPreview.offsetWidth; avatarPreview.classList.add("bump");
+    });
+    avatarRow.appendChild(d);
+  });
+
+  const boardRow = document.getElementById("board-row");
+  const BOARD_OPTS = [
+    ["cbse","🏫","CBSE","NCERT-based national curriculum"],
+    ["icse","📘","ICSE / ISC","Detailed, composition-focused syllabus"],
+    ["state","🗺️","State Board","Regional curriculum & context"]
+  ];
+  BOARD_OPTS.forEach(([val,ic,label,sub],i)=>{
+    const d=document.createElement("div");
+    d.className="board-opt-big"+(i===0?" selected":"");
+    d.innerHTML = `<div class="ic">${ic}</div><div class="txt"><b>${label}</b><span>${sub}</span></div><div class="tick"></div>`;
+    d.addEventListener("click", ()=>{
+      document.querySelectorAll(".board-opt-big").forEach(el=>el.classList.remove("selected"));
+      d.classList.add("selected"); state.board=val;
+    });
+    boardRow.appendChild(d);
+  });
+
+  const classGrid = document.getElementById("class-grid");
+  for(let c=1;c<=12;c++){
+    const d=document.createElement("div");
+    d.className="class-pill";
+    d.textContent=c;
+    d.addEventListener("click", ()=>{
+      document.querySelectorAll(".class-pill").forEach(el=>el.classList.remove("selected"));
+      d.classList.add("selected");
+      state.cls=c;
+      renderWizProgress();
+      updateNextButton();
+    });
+    classGrid.appendChild(d);
+  }
+
+  const streamRow = document.getElementById("stream-row");
+  const STREAM_OPTS = [
+    ["science","🔬","Science","Physics, Chemistry, Biology/CS"],
+    ["commerce","💼","Commerce","Accountancy, Business, Economics"],
+    ["arts","🎨","Arts","History, Political Science, Geography"]
+  ];
+  STREAM_OPTS.forEach(([val,ic,label,sub],i)=>{
+    const d=document.createElement("div");
+    d.className="stream-opt-big"+(i===0?" selected":"");
+    d.innerHTML = `<div class="ic">${ic}</div><div><b>${label}</b><div style="font-size:11.5px;color:var(--ink-soft);">${sub}</div></div>`;
+    d.addEventListener("click", ()=>{
+      document.querySelectorAll(".stream-opt-big").forEach(el=>el.classList.remove("selected"));
+      d.classList.add("selected"); state.stream=val;
+    });
+    streamRow.appendChild(d);
+  });
+
+  const inputName = document.getElementById("input-name");
+  inputName.addEventListener("input", updateNextButton);
+
+  const wizTrack = document.getElementById("wizard-track");
+  const wizProgress = document.getElementById("wizard-progress");
+  const wizBack = document.getElementById("wiz-back");
+  const wizNext = document.getElementById("wiz-next");
+  let wizStep = 0;
+
+  function wizTotalSteps(){ return (state.cls>=11) ? 4 : 3; }
+  function renderWizProgress(){
+    const total = wizTotalSteps();
+    wizProgress.innerHTML = "";
+    for(let i=0;i<total;i++){
+      const dot=document.createElement("div");
+      dot.className="wp-dot"+(i<wizStep?" filled":"")+(i===wizStep?" current":"");
+      wizProgress.appendChild(dot);
+    }
+  }
+  function updateNextButton(){
+    let valid = true;
+    if(wizStep===0) valid = inputName.value.trim().length>0;
+    if(wizStep===2) valid = !!state.cls;
+    wizNext.disabled = !valid;
+    const isLast = wizStep === wizTotalSteps()-1;
+    wizNext.textContent = isLast ? "🚀 Start Learning" : "Next →";
+  }
+  function goToWizStep(i){
+    wizStep = Math.max(0, Math.min(i, 3));
+    wizTrack.style.transform = `translateX(-${wizStep*100}%)`;
+    wizBack.style.visibility = wizStep===0 ? "hidden" : "visible";
+    renderWizProgress();
+    updateNextButton();
+  }
+
+  wizBack.addEventListener("click", ()=>{
+    let prev = wizStep-1;
+    if(prev===3 && state.cls<11) prev=2;
+    goToWizStep(Math.max(0,prev));
+  });
+
+  wizNext.addEventListener("click", async ()=>{
+    const isLast = wizStep === wizTotalSteps()-1;
+    if(isLast){
+      const name = inputName.value.trim();
+      if(!name || !state.cls) return;
+      state.name = name;
+      state.band = getBand(state.cls, state.stream);
+      wizNext.disabled = true;
+      fireConfetti();
+      await enterDashboard();
+      return;
+    }
+    let next = wizStep+1;
+    if(next===3 && state.cls<11) next = wizTotalSteps(); // skip stream, effectively becomes last via recalculation
+    goToWizStep(Math.min(next,3));
+  });
+
+  renderWizProgress();
+  updateNextButton();
+
+  document.getElementById("btn-switch-user").addEventListener("click", ()=>{
+    state.name=null; state.cls=null; state.band=null;
+    inputName.value="";
+    document.querySelectorAll(".class-pill").forEach(el=>el.classList.remove("selected"));
+    goToWizStep(0);
+    bottomNav.classList.remove("show");
+    appEl.classList.remove("with-nav");
+    showScreen("signin");
+  });
+
+  /* ---------------- Dashboard ---------------- */
+  function boardLabel(){
+    if(state.board==="icse") return state.cls>=11 ? "ISC" : "ICSE";
+    if(state.board==="cbse") return "CBSE";
+    return "State Board";
+  }
+
+  async function enterDashboard(){
+    document.getElementById("dash-avatar").textContent = state.avatar;
+    document.getElementById("dash-name").textContent = state.name;
+    document.getElementById("dash-grade").textContent = `Class ${state.cls} · ${boardLabel()}${(state.cls>=11)?" · "+state.stream.charAt(0).toUpperCase()+state.stream.slice(1):""}`;
+    renderSubjectGrid();
+    await showMainScreen("dashboard");
+  }
+
+  function renderSubjectGrid(){
+    const grid = document.getElementById("subject-grid");
+    grid.innerHTML="";
+    BANDS[state.band].subjects.forEach(sub=>{
+      const meta = META[sub];
+      const card = document.createElement("div");
+      card.className="subject-card";
+      card.style.animationDelay = (grid.children.length*0.06)+"s";
+      card.innerHTML = `
+        <div class="ic">${meta.icon}</div>
+        <h3 class="${sub==='hindi'?'hi':''}">${meta.label}</h3>
+        <div class="best" data-best="${sub}">Best: —</div>
+        <div class="card-actions">
+          <button class="card-act-btn" data-act="study">📖 Chapters</button>
+          <button class="card-act-btn" data-act="quiz">🎯 Quiz</button>
+          <button class="card-act-btn" data-act="practice">📝 Practice</button>
+        </div>`;
+      card.querySelectorAll(".card-act-btn").forEach(btn=>{
+        btn.addEventListener("click", (e)=>{
+          e.stopPropagation();
+          openSubject(sub, btn.getAttribute("data-act"));
+        });
+      });
+      card.addEventListener("click", ()=>openSubject(sub, "study"));
+      grid.appendChild(card);
+    });
+  }
+
+  function progressKey(sub){ return `progress:${state.name.toLowerCase()}:${state.cls}:${sub}`; }
+  async function loadSubjectProgress(sub){
+    const data = await Store.get(progressKey(sub));
+    return data || {best:0, attempts:0};
+  }
+  async function saveSubjectProgress(sub, data){ await Store.set(progressKey(sub), data); }
+
+  async function refreshProgress(){
+    const subs = BANDS[state.band].subjects;
+    const container = document.getElementById("progress-card");
+    let html=""; let any=false;
+    for(const sub of subs){
+      const info = await loadSubjectProgress(sub);
+      const max = maxScoreFor(sub);
+      const bestEl = document.querySelector(`[data-best="${sub}"]`);
+      if(bestEl) bestEl.textContent = info.attempts>0 ? `Best: ${info.best}/${max}` : "Best: —";
+      if(info.attempts>0) any=true;
+      const pct = info.attempts>0 ? Math.round((info.best/max)*100) : 0;
+      html += `<div class="progress-row"><div class="lbl">${META[sub].label}</div><div class="bar-wrap"><div class="bar-fill" style="width:${pct}%"></div></div><div class="pct">${pct}%</div></div>`;
+    }
+    container.innerHTML = any ? html : `<div class="empty-note">No quizzes yet — pick a subject above to get started! 🚀</div>`;
+  }
+
+  /* ---------------- Subject detail screen ---------------- */
+  function openSubject(sub, tab){
+    const targetTab = tab || "study";
+    state.subject = sub;
+    const meta = META[sub];
+    document.getElementById("subj-ic").textContent = meta.icon;
+    document.getElementById("subj-title").textContent = meta.label;
+    document.getElementById("subj-sub").textContent = `Class ${state.cls} · ${boardLabel()} · ${BANDS[state.band].label.split("·")[0].trim()}`;
+
+    const content = CONTENT[state.band][sub];
+    const topicsEl = document.getElementById("study-topics");
+    const topicsList = getTopics(sub);
+    topicsEl.innerHTML = topicsList.map((t,i)=>`<li style="animation-delay:${i*0.05}s"><span class="n">${i+1}</span>${t}</li>`).join("");
+    const kpEl = document.getElementById("study-keypoints
