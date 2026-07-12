@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Relay — a direct line</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2245%22 fill=%22%23FFB020%22/></svg>">
+<link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiUmVsYXkgQ2hhdCIsInNob3J0X25hbWUiOiJSZWxheSIsImRlc2NyaXB0aW9uIjoiQSBkaXJlY3QgbGluZSBiZXR3ZWVuIHR3byBwZW9wbGUsIHdpdGggbm90aWZpY2F0aW9ucy4iLCJzdGFydF91cmwiOiIuLyIsInNjb3BlIjoiLi8iLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSIsImJhY2tncm91bmRfY29sb3IiOiIjMTQxNjFCIiwidGhlbWVfY29sb3IiOiIjMTQxNjFCIiwib3JpZW50YXRpb24iOiJwb3J0cmFpdC1wcmltYXJ5IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2UvcG5nO2Jhc2U2NCxpVkJPUncwS0dnb0FBQUFOU1VoRVVnQUFBTUFBQUFEQUNBWUFBQUJTM0d3SEFBQUV4RWxFUVZSNG5PM2IwWTFUU1JDRzBXYTFaTUR5UW40RVJZcUV3QVA3Z0N3TlpzeDQ3TnUzcS9vL0o0RFJxS3MrbDBIdzRkUG5MejhIaFBwbjlTOEFLd21BYUFJZ21nQ0lKZ0NpQ1lCb0FpQ2FBSWdtQUtJSmdHZ0NJSm9BaUNZQW9nbUFhQUlnbWdDSUpnQ2lDWUJvLzY3K0JYYjIvZHZIUTM3T2YxOS9IUEp6K05NSC95ZjRlVWN0K25zSjQza0NlTUNxaFgrTElONVBBSGVvdXZCdkVjVGJCSEJEMTZXL1JReXZFOENWM1JiL21oQitKNEN4LzlMZklvYndBRklYLzFweUNKRUJXUHpYSllZUUZZREZ2MDlTQ0JFQldQekhKSVN3L2I4RnN2eVBTM2k3YlM5QXd2RE90T3MxMlBJQ1dQN2o3ZnFtVzEyQVhZZFV6VTdYWUpzTFlQblBzOU5iYnhIQVRnUHBZcGMzYi8wVmFKY2hkTmY1SzFIYkMyRDU2K2c4aTVZQmRIN3dYWFdkU2JzQXVqNTBnbzZ6YVJWQXh3ZE8wMjFHYlFMbzlyREpPczJxUlFDZEhwUmZ1c3lzZkFCZEhwSS9kWmhkNlFBNlBDQi9WMzJHWlFPby9uRGNyL0lzU3daUStjRjRUTldabGd1ZzZrUHh2SXF6TFJjQW5LbFVBQlUvSVRoV3RSbVhDYURhd3pCUHBWbVhDS0RTZzNDT0tqTXZFUUNzc2p5QUtwOEVuSy9DN0pjR1VPRUJXR3YxRGl5L0FMRFNzZ0JXbDA4ZEszZGhTUUNXbjJ1cmRzSlhJS0tkSG9CUGYyNVpzUnN1QU5GT0RjQ25QMjg1ZTBkY0FLS2RGb0JQZis1MTVxNjRBRVE3SlFDZi9yelhXVHZqQWhCTkFFU2JIb0N2UHp6cWpOMXhBWWcyTlFDZi9qeHI5ZzY1QUVRVEFOR21CZURyRDBlWnVVc3VBTkVFUURRQkVHMUtBTDcvYzdSWk8rVUNFRTBBUkJNQTBRNFB3UGQvWnBteFd5NEEwUVJBTkFFUVRRQkVFd0RSRGczQTN3QXgyOUU3NWdJUVRRQkVFd0RSQkVBMEFSQk5BRVFUQU5FRVFEUUJFRTBBUkJNQTBRUkFOQUVRVFFCRUV3RFJCRUEwQVJEdDBBRCsrL3JqeUI4SGZ6aDZ4MXdBb2dtQWFBSWdtZ0NJSmdDaUhSNkF2d2xpbGhtNzVRSVFUUUJFRXdEUnBnVGd6d0VjYmRaT3VRQkVFd0RSQkVDMGFRSDRjd0JIbWJsTExnRFJCRUMwcVFINEdzU3padStRQzBDMDZRRzRBanpxak4xeEFZZ21BS0tkRW9DdlFielhXVHZqQWhEdHRBQmNBZTUxNXE2NEFFUTdOUUJYZ0xlY3ZTTXVBTkZPRDhBVjRKWVZ1K0VDRUcxSkFLNEExMWJ0eExJTElBSXVWdTZDcjBCRVd4cUFLOERxSFZoK0FWWS9BT3RVbVAzeUFHQ2xFZ0ZVK0NUZ1hGVm1YaUtBTWVvOENQTlZtbldaQU1hbzlURE1VVzNHcFFLQXM1VUxvTm9uQk1lcE9OdHlBWXhSODZGNFR0V1psZ3hnakxvUHh2dFZubVhaQU1hby9YRGNwL29NU3djd1J2MEg1TFlPc3lzZndCZzlIcExmZFpsWml3REc2UE9nOUpwVm13REc2UFd3cWJyTnFGVUFZL1I3NENRZFo5TXVnREY2UHZUdXVzNmtaUUJqOUgzd0hYV2V4WWRQbjcvOFhQMUxQT3Y3dDQrcmY0VkluUmYvb3UwRmVHbUhRWFN6eTV0dkVjQVkrd3lrZzUzZWVvdXZRTmQ4SlpwanA4Vy8yT1lDdkxUam9GYmI5VTIzdkFBdnVRYlAyWFh4TDdhOEFDL3RQc0NaRXQ1dSt3dndrbXR3bjRURnY0Z0s0RUlJcjB0YS9JdklBQzZFOEV2aTRsOUVCM0NSR2tMeTRsOEk0TXJ1TVZqNjN3bmdodDFDc1BpdkU4QWR1c1pnNmQ4bWdBZFVEY0xDdjU4QURyQXFDQXYvUEFGTWRGUVlGbjBlQVJCdCszOExCSDhqQUtJSmdHZ0NJSm9BaUNZQW9nbUFhQUlnbWdDSUpnQ2lDWUJvQWlDYUFJZ21BS0lKZ0dnQ0lKb0FpQ1lBb3YwUHJCZzE1blppWjBnQUFBQUFTVVZPUks1Q1lJST0iLCJzaXplcyI6IjE5MngxOTIiLCJ0eXBlIjoiaW1hZ2UvcG5nIiwicHVycG9zZSI6ImFueSJ9LHsic3JjIjoiZGF0YTppbWFnZS9wbmc7YmFzZTY0LGlWQk9SdzBLR2dvQUFBQU5TVWhFVWdBQUFNQUFBQURBQ0FZQUFBQlMzR3dIQUFBRXhFbEVRVlI0bk8zYjBZMVRTUkNHMFdhMVpNRHlRbjRFUllxRXdBUDdnQ3dOWnN4NDdOdTNxL28vSjREUnFLcytsMEh3NGRQbkx6OEhoUHBuOVM4QUt3bUFhQUlnbWdDSUpnQ2lDWUJvQWlDYUFJZ21BS0lKZ0dnQ0lKb0FpQ1lBb2dtQWFBSWdtZ0NJSmdDaUNZQm8vNjcrQlhiMi9kdkhRMzdPZjE5L0hQSnorTk1IL3lmNGVVY3QrbnNKNDNrQ2VNQ3FoWCtMSU41UEFIZW91dkJ2RWNUYkJIQkQxNlcvUlF5dkU4Q1YzUmIvbWhCK0o0Q3gvOUxmSW9id0FGSVgvMXB5Q0pFQldQelhKWVlRRllERnYwOVNDQkVCV1B6SEpJU3cvYjhGc3Z5UFMzaTdiUzlBd3ZET3RPczEyUElDV1A3ajdmcW1XMTJBWFlkVXpVN1hZSnNMWVBuUHM5TmJieEhBVGdQcFlwYzNiLzBWYUpjaGROZjVLMUhiQzJENTYrZzhpNVlCZEg3d1hYV2RTYnNBdWo1MGdvNnphUlZBeHdkTzAyMUdiUUxvOXJESk9zMnFSUUNkSHBSZnVzeXNmQUJkSHBJL2RaaGQ2UUE2UENCL1YzMkdaUU9vL25EY3IvSXNTd1pRK2NGNFROV1psZ3VnNmtQeHZJcXpMUmNBbktsVUFCVS9JVGhXdFJtWENhRGF3ekJQcFZtWENLRFNnM0NPS2pNdkVRQ3NzanlBS3A4RW5LL0M3SmNHVU9FQldHdjFEaXkvQUxEU3NnQldsMDhkSzNkaFNRQ1duMnVyZHNKWElLS2RIb0JQZjI1WnNSc3VBTkZPRGNDblAyODVlMGRjQUtLZEZvQlBmKzUxNXE2NEFFUTdKUUNmL3J6WFdUdmpBaEJOQUVTYkhvQ3ZQenpxak4xeEFZZzJOUUNmL2p4cjlnNjVBRVFUQU5HbUJlRHJEMGVadVVzdUFORUVRRFFCRUcxS0FMNy9jN1JaTytVQ0VFMEFSQk1BMFE0UHdQZC9acG14V3k0QTBRUkFOQUVRVFFCRUV3RFJEZzNBM3dBeDI5RTc1Z0lRVFFCRUV3RFJCRUEwQVJCTkFFUVRBTkVFUURRQkVFMEFSQk1BMFFSQU5BRVFUUUJFRXdEUkJFQTBBUkR0MEFEKysvcmp5QjhIZnpoNngxd0FvZ21BYUFJZ21nQ0lKZ0NpSFI2QXZ3bGlsaG03NVFJUVRRQkVFd0RScGdUZ3p3RWNiZFpPdVFCRUV3RFJCRUMwYVFINGN3QkhtYmxMTGdEUkJFQzBxUUg0R3NTelp1K1FDMEMwNlFHNEFqenFqTjF4QVlnbUFLS2RFb0N2UWJ6WFdUdmpBaER0dEFCY0FlNTE1cTY0QUVRN05RQlhnTGVjdlNNdUFORk9EOEFWNEpZVnUrRUNFRzFKQUs0QTExYnR4TElMSUFJdVZ1NkNyMEJFV3hxQUs4RHFIVmgrQVZZL0FPdFVtUDN5QUdDbEVnRlUrQ1RnWEZWbVhpS0FNZW84Q1BOVm1uV1pBTWFvOVRETVVXM0dwUUtBczVVTG9Ob25CTWVwT050eUFZeFI4NkY0VHRXWmxneGdqTG9QeHZ0Vm5tWFpBTWFvL1hEY3Avb01Td2N3UnYwSDVMWU9zeXNmd0JnOUhwTGZkWmxaaXdERzZQT2c5SnBWbXdERzZQV3dxYnJOcUZVQVkvUjc0Q1FkWjlNdWdERjZQdlR1dXM2a1pRQmo5SDN3SFhXZXhZZFBuNy84WFAxTFBPdjd0NCtyZjRWSW5SZi9vdTBGZUdtSFFYU3p5NXR2RWNBWSt3eWtnNTNlZW91dlFOZDhKWnBqcDhXLzJPWUN2TFRqb0ZiYjlVMjN2QUF2dVFiUDJYWHhMN2E4QUMvdFBzQ1pFdDV1K3d2d2ttdHduNFRGdjRnSzRFSUlyMHRhL0l2SUFDNkU4RXZpNGw5RUIzQ1JHa0x5NGw4STRNcnVNVmo2M3duZ2h0MUNzUGl2RThBZHVzWmc2ZDhtZ0FkVURjTEN2NThBRHJBcUNBdi9QQUZNZEZRWUZuMGVBUkJ0KzM4TEJIOGpBS0lKZ0dnQ0lKb0FpQ1lBb2dtQWFBSWdtZ0NJSmdDaUNZQm9BaUNhQUlnbUFLSUpnR2dDSUpvQWlDWUFvdjBQckJnMTVuWmlaMGdBQUFBQVNVVk9SSzVDWUlJPSIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9wbmciLCJwdXJwb3NlIjoibWFza2FibGUifSx7InNyYyI6ImRhdGE6aW1hZ2UvcG5nO2Jhc2U2NCxpVkJPUncwS0dnb0FBQUFOU1VoRVVnQUFBZ0FBQUFJQUNBWUFBQUQwZU5UNkFBQU9ZVWxFUVZSNG5PM2N5N1hVVmhDRzBZWmxaNENaa0I5Qk9VV0g0QUVlQUw1YytpVzFqczZqL3IwVDRBNVVWZCtTMnY3dzZmT1hieGNBSU1ySDBYOEFBTkNmQUFDQVFBSUFBQUlKQUFBSUpBQUFJSkFBQUlCQUFnQUFBZ2tBQUFna0FBQWdrQUFBZ0VBQ0FBQUNDUUFBQ0NRQUFDQ1FBQUNBUUFJQUFBSUpBQUFJSkFBQUlKQUFBSUJBQWdBQUFna0FBQWdrQUFBZ2tBQUFnRUFDQUFBQ0NRQUFDQ1FBQUNDUUFBQ0FRQUlBQUFJSkFBQUlKQUFBSUpBQUFJQkFBZ0FBQWdrQUFBZ2tBQUFna0FBQWdFQUNBQUFDQ1FBQUNDUUFBQ0NRQUFDQVFBSUFBQUlKQUFBSUpBQUFJSkFBQUlCQUFnQUFBZ2tBQUFna0FBQWdrQUFBZ0VBQ0FBQUNDUUFBQ0NRQUFDQ1FBQUNBUUgrTS9nT0E0Lzc1KzgrdS85NWZYLy90K3U4QjdYMzQ5UG5MdDlGL0JIQ3Q5MUUvaTFpQU9Ra0FHS2pLa1grVk9JQnhCQUIwa0g3bzl4SUdjRDRCQUkwNTl1Y1FCZENXQUlDREhQd3hCQUVjSXdCZ0p3ZC9Ub0lBOWhFQThJU0R2eVpCQUk4SkFMakIwYTlGRE1BMUFRQVhCeitOSUFBQlFEQkhuOHRGREpCTEFCREYwZWNSTVVBU0FVQUVoNTg5aEFBSkJBQmxPZnEwSUFhb1NnQlFpcVBQbWNRQWxRZ0FTbkQ0NlVrSVVJRUFZR2tPUHlNSkFWWW1BRmlPbzgrTXhBQ3JFUUFzdytGbkJVS0FWUWdBcHVmd3N5SWh3T3dFQU5OeStLbEFDREFyQWNCMEhINHFFZ0xNUmdBd0RZZWZCRUtBV1FnQWhuUDRTU1FFR0UwQU1JekREMEtBY1FRQTNUbjhjRTBJMEpzQW9CdUhINTRUQXZUeWNmUWZRQWJISDdZeEsvVGlEUUNuc3N6Z2RkNEdjQ1lCd0NrY2ZtaEhDSEFHbndCb3p2R0h0c3dVWi9BR2dHWXNLVGlmdHdHMElnQTR6T0dIL29RQVIva0V3Q0dPUDR4aDlqaktHd0JlWXZuQVBMd040QlhlQUxDYjR3OXpNWk84d2hzQU5yTmtZSDdlQnJDVk53QnM0dmpER3N3cVd3a0FuckpRWUMxbWxpMThBdUF1U3dUVzU1TUE5M2dEd0UyT1A5UmdscmxIQUhERndvQmF6RFMzK0FUQS95d0pxTThuQVg3eUJvREw1ZUw0UXdxenprOENBQXNCd3BoNUxoZWZBS0paQW9CUEFybThBUWpsK0FPWGkxMlFUQUFFTXZEQXIreUVUQUlnakVFSGJyRWI4Z2lBSUFZY2VNU095T0pIZ0FFTU5iQ1hId2ZXNXcxQWNZNC84QXE3b3o0QlVKZ0JCbzZ3UTJvVEFFVVpYS0FGdTZRdUFWQ1FnUVZhc2xOcUVnREZHRlRnREhaTFBRS2dFQU1Lbk1tT3FVVUFGR0V3Z1I3c21qb0VRQUVHRXVqSnpxbEJBQ3pPSUFJajJEM3JFd0FMTTREQVNIYlEyZ1RBb2d3ZU1BTzdhRjBDWUVFR0RwaUpuYlFtQWJBWWd3Yk15RzVhandCWWlBRURabVpIclVVQUxNSmdBU3V3cTlZaEFCWmdvSUNWMkZsckVBQ1RNMGpBaXV5dStRbUFpUmtnWUdWMjJOd0V3S1FNRGxDQlhUWXZBVEFoQXdOVVlxZk5TUUFBUUNBQk1CbWxERlJrdDgxSEFFekVnQUNWMlhGekVRQ1RNQmhBQXJ0dUhnSmdBZ1lDU0dMbnpVRUFER1lRZ0VSMjMzZ0NBQUFDQ1lDQkZEQ1F6QTRjU3dBTTRzRUhzQXRIRWdBRGVPQUIzdGlKWXdnQUFBZ2tBRHBUdWdEWDdNYitCRUJISG5DQSsrekl2Z1JBSng1c2dPZnN5bjRFQUFBRUVnQWRLRnFBN2V6TVBnVEF5VHpJQVB2Wm5lY1RBQ2Z5QUFPOHpnNDlsd0FBZ0VBQzRDVEtGZUE0dS9ROEF1QUVIbGlBZHV6VWN3Z0FBQWdrQUJwVHFnRHQyYTN0Q1lDR1BLQUE1N0ZqMnhJQUFCQklBRFNpVEFIT1o5ZTJJd0FBSUpBQWFFQ1JBdlJqNTdZaEFBN3lJQUwwWi9jZUp3QUFJSkFBT0VDQkFveGpCeDhqQUFBZ2tBQjRrZklFR004dWZwMEFlSUVIRG1BZWR2SnJCQUFBQkJJQU95bE5nUG5ZemZzSkFBQUlKQUIyVUpnQTg3S2o5eEVBQUJCSUFHeWtMQUhtWjFkdkp3QUFJSkFBMkVCUkFxekR6dDVHQUFCQUlBSHdoSklFV0kvZC9ad0FBSUJBQXVBQkJRbXdManY4TVFFQUFJRUV3QjNLRVdCOWR2bDlBZ0FBQWdtQUd4UWpRQjEyK20wQ0FBQUNDWURmS0VXQWV1ejJhd0lBQUFJSkFBQUlKQUIrNFJVUlFGMTIvSHNDQUFBQ0NZQWZsQ0ZBZlhiOUd3RUFBSUVFd0VVUkFpU3g4NzhUQUFBUVNBQUFRS0Q0QVBBcUNDQ1AzUzhBQUNDU0FBQ0FRTkVCNEJVUVFLNzBHeEFkQUFDUUtqWUEwc3NQZ094YkVCc0FBSkJNQUFCQW9NZ0FTSDdsQThCN3FUY2hNZ0FBSUowQUFJQkFjUUdRK3FvSGdQc1NiME5jQUFBQUFnQUFJZ2tBQUFnVUZRQ0ozM2dBMkNidFJrUUZBQUR3blFBQWdFQXhBWkQyYWdlQS9aSnVSVXdBQUFCdkJBQUFCQklBQUJBb0lnQ1N2dWtBY0V6S3pZZ0lBQURnUFFFQUFJRUVBQUFFS2g4QUtkOXlBR2duNFhhVUR3QUE0Sm9BQUlCQUFnQUFBcFVPZ0lSdk9BQ2NvL29OS1IwQUFNQnRBZ0FBQWdrQUFBZ2tBQUFnVU5rQXFQN2pEUURPVi9tV2xBMEFBT0ErQVFBQWdRUUFBQVFTQUFBUVNBQUFRS0NTQVZENVY1c0E5RlgxcHBRTUFBRGdNUUVBQUlFRUFBQUVFZ0FBRUVnQUFFQWdBUUFBZ2NvRlFOWC9YQU9BY1NyZWxuSUJBQUE4SndBQUlKQUFBSUJBQWdBQUFna0FBQWdrQUFBZ2tBQUFnRUFDQUFBQ0NRQUFDQ1FBQUNCUXFRQ28rTDlxQkdBTzFXNU1xUUFBQUxZUkFBQVFTQUFBUUNBQkFBQ0JCQUFBQkJJQUFCQklBQUJBSUFFQUFJRUVBQUFFRWdBQUVFZ0FBRUFnQVFBQWdRUUFBQVFTQUFBUVNBQUFRQ0FCQUFDQkJBQUFCQklBQUJCSUFBQkFJQUVBQUlFRUFBQUVFZ0FBRUVnQUFFQWdBUUFBZ1FRQUFBUVNBQUFRU0FBQVFLQlNBZkRYMTM5SC93a0FGRlh0eHBRS0FBQmdHd0VBQUlFRUFBQUVFZ0FBRUVnQUFFQWdBUUFBZ1FRQUFBUVNBQUFRU0FBQVFDQUJBQUNCeWdWQXRmOVZJd0RqVmJ3dDVRSUFBSGhPQUFCQUlBRUFBSUVFQUFBRUVnQUFFRWdBQUVDZ2tnRlE4VC9YQUdDTXFqZWxaQUFBQUk4SkFBQUlKQUFBSUpBQUFJQkFBZ0FBQXBVTmdLcS8yZ1NnbjhxM3BHd0FBQUQzQ1FBQUNDUUFBQ0NRQUFDQVFLVURvUEtQTndBNFYvVWJVam9BQUlEYkJBQUFCQklBQUJDb2ZBQlUvNFlEUUhzSnQ2TjhBQUFBMXdRQUFBUVNBQUFRS0NJQUVyN2xBTkJHeXMySUNBQUE0RDBCQUFDQkJBQUFCSW9KZ0pSdk9nQzhMdWxXeEFRQUFQQkdBQUJBb0tnQVNIcTFBOEErYVRjaUtnQUFnTzhFQUFBRUVnQUFFQ2d1QU5LKzhRRHdYT0p0aUFzQUFFQUFBRUNreUFCSWZOVUR3RzJwTnlFeUFBQWduUUFBZ0VDeEFaRDZ5Z2VBTjhtM0lEWUFBQ0JaZEFBa2x4OUF1dlFiRUIwQUFKQktBQUJBb1BnQVNIOEZCSkRJN2hjQUFCQkpBQUJBSUFGdzhTb0lJSW1kLzUwQUFJQkFBdUFIUlFoUW4xMy9SZ0FBUUNBQjhBdGxDRkNYSGYrZUFBQ0FRQUlBQUFJSmdOOTRSUVJRajkxK1RRQUFRQ0FCY0lOU0JLakRUcjlOQUFCQUlBRndoMklFV0o5ZGZwOEFBSUJBQXVBQjVRaXdManY4TVFFQUFJRUV3Qk1LRW1BOWR2ZHpBZ0FBQWdtQURaUWt3RHJzN0cwRUFBQUVFZ0FiS1VxQStkblYyd2tBQUFna0FIWlFsZ0R6c3FQM0VRQUFFRWdBN0tRd0FlWmpOKzhuQUFBZ2tBQjRnZElFbUllZC9Cb0I4Q0lQSE1CNGR2SHJCQUFBQkJJQUJ5aFBnSEhzNEdNRUFBQUVFZ0FIS1ZDQS91emU0d1JBQXg1RWdIN3MzRFlFQUFBRUVnQ05LRktBODltMTdRZ0FBQWdrQUJwU3BnRG5zV1BiRWdDTmVVQUIyck5iMnhNQUFCQklBSnhBcVFLMFk2ZWVRd0NjeEFNTGNKeGRlaDRCQUFDQkJNQ0psQ3ZBNit6UWN3bUFrM21BQWZhek84OG5BRHJ3SUFOc1oyZjJJUUFBSUpBQTZFVFJBanhuVi9ZakFEcnlZQVBjWjBmMkpRQTY4NEFEWExNYit4TUFBQkJJQUF5Z2RBSGUySWxqQ0lCQlBQQUFkdUZJQW1BZ0R6NlF6QTRjU3dBQVFDQUJNSmdDQmhMWmZlTUpnQWtZQkNDSm5UY0hBVEFKQXdFa3NPdm1JUUFtWWpDQXl1eTR1UWlBeVJnUW9DSzdiVDRDQUFBQ0NZQUpLV1dnRWp0dFRnSmdVZ1lHcU1BdW01Y0FtSmpCQVZabWg4MU5BRXpPQUFFcnNydm1Kd0FXWUpDQWxkaFpheEFBaXpCUXdBcnNxblVJZ0lVWUxHQm1kdFJhQk1CaURCZ3dJN3RwUFFKZ1FRWU5tSW1kdENZQnNDZ0RCOHpBTGxxWEFGaVl3UU5Hc29QV0pnQVdad0NCRWV5ZTlRbUFBZ3dpMEpPZFU0TUFLTUpBQWozWU5YVUlnRUlNSm5BbU82WVdBVkNNQVFYT1lMZlVJd0FLTXFoQVMzWktUUUtnS0FNTHRHQ1gxQ1VBQ2pPNHdCRjJTRzBDb0RnRERMekM3cWp2dzZmUFg3Nk4vaVBvNDUrLy94ejlKd0NUYy9oemVBTVF4R0FEajlnUldRUkFHQU1PM0dJMzVCRUFnUXc2OENzN0laTUFDR1hnZ2N2Rkxram1SNEQ0Y1NBRWN2anhCZ0NMQU1LWWVTNFhBY0FQRmdKa01Pdjg1Qk1BVjN3U2dIb2NmbjduRFFCWExBcW94VXh6aXdEZ0pnc0RhakRMM09NVEFFLzVKQURyY2ZoNXhoc0FuckpJWUMxbWxpMEVBSnRZS0xBR3M4cFdQZ0d3bTA4Q01CK0huNzI4QVdBM2l3Ym1ZaVo1aFRjQUhPSnRBSXpqOEhPRU53QWNZZ0hCR0dhUG83d0JvQmx2QStCOERqK3RDQUNhRXdMUW5zTlBhejRCMEp4RkJXMlpLYzdnRFFDbjhqWUFYdWZ3Y3lZQlFCZENBTFp6K09uQkp3QzZzTkJnRzdOQ0w5NEEwSjIzQVhETjRhYzNBY0F3UWdBY2ZzWVJBQXduQkVqazhET2FBR0FhUW9BRURqK3pFQUJNUndoUWtjUFBiQVFBMHhJQ1ZPRHdNeXNCd1BTRUFDdHkrSm1kQUdBWlFvQVZPUHlzUWdDd0hDSEFqQngrVmlNQVdKb1lZQ1JIbjVVSkFFb1FBdlRrOEZPQkFLQVVJY0NaSEg0cUVRQ1VKUVpvd2RHbktnRkFCREhBSG80K0NRUUFVWVFBanpqOEpCRUF4QklEWEM2T1Bya0VBRnpFUUJwSEh3UUEzQ1FJYW5IdzRab0FnQ2ZFd0pvY2ZYaE1BTUJPZ21CT0RqN3NJd0RnSUVFd2hvTVB4d2dBYUV3UW5NUEJoN1lFQUhRZ0N2Wng3T0Y4QWdBR1NnOERoeDdHRVFBd3FTcHg0TWpEbkFRQUZOQTdGaHgxV0o4QUFJQkFIMGYvQVFCQWZ3SUFBQUlKQUFBSUpBQUFJSkFBQUlCQUFnQUFBZ2tBQUFna0FBQWdrQUFBZ0VBQ0FBQUNDUUFBQ0NRQUFDQ1FBQUNBUUFJQUFBSUpBQUFJSkFBQUlKQUFBSUJBQWdBQUFna0FBQWdrQUFBZ2tBQUFnRUFDQUFBQ0NRQUFDQ1FBQUNDUUFBQ0FRQUlBQUFJSkFBQUlKQUFBSUpBQUFJQkFBZ0FBQWdrQUFBZ2tBQUFna0FBQWdFQUNBQUFDQ1FBQUNDUUFBQ0NRQUFDQVFBSUFBQUlKQUFBSUpBQUFJSkFBQUlCQUFnQUFBZ2tBQUFna0FBQWdrQUFBZ0VBQ0FBQUNDUUFBQ0NRQUFDQ1FBQUNBUUFJQUFBTDlCNDZETkk1QWU4NzlBQUFBQUVsRlRrU3VRbUNDIiwic2l6ZXMiOiI1MTJ4NTEyIiwidHlwZSI6ImltYWdlL3BuZyIsInB1cnBvc2UiOiJhbnkifSx7InNyYyI6ImRhdGE6aW1hZ2UvcG5nO2Jhc2U2NCxpVkJPUncwS0dnb0FBQUFOU1VoRVVnQUFBZ0FBQUFJQUNBWUFBQUQwZU5UNkFBQU9ZVWxFUVZSNG5PM2N5N1hVVmhDRzBZWmxaNENaa0I5Qk9VV0g0QUVlQUw1YytpVzFqczZqL3IwVDRBNVVWZCtTMnY3dzZmT1hieGNBSU1ySDBYOEFBTkNmQUFDQVFBSUFBQUlKQUFBSUpBQUFJSkFBQUlCQUFnQUFBZ2tBQUFna0FBQWdrQUFBZ0VBQ0FBQUNDUUFBQ0NRQUFDQ1FBQUNBUUFJQUFBSUpBQUFJSkFBQUlKQUFBSUJBQWdBQUFna0FBQWdrQUFBZ2tBQUFnRUFDQUFBQ0NRQUFDQ1FBQUNDUUFBQ0FRQUlBQUFJSkFBQUlKQUFBSUpBQUFJQkFBZ0FBQWdrQUFBZ2tBQUFna0FBQWdFQUNBQUFDQ1FBQUNDUUFBQ0NRQUFDQVFBSUFBQUlKQUFBSUpBQUFJSkFBQUlCQUFnQUFBZ2tBQUFna0FBQWdrQUFBZ0VBQ0FBQUNDUUFBQ0NRQUFDQ1FBQUNBUUgrTS9nT0E0Lzc1KzgrdS85NWZYLy90K3U4QjdYMzQ5UG5MdDlGL0JIQ3Q5MUUvaTFpQU9Ra0FHS2pLa1grVk9JQnhCQUIwa0g3bzl4SUdjRDRCQUkwNTl1Y1FCZENXQUlDREhQd3hCQUVjSXdCZ0p3ZC9Ub0lBOWhFQThJU0R2eVpCQUk4SkFMakIwYTlGRE1BMUFRQVhCeitOSUFBQlFEQkhuOHRGREpCTEFCREYwZWNSTVVBU0FVQUVoNTg5aEFBSkJBQmxPZnEwSUFhb1NnQlFpcVBQbWNRQWxRZ0FTbkQ0NlVrSVVJRUFZR2tPUHlNSkFWWW1BRmlPbzgrTXhBQ3JFUUFzdytGbkJVS0FWUWdBcHVmd3N5SWh3T3dFQU5OeStLbEFDREFyQWNCMEhINHFFZ0xNUmdBd0RZZWZCRUtBV1FnQWhuUDRTU1FFR0UwQU1JekREMEtBY1FRQTNUbjhjRTBJMEpzQW9CdUhINTRUQXZUeWNmUWZRQWJISDdZeEsvVGlEUUNuc3N6Z2RkNEdjQ1lCd0NrY2ZtaEhDSEFHbndCb3p2R0h0c3dVWi9BR2dHWXNLVGlmdHdHMElnQTR6T0dIL29RQVIva0V3Q0dPUDR4aDlqaktHd0JlWXZuQVBMd040QlhlQUxDYjR3OXpNWk84d2hzQU5yTmtZSDdlQnJDVk53QnM0dmpER3N3cVd3a0FuckpRWUMxbWxpMThBdUF1U3dUVzU1TUE5M2dEd0UyT1A5UmdscmxIQUhERndvQmF6RFMzK0FUQS95d0pxTThuQVg3eUJvREw1ZUw0UXdxenprOENBQXNCd3BoNUxoZWZBS0paQW9CUEFybThBUWpsK0FPWGkxMlFUQUFFTXZEQXIreUVUQUlnakVFSGJyRWI4Z2lBSUFZY2VNU095T0pIZ0FFTU5iQ1hId2ZXNXcxQWNZNC84QXE3b3o0QlVKZ0JCbzZ3UTJvVEFFVVpYS0FGdTZRdUFWQ1FnUVZhc2xOcUVnREZHRlRnREhaTFBRS2dFQU1Lbk1tT3FVVUFGR0V3Z1I3c21qb0VRQUVHRXVqSnpxbEJBQ3pPSUFJajJEM3JFd0FMTTREQVNIYlEyZ1RBb2d3ZU1BTzdhRjBDWUVFR0RwaUpuYlFtQWJBWWd3Yk15RzVhandCWWlBRURabVpIclVVQUxNSmdBU3V3cTlZaEFCWmdvSUNWMkZsckVBQ1RNMGpBaXV5dStRbUFpUmtnWUdWMjJOd0V3S1FNRGxDQlhUWXZBVEFoQXdOVVlxZk5TUUFBUUNBQk1CbWxERlJrdDgxSEFFekVnQUNWMlhGekVRQ1RNQmhBQXJ0dUhnSmdBZ1lDU0dMbnpVRUFER1lRZ0VSMjMzZ0NBQUFDQ1lDQkZEQ1F6QTRjU3dBTTRzRUhzQXRIRWdBRGVPQUIzdGlKWXdnQUFBZ2tBRHBUdWdEWDdNYitCRUJISG5DQSsrekl2Z1JBSng1c2dPZnN5bjRFQUFBRUVnQWRLRnFBN2V6TVBnVEF5VHpJQVB2Wm5lY1RBQ2Z5QUFPOHpnNDlsd0FBZ0VBQzRDVEtGZUE0dS9ROEF1QUVIbGlBZHV6VWN3Z0FBQWdrQUJwVHFnRHQyYTN0Q1lDR1BLQUE1N0ZqMnhJQUFCQklBRFNpVEFIT1o5ZTJJd0FBSUpBQWFFQ1JBdlJqNTdZaEFBN3lJQUwwWi9jZUp3QUFJSkFBT0VDQkFveGpCeDhqQUFBZ2tBQjRrZklFR004dWZwMEFlSUVIRG1BZWR2SnJCQUFBQkJJQU95bE5nUG5ZemZzSkFBQUlKQUIyVUpnQTg3S2o5eEVBQUJCSUFHeWtMQUhtWjFkdkp3QUFJSkFBMkVCUkFxekR6dDVHQUFCQUlBSHdoSklFV0kvZC9ad0FBSUJBQXVBQkJRbXdManY4TVFFQUFJRUV3QjNLRVdCOWR2bDlBZ0FBQWdtQUd4UWpRQjEyK20wQ0FBQUNDWURmS0VXQWV1ejJhd0lBQUFJSkFBQUlKQUIrNFJVUlFGMTIvSHNDQUFBQ0NZQWZsQ0ZBZlhiOUd3RUFBSUVFd0VVUkFpU3g4NzhUQUFBUVNBQUFRS0Q0QVBBcUNDQ1AzUzhBQUNDU0FBQ0FRTkVCNEJVUVFLNzBHeEFkQUFDUUtqWUEwc3NQZ094YkVCc0FBSkJNQUFCQW9NZ0FTSDdsQThCN3FUY2hNZ0FBSUowQUFJQkFjUUdRK3FvSGdQc1NiME5jQUFBQUFnQUFJZ2tBQUFnVUZRQ0ozM2dBMkNidFJrUUZBQUR3blFBQWdFQXhBWkQyYWdlQS9aSnVSVXdBQUFCdkJBQUFCQklBQUJBb0lnQ1N2dWtBY0V6S3pZZ0lBQURnUFFFQUFJRUVBQUFFS2g4QUtkOXlBR2duNFhhVUR3QUE0Sm9BQUlCQUFnQUFBcFVPZ0lSdk9BQ2NvL29OS1IwQUFNQnRBZ0FBQWdrQUFBZ2tBQUFnVU5rQXFQN2pEUURPVi9tV2xBMEFBT0ErQVFBQWdRUUFBQVFTQUFBUVNBQUFRS0NTQVZENVY1c0E5RlgxcHBRTUFBRGdNUUVBQUlFRUFBQUVFZ0FBRUVnQUFFQWdBUUFBZ2NvRlFOWC9YQU9BY1NyZWxuSUJBQUE4SndBQUlKQUFBSUJBQWdBQUFna0FBQWdrQUFBZ2tBQUFnRUFDQUFBQ0NRQUFDQ1FBQUNCUXFRQ28rTDlxQkdBTzFXNU1xUUFBQUxZUkFBQVFTQUFBUUNBQkFBQ0JCQUFBQkJJQUFCQklBQUJBSUFFQUFJRUVBQUFFRWdBQUVFZ0FBRUFnQVFBQWdRUUFBQVFTQUFBUVNBQUFRQ0FCQUFDQkJBQUFCQklBQUJCSUFBQkFJQUVBQUlFRUFBQUVFZ0FBRUVnQUFFQWdBUUFBZ1FRQUFBUVNBQUFRU0FBQVFLQlNBZkRYMTM5SC93a0FGRlh0eHBRS0FBQmdHd0VBQUlFRUFBQUVFZ0FBRUVnQUFFQWdBUUFBZ1FRQUFBUVNBQUFRU0FBQVFDQUJBQUNCeWdWQXRmOVZJd0RqVmJ3dDVRSUFBSGhPQUFCQUlBRUFBSUVFQUFBRUVnQUFFRWdBQUVDZ2tnRlE4VC9YQUdDTXFqZWxaQUFBQUk4SkFBQUlKQUFBSUpBQUFJQkFBZ0FBQXBVTmdLcS8yZ1NnbjhxM3BHd0FBQUQzQ1FBQUNDUUFBQ0NRQUFDQVFLVURvUEtQTndBNFYvVWJVam9BQUlEYkJBQUFCQklBQUJDb2ZBQlUvNFlEUUhzSnQ2TjhBQUFBMXdRQUFBUVNBQUFRS0NJQUVyN2xBTkJHeXMySUNBQUE0RDBCQUFDQkJBQUFCSW9KZ0pSdk9nQzhMdWxXeEFRQUFQQkdBQUJBb0tnQVNIcTFBOEErYVRjaUtnQUFnTzhFQUFBRUVnQUFFQ2d1QU5LKzhRRHdYT0p0aUFzQUFFQUFBRUNreUFCSWZOVUR3RzJwTnlFeUFBQWduUUFBZ0VDeEFaRDZ5Z2VBTjhtM0lEWUFBQ0JaZEFBa2x4OUF1dlFiRUIwQUFKQktBQUJBb1BnQVNIOEZCSkRJN2hjQUFCQkpBQUJBSUFGdzhTb0lJSW1kLzUwQUFJQkFBdUFIUlFoUW4xMy9SZ0FBUUNBQjhBdGxDRkNYSGYrZUFBQ0FRQUlBQUFJSmdOOTRSUVJRajkxK1RRQUFRQ0FCY0lOU0JLakRUcjlOQUFCQUlBRndoMklFV0o5ZGZwOEFBSUJBQXVBQjVRaXdManY4TVFFQUFJRUV3Qk1LRW1BOWR2ZHpBZ0FBQWdtQURaUWt3RHJzN0cwRUFBQUVFZ0FiS1VxQStkblYyd2tBQUFna0FIWlFsZ0R6c3FQM0VRQUFFRWdBN0tRd0FlWmpOKzhuQUFBZ2tBQjRnZElFbUllZC9Cb0I4Q0lQSE1CNGR2SHJCQUFBQkJJQUJ5aFBnSEhzNEdNRUFBQUVFZ0FIS1ZDQS91emU0d1JBQXg1RWdIN3MzRFlFQUFBRUVnQ05LRktBODltMTdRZ0FBQWdrQUJwU3BnRG5zV1BiRWdDTmVVQUIyck5iMnhNQUFCQklBSnhBcVFLMFk2ZWVRd0NjeEFNTGNKeGRlaDRCQUFDQkJNQ0psQ3ZBNit6UWN3bUFrM21BQWZhek84OG5BRHJ3SUFOc1oyZjJJUUFBSUpBQTZFVFJBanhuVi9ZakFEcnlZQVBjWjBmMkpRQTY4NEFEWExNYit4TUFBQkJJQUF5Z2RBSGUySWxqQ0lCQlBQQUFkdUZJQW1BZ0R6NlF6QTRjU3dBQVFDQUJNSmdDQmhMWmZlTUpnQWtZQkNDSm5UY0hBVEFKQXdFa3NPdm1JUUFtWWpDQXl1eTR1UWlBeVJnUW9DSzdiVDRDQUFBQ0NZQUpLV1dnRWp0dFRnSmdVZ1lHcU1BdW01Y0FtSmpCQVZabWg4MU5BRXpPQUFFcnNydm1Kd0FXWUpDQWxkaFpheEFBaXpCUXdBcnNxblVJZ0lVWUxHQm1kdFJhQk1CaURCZ3dJN3RwUFFKZ1FRWU5tSW1kdENZQnNDZ0RCOHpBTGxxWEFGaVl3UU5Hc29QV0pnQVdad0NCRWV5ZTlRbUFBZ3dpMEpPZFU0TUFLTUpBQWozWU5YVUlnRUlNSm5BbU82WVdBVkNNQVFYT1lMZlVJd0FLTXFoQVMzWktUUUtnS0FNTHRHQ1gxQ1VBQ2pPNHdCRjJTRzBDb0RnRERMekM3cWp2dzZmUFg3Nk4vaVBvNDUrLy94ejlKd0NUYy9oemVBTVF4R0FEajlnUldRUkFHQU1PM0dJMzVCRUFnUXc2OENzN0laTUFDR1hnZ2N2Rkxram1SNEQ0Y1NBRWN2anhCZ0NMQU1LWWVTNFhBY0FQRmdKa01Pdjg1Qk1BVjN3U2dIb2NmbjduRFFCWExBcW94VXh6aXdEZ0pnc0RhakRMM09NVEFFLzVKQURyY2ZoNXhoc0FuckpJWUMxbWxpMEVBSnRZS0xBR3M4cFdQZ0d3bTA4Q01CK0huNzI4QVdBM2l3Ym1ZaVo1aFRjQUhPSnRBSXpqOEhPRU53QWNZZ0hCR0dhUG83d0JvQmx2QStCOERqK3RDQUNhRXdMUW5zTlBhejRCMEp4RkJXMlpLYzdnRFFDbjhqWUFYdWZ3Y3lZQlFCZENBTFp6K09uQkp3QzZzTkJnRzdOQ0w5NEEwSjIzQVhETjRhYzNBY0F3UWdBY2ZzWVJBQXduQkVqazhET2FBR0FhUW9BRURqK3pFQUJNUndoUWtjUFBiQVFBMHhJQ1ZPRHdNeXNCd1BTRUFDdHkrSm1kQUdBWlFvQVZPUHlzUWdDd0hDSEFqQngrVmlNQVdKb1lZQ1JIbjVVSkFFb1FBdlRrOEZPQkFLQVVJY0NaSEg0cUVRQ1VKUVpvd2RHbktnRkFCREhBSG80K0NRUUFVWVFBanpqOEpCRUF4QklEWEM2T1Bya0VBRnpFUUJwSEh3UUEzQ1FJYW5IdzRab0FnQ2ZFd0pvY2ZYaE1BTUJPZ21CT0RqN3NJd0RnSUVFd2hvTVB4d2dBYUV3UW5NUEJoN1lFQUhRZ0N2Wng3T0Y4QWdBR1NnOERoeDdHRVFBd3FTcHg0TWpEbkFRQUZOQTdGaHgxV0o4QUFJQkFIMGYvQVFCQWZ3SUFBQUlKQUFBSUpBQUFJSkFBQUlCQUFnQUFBZ2tBQUFna0FBQWdrQUFBZ0VBQ0FBQUNDUUFBQ0NRQUFDQ1FBQUNBUUFJQUFBSUpBQUFJSkFBQUlKQUFBSUJBQWdBQUFna0FBQWdrQUFBZ2tBQUFnRUFDQUFBQ0NRQUFDQ1FBQUNDUUFBQ0FRQUlBQUFJSkFBQUlKQUFBSUpBQUFJQkFBZ0FBQWdrQUFBZ2tBQUFna0FBQWdFQUNBQUFDQ1FBQUNDUUFBQ0NRQUFDQVFBSUFBQUlKQUFBSUpBQUFJSkFBQUlCQUFnQUFBZ2tBQUFna0FBQWdrQUFBZ0VBQ0FBQUNDUUFBQ0NRQUFDQ1FBQUNBUUFJQUFBTDlCNDZETkk1QWU4NzlBQUFBQUVsRlRrU3VRbUNDIiwic2l6ZXMiOiI1MTJ4NTEyIiwidHlwZSI6ImltYWdlL3BuZyIsInB1cnBvc2UiOiJtYXNrYWJsZSJ9XX0=">
+<meta name="theme-color" content="#14161B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Relay">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAExElEQVR4nO3b0Y1TSRCG0Wa1ZMDyQn4ERYqEwAP7gCwNZsx47Nu3q/o/J4DRqKs+l0Hw4dPnLz8HhPpn9S8AKwmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBo/67+BXb2/dvHQ37Of19/HPJz+NMH/yf4eUct+nsJ43kCeMCqhX+LIN5PAHeouvBvEcTbBHBD16W/RQyvE8CV3Rb/mhB+J4Cx/9LfIobwAFIX/1pyCJEBWPzXJYYQFYDFv09SCBEBWPzHJISw/b8FsvyPS3i7bS9AwvDOtOs12PICWP7j7fqmW12AXYdUzU7XYJsLYPnPs9NbbxHATgPpYpc3b/0VaJchdNf5K1HbC2D56+g8i5YBdH7wXXWdSbsAuj50go6zaRVAxwdO021GbQLo9rDJOs2qRQCdHpRfusysfABdHpI/dZhd6QA6PCB/V32GZQOo/nDcr/IsSwZQ+cF4TNWZlgug6kPxvIqzLRcAnKlUABU/IThWtRmXCaDawzBPpVmXCKDSg3COKjMvEQCssjyAKp8EnK/C7JcGUOEBWGv1Diy/ALDSsgBWl08dK3dhSQCWn2urdsJXIKKdHoBPf25ZsRsuANFODcCnP285e0dcAKKdFoBPf+515q64AEQ7JQCf/rzXWTvjAhBNAESbHoCvPzzqjN1xAYg2NQCf/jxr9g65AEQTANGmBeDrD0eZuUsuANEEQDQBEG1KAL7/c7RZO+UCEE0ARBMA0Q4PwPd/ZpmxWy4A0QRANAEQTQBEEwDRDg3A3wAx29E75gIQTQBEEwDRBEA0ARBNAEQTANEEQDQBEE0ARBMA0QRANAEQTQBEEwDRBEA0ARDt0AD++/rjyB8Hfzh6x1wAogmAaAIgmgCIJgCiHR6Avwlilhm75QIQTQBEEwDRpgTgzwEcbdZOuQBEEwDRBEC0aQH4cwBHmblLLgDRBEC0qQH4GsSzZu+QC0C06QG4AjzqjN1xAYgmAKKdEoCvQbzXWTvjAhDttABcAe515q64AEQ7NQBXgLecvSMuANFOD8AV4JYVu+ECEG1JAK4A11btxLILIAIuVu6Cr0BEWxqAK8DqHVh+AVY/AOtUmP3yAGClEgFU+CTgXFVmXiKAMeo8CPNVmnWZAMao9TDMUW3GpQKAs5ULoNonBMepONtyAYxR86F4TtWZlgxgjLoPxvtVnmXZAMao/XDcp/oMSwcwRv0H5LYOsysfwBg9HpLfdZlZiwDG6POg9JpVmwDG6PWwqbrNqFUAY/R74CQdZ9MugDF6PvTuus6kZQBj9H3wHXWexYdPn7/8XP1LPOv7t4+rf4VInRf/ou0FeGmHQXSzy5tvEcAY+wykg53eeouvQNd8JZpjp8W/2OYCvLTjoFbb9U23vAAvuQbP2XXxL7a8AC/tPsCZEt5u+wvwkmtwn4TFv4gK4EIIr0ta/IvIAC6E8Evi4l9EB3CRGkLy4l8I4MruMVj63wnght1CsPivE8AdusZg6d8mgAdUDcLCv58ADrAqCAv/PAFMdFQYFn0eARBt+38LBH8jAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiCYAov0PrBg15nZiZ0gAAAAASUVORK5CYII=">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#14161B;
+    --panel:#1C1F26;
+    --panel-raised:#22262F;
+    --line:#2C303A;
+    --amber:#FFB020;
+    --sage:#6FBF97;
+    --bubble-recv:#2A2E38;
+    --text:#ECECEF;
+    --text-dim:#8A8F9C;
+    --danger:#E0637A;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    overflow:hidden;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
+  }
+
+  /* ---------- picker screen ---------- */
+  #picker{
+    position:fixed; inset:0;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:36px;
+    background:
+      radial-gradient(circle at 50% 30%, rgba(255,176,32,0.08), transparent 60%),
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 3px),
+      var(--bg);
+    padding:24px;
+    text-align:center;
+  }
+  .picker-eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.2em;
+    color:var(--amber);
+    text-transform:uppercase;
+  }
+  .picker-title{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:clamp(32px,7vw,52px);
+    font-weight:700;
+    margin:8px 0 4px;
+  }
+  .picker-sub{
+    color:var(--text-dim);
+    font-size:14px;
+    max-width:340px;
+    line-height:1.5;
+  }
+  .dial-row{ display:flex; gap:18px; flex-wrap:wrap; justify-content:center; }
+  .dial-btn{
+    width:150px;
+    padding:22px 16px;
+    border-radius:16px;
+    border:1px solid var(--line);
+    background:var(--panel);
+    color:var(--text);
+    cursor:pointer;
+    display:flex; flex-direction:column; align-items:center; gap:10px;
+    transition:transform .15s ease, border-color .15s ease, background .15s ease;
+    font-family:'Inter',sans-serif;
+  }
+  .dial-btn:hover{ transform:translateY(-3px); border-color:var(--amber); background:var(--panel-raised); }
+  .dial-btn:active{ transform:translateY(0); }
+  .dial-avatar{
+    width:52px; height:52px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:20px;
+    background:linear-gradient(150deg, var(--amber), #ff8a3d);
+    color:#161616;
+  }
+  .dial-btn:nth-child(2) .dial-avatar{ background:linear-gradient(150deg, var(--sage), #3f9ea9); color:#0e1a17;}
+  .dial-name{ font-weight:600; font-size:15px; }
+  .dial-tag{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-dim); }
+
+  /* ---------- chat screen ---------- */
+  #chat{
+    display:none;
+    height:100dvh;
+    flex-direction:column;
+  }
+  .app-header{
+    display:flex; align-items:center; gap:12px;
+    padding:14px 16px;
+    background:var(--panel);
+    border-bottom:1px solid var(--line);
+    flex-shrink:0;
+  }
+  .avatar{
+    width:40px; height:40px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:16px;
+    background:linear-gradient(150deg, var(--sage), #3f9ea9);
+    color:#0e1a17;
+    position:relative;
+    flex-shrink:0;
+  }
+  .led{
+    position:absolute; bottom:-1px; right:-1px;
+    width:11px; height:11px; border-radius:50%;
+    background:var(--text-dim);
+    border:2px solid var(--panel);
+    transition:background .3s ease;
+  }
+  .led.online{ background:var(--sage); box-shadow:0 0 6px var(--sage); }
+  .header-meta{ flex:1; min-width:0; }
+  .header-name{ font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:16px; }
+  .header-status{ font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--text-dim); }
+  .header-actions{ display:flex; gap:8px; align-items:center; }
+  .icon-btn{
+    width:38px; height:38px; border-radius:10px;
+    border:1px solid var(--line);
+    background:var(--panel-raised);
+    color:var(--text-dim);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    position:relative;
+    transition:border-color .15s ease, color .15s ease;
+  }
+  .icon-btn:hover{ border-color:var(--amber); color:var(--amber); }
+  .icon-btn.active{ color:var(--amber); border-color:var(--amber); }
+  .icon-btn svg{ width:18px; height:18px; }
+  .bell-ring{ animation: ring 0.6s ease; }
+  @keyframes ring{
+    0%,100%{ transform:rotate(0);}
+    15%{ transform:rotate(18deg);}
+    30%{ transform:rotate(-16deg);}
+    45%{ transform:rotate(12deg);}
+    60%{ transform:rotate(-8deg);}
+    75%{ transform:rotate(4deg);}
+  }
+  .badge{
+    position:absolute; top:-5px; right:-5px;
+    min-width:16px; height:16px; padding:0 3px;
+    border-radius:8px;
+    background:var(--danger);
+    color:#fff;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    display:flex; align-items:center; justify-content:center;
+    display:none;
+  }
+  .badge.show{ display:flex; }
+
+  #messages{
+    flex:1;
+    overflow-y:auto;
+    padding:18px 14px 10px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    scroll-behavior:smooth;
+  }
+  .day-divider{
+    align-self:center;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    color:var(--text-dim);
+    background:var(--panel);
+    padding:3px 10px;
+    border-radius:20px;
+    margin:10px 0;
+  }
+  .bubble-row{ display:flex; }
+  .bubble-row.me{ justify-content:flex-end; }
+  .bubble{
+    max-width:75%;
+    padding:9px 13px 7px;
+    border-radius:16px;
+    font-size:14.5px;
+    line-height:1.42;
+    word-wrap:break-word;
+    white-space:pre-wrap;
+    position:relative;
+    animation: pop-in .18s ease;
+  }
+  @keyframes pop-in{ from{ opacity:0; transform:translateY(6px) scale(.98);} to{opacity:1; transform:none;} }
+  .bubble-row.me .bubble{
+    background:var(--sage);
+    color:#0e1a17;
+    border-bottom-right-radius:4px;
+  }
+  .bubble-row.them .bubble{
+    background:var(--bubble-recv);
+    color:var(--text);
+    border-bottom-left-radius:4px;
+  }
+  .bubble-time{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    opacity:.6;
+    display:block;
+    text-align:right;
+    margin-top:3px;
+  }
+  .typing-row{ display:none; padding-left:2px; }
+  .typing-row.show{ display:flex; }
+  .typing-dots{
+    background:var(--bubble-recv);
+    padding:10px 14px;
+    border-radius:16px;
+    border-bottom-left-radius:4px;
+    display:flex; gap:4px;
+  }
+  .typing-dots span{
+    width:6px; height:6px; border-radius:50%;
+    background:var(--text-dim);
+    animation: bounce 1.1s infinite ease-in-out;
+  }
+  .typing-dots span:nth-child(2){ animation-delay:.15s; }
+  .typing-dots span:nth-child(3){ animation-delay:.3s; }
+  @keyframes bounce{ 0%,60%,100%{ transform:translateY(0); opacity:.5;} 30%{ transform:translateY(-4px); opacity:1;} }
+
+  .composer{
+    display:flex; align-items:flex-end; gap:10px;
+    padding:12px 14px calc(12px + env(safe-area-inset-bottom));
+    background:var(--panel);
+    border-top:1px solid var(--line);
+    flex-shrink:0;
+  }
+  #textInput{
+    flex:1;
+    resize:none;
+    max-height:120px;
+    background:var(--panel-raised);
+    border:1px solid var(--line);
+    color:var(--text);
+    border-radius:14px;
+    padding:11px 14px;
+    font-family:'Inter',sans-serif;
+    font-size:14.5px;
+    line-height:1.4;
+  }
+  #textInput:focus{ outline:none; border-color:var(--amber); }
+  #sendBtn{
+    width:42px; height:42px; border-radius:12px;
+    background:var(--amber);
+    border:none;
+    color:#1a1400;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    flex-shrink:0;
+    transition:transform .12s ease;
+  }
+  #sendBtn:active{ transform:scale(.92); }
+  #sendBtn svg{ width:19px; height:19px; }
+
+  /* toast */
+  #toast{
+    position:fixed;
+    top:14px; left:50%;
+    transform:translate(-50%,-140%);
+    width:min(360px, calc(100% - 28px));
+    background:var(--panel-raised);
+    border:1px solid var(--amber);
+    border-radius:14px;
+    padding:12px 14px;
+    display:flex; gap:10px; align-items:flex-start;
+    box-shadow:0 10px 30px rgba(0,0,0,0.45);
+    transition:transform .3s cubic-bezier(.2,.9,.3,1.3);
+    z-index:50;
+    cursor:pointer;
+  }
+  #toast.show{ transform:translate(-50%,0); }
+  .toast-dot{ width:8px; height:8px; border-radius:50%; background:var(--amber); margin-top:6px; flex-shrink:0; animation:pulse-dot 1.2s infinite; }
+  @keyframes pulse-dot{ 0%,100%{opacity:1;} 50%{opacity:.3;} }
+  .toast-body{ flex:1; min-width:0; }
+  .toast-name{ font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:13px; }
+  .toast-text{ font-size:13px; color:var(--text-dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+  /* permission banner */
+  #permBanner{
+    display:none;
+    background:#2A2210;
+    border-bottom:1px solid var(--amber);
+    color:var(--amber);
+    font-size:12.5px;
+    padding:9px 14px;
+    align-items:center;
+    gap:10px;
+    flex-shrink:0;
+  }
+  #permBanner.show{ display:flex; }
+  #permBanner button{
+    margin-left:auto;
+    background:var(--amber);
+    color:#1a1400;
+    border:none;
+    padding:6px 12px;
+    border-radius:8px;
+    font-weight:600;
+    font-size:12px;
+    cursor:pointer;
+    font-family:'Inter',sans-serif;
+    flex-shrink:0;
+  }
+
+  ::-webkit-scrollbar{ width:8px; }
+  ::-webkit-scrollbar-thumb{ background:var(--line); border-radius:8px; }
+</style>
+</head>
+<body>
+
+<!-- ============ IDENTITY PICKER ============ -->
+<div id="picker">
+  <div>
+    <div class="picker-eyebrow">Relay // direct line</div>
+    <div class="picker-title">Who's on the line?</div>
+    <div class="picker-sub">Open this page in two tabs (or two devices) and pick a different side on each to talk to yourself — or hand one off to a friend.</div>
+  </div>
+  <div class="dial-row">
+    <button class="dial-btn" data-name="Saksham">
+      <div class="dial-avatar">S</div>
+      <div class="dial-name">Saksham</div>
+      <div class="dial-tag">SIDE A</div>
+    </button>
+    <button class="dial-btn" data-name="Sweksha">
+      <div class="dial-avatar">S</div>
+      <div class="dial-name">Sweksha</div>
+      <div class="dial-tag">SIDE B</div>
+    </button>
+  </div>
+</div>
+
+<!-- ============ CHAT SCREEN ============ -->
+<div id="chat">
+  <div id="permBanner">
+    <span id="permBannerText">Turn on desktop &amp; sound alerts for new messages</span>
+    <button id="permBtn">Enable</button>
+  </div>
+  <div class="app-header">
+    <div class="avatar" id="contactAvatar">
+      <span id="contactInitial">?</span>
+      <div class="led" id="contactLed"></div>
+    </div>
+    <div class="header-meta">
+      <div class="header-name" id="contactName">—</div>
+      <div class="header-status" id="contactStatus">offline</div>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" id="installBtn" title="Install to home screen" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+      </button>
+      <button class="icon-btn" id="soundBtn" title="Toggle sound">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+      </button>
+      <button class="icon-btn" id="bellBtn" title="Notifications">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span class="badge" id="badgeCount">0</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="messages"></div>
+
+  <div class="bubble-row them typing-row" id="typingRow">
+    <div class="typing-dots"><span></span><span></span><span></span></div>
+  </div>
+
+  <div class="composer">
+    <textarea id="textInput" rows="1" placeholder="Message…"></textarea>
+    <button id="sendBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+    </button>
+  </div>
+</div>
+
+<div id="toast">
+  <div class="toast-dot"></div>
+  <div class="toast-body">
+    <div class="toast-name" id="toastName"></div>
+    <div class="toast-text" id="toastText"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  const STORE_KEY = "relay_messages_v1";
+  const PRESENCE_PREFIX = "relay_presence_";
+  const CHANNEL_NAME = "relay-chat-v1";
+  const NAMES = ["Saksham","Sweksha"];
+
+  let identity = sessionStorage.getItem("relay_identity");
+  let contact = null;
+  let soundOn = localStorage.getItem("relay_sound") !== "off";
+  let unread = 0;
+  let lastSeenId = 0;
+
+  const bc = ("BroadcastChannel" in window) ? new BroadcastChannel(CHANNEL_NAME) : null;
+  const isSecureContext = window.isSecureContext; // true on https/localhost, false on file://
+
+  // ---------- elements ----------
+  const picker = document.getElementById("picker");
+  const chatScreen = document.getElementById("chat");
+  const messagesEl = document.getElementById("messages");
+  const textInput = document.getElementById("textInput");
+  const sendBtn = document.getElementById("sendBtn");
+  const contactName = document.getElementById("contactName");
+  const contactInitial = document.getElementById("contactInitial");
+  const contactStatus = document.getElementById("contactStatus");
+  const contactLed = document.getElementById("contactLed");
+  const bellBtn = document.getElementById("bellBtn");
+  const badgeCount = document.getElementById("badgeCount");
+  const soundBtn = document.getElementById("soundBtn");
+  const permBanner = document.getElementById("permBanner");
+  const permBtn = document.getElementById("permBtn");
+  const typingRow = document.getElementById("typingRow");
+  const toast = document.getElementById("toast");
+  const toastName = document.getElementById("toastName");
+  const toastText = document.getElementById("toastText");
+
+  // typingRow lives in the messages list so we can insertBefore it
+  messagesEl.appendChild(typingRow);
+
+  // ---------- identity selection ----------
+  document.querySelectorAll(".dial-btn").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      identity = btn.dataset.name;
+      sessionStorage.setItem("relay_identity", identity);
+      startChat();
+    });
+  });
+
+  if(identity){ startChat(); }
+
+  function startChat(){
+    contact = NAMES.find(n=>n!==identity) || "Them";
+    picker.style.display = "none";
+    chatScreen.style.display = "flex";
+
+    contactName.textContent = contact;
+    contactInitial.textContent = contact[0];
+    document.title = "Relay — " + contact;
+
+    soundBtn.classList.toggle("active", soundOn);
+    updatePermBanner();
+    renderAll();
+    heartbeat();
+    setInterval(heartbeat, 3000);
+    setInterval(checkPresence, 1500);
+    checkPresence();
+
+    textInput.focus();
+  }
+
+  // ---------- messages storage ----------
+  function loadMessages(){
+    try{ return JSON.parse(localStorage.getItem(STORE_KEY)) || []; }
+    catch(e){ return []; }
+  }
+  function saveMessages(list){
+    localStorage.setItem(STORE_KEY, JSON.stringify(list));
+  }
+
+  function renderAll(){
+    const list = loadMessages();
+    messagesEl.innerHTML = "";
+    messagesEl.appendChild(typingRow);
+    let lastDay = "";
+    list.forEach(m=>{
+      const day = new Date(m.ts).toDateString();
+      if(day !== lastDay){
+        const div = document.createElement("div");
+        div.className = "day-divider";
+        div.textContent = formatDay(m.ts);
+        messagesEl.appendChild(div);
+        lastDay = day;
+      }
+      appendBubble(m, false);
+    });
+    lastSeenId = list.length ? list[list.length-1].id : 0;
+    scrollToBottom();
+  }
+
+  function formatDay(ts){
+    const d = new Date(ts);
+    const today = new Date();
+    if(d.toDateString() === today.toDateString()) return "Today";
+    return d.toLocaleDateString(undefined,{month:"short",day:"numeric"});
+  }
+  function formatTime(ts){
+    return new Date(ts).toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"});
+  }
+
+  function appendBubble(m, animate){
+    const row = document.createElement("div");
+    row.className = "bubble-row " + (m.from === identity ? "me" : "them");
+    const b = document.createElement("div");
+    b.className = "bubble";
+    if(!animate) b.style.animation = "none";
+    const textSpan = document.createElement("span");
+    textSpan.textContent = m.text;
+    const time = document.createElement("span");
+    time.className = "bubble-time";
+    time.textContent = formatTime(m.ts);
+    b.appendChild(textSpan);
+    b.appendChild(time);
+    row.appendChild(b);
+    messagesEl.insertBefore(row, typingRow);
+  }
+
+  function scrollToBottom(){
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  function sendMessage(){
+    const text = textInput.value.trim();
+    if(!text) return;
+    const list = loadMessages();
+    const msg = { id: Date.now() + Math.random(), from: identity, text: text, ts: Date.now() };
+    list.push(msg);
+    saveMessages(list);
+    appendBubble(msg, true);
+    scrollToBottom();
+    lastSeenId = msg.id;
+    textInput.value = "";
+    autoGrow();
+    broadcast({ type:"message", msg });
+    broadcast({ type:"typing", from: identity, active:false });
+  }
+
+  sendBtn.addEventListener("click", sendMessage);
+  textInput.addEventListener("keydown", e=>{
+    if(e.key === "Enter" && !e.shiftKey){
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+  textInput.addEventListener("input", ()=>{
+    autoGrow();
+    broadcast({ type:"typing", from: identity, active: textInput.value.length>0 });
+    clearTimeout(window.__typingTimeout);
+    window.__typingTimeout = setTimeout(()=>{
+      broadcast({ type:"typing", from: identity, active:false });
+    }, 1500);
+  });
+  function autoGrow(){
+    textInput.style.height = "auto";
+    textInput.style.height = Math.min(textInput.scrollHeight, 120) + "px";
+  }
+
+  // ---------- cross-tab sync ----------
+  function broadcast(payload){
+    if(bc) bc.postMessage(payload);
+  }
+  if(bc){
+    bc.onmessage = (e)=> handleIncoming(e.data);
+  }
+  // fallback for browsers without BroadcastChannel: storage event
+  window.addEventListener("storage", (e)=>{
+    if(e.key === STORE_KEY){
+      const list = loadMessages();
+      const latest = list[list.length-1];
+      if(latest && latest.id !== lastSeenId && latest.from !== identity){
+        handleIncoming({ type:"message", msg: latest });
+      }
+    }
+  });
+
+  function handleIncoming(data){
+    if(!data) return;
+    if(data.type === "message"){
+      if(data.msg.from === identity) return; // own echo
+      const day = new Date(data.msg.ts).toDateString();
+      const lastDivider = messagesEl.querySelector(".day-divider:last-of-type");
+      const lastList = loadMessages();
+      const prevMsg = lastList[lastList.length-2];
+      if(!prevMsg || new Date(prevMsg.ts).toDateString() !== day){
+        const div = document.createElement("div");
+        div.className = "day-divider";
+        div.textContent = formatDay(data.msg.ts);
+        messagesEl.insertBefore(div, typingRow);
+      }
+      appendBubble(data.msg, true);
+      lastSeenId = data.msg.id;
+      typingRow.classList.remove("show");
+      onNewIncomingMessage(data.msg);
+    }
+    if(data.type === "typing" && data.from !== identity){
+      typingRow.classList.toggle("show", !!data.active);
+      if(data.active) scrollToBottom();
+    }
+    if(data.type === "presence-ping"){
+      checkPresence();
+    }
+  }
+
+  // ---------- presence ----------
+  function heartbeat(){
+    localStorage.setItem(PRESENCE_PREFIX + identity, Date.now().toString());
+    broadcast({ type:"presence-ping" });
+  }
+  function checkPresence(){
+    const ts = parseInt(localStorage.getItem(PRESENCE_PREFIX + contact) || "0", 10);
+    const online = (Date.now() - ts) < 6000;
+    contactLed.classList.toggle("online", online);
+    contactStatus.textContent = online ? "online" : "offline";
+  }
+
+  // ---------- notifications: sound, toast, desktop/OS ----------
+  let audioCtx = null;
+  function playPing(){
+    if(!soundOn) return;
+    try{
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      if(audioCtx.state === "suspended") audioCtx.resume();
+      const now = audioCtx.currentTime;
+      [880, 1320].forEach((freq, i)=>{
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "sine";
+        osc.frequency.value = freq;
+        const start = now + i*0.09;
+        gain.gain.setValueAtTime(0, start);
+        gain.gain.linearRampToValueAtTime(0.18, start + 0.015);
+        gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.22);
+        osc.connect(gain).connect(audioCtx.destination);
+        osc.start(start);
+        osc.stop(start + 0.25);
+      });
+    }catch(e){ /* audio unavailable */ }
+  }
+
+  function ringBell(){
+    bellBtn.classList.remove("bell-ring");
+    void bellBtn.offsetWidth;
+    bellBtn.classList.add("bell-ring");
+  }
+
+  function showToast(msg){
+    toastName.textContent = contact;
+    toastText.textContent = msg.text;
+    toast.classList.add("show");
+    clearTimeout(window.__toastTimeout);
+    window.__toastTimeout = setTimeout(()=> toast.classList.remove("show"), 3800);
+  }
+  toast.addEventListener("click", ()=>{
+    toast.classList.remove("show");
+    clearUnread();
+    window.focus();
+  });
+
+  function updateBadge(){
+    badgeCount.textContent = unread > 9 ? "9+" : unread;
+    badgeCount.classList.toggle("show", unread > 0);
+    document.title = (unread > 0 ? "(" + unread + ") " : "") + "Relay — " + contact;
+  }
+  function clearUnread(){
+    unread = 0;
+    updateBadge();
+  }
+  bellBtn.addEventListener("click", clearUnread);
+
+  // ---------- service worker, inlined as a Blob (no separate .js file) ----------
+  // Note: most browsers block registering a service worker from a blob: URL
+  // for security reasons — this is attempted anyway and fails silently,
+  // falling back to the plain Notification API below. That's the one
+  // browser-enforced limitation of going fully single-file.
+  let swRegistration = null;
+  const SW_SOURCE = `
+    const CACHE = "relay-cache-v1";
+    self.addEventListener("install", () => self.skipWaiting());
+    self.addEventListener("activate", () => self.clients.claim());
+    self.addEventListener("fetch", (event) => {
+      event.respondWith(fetch(event.request).catch(() => caches.match(event.request)));
+    });
+  `;
+  if("serviceWorker" in navigator && isSecureContext){
+    try{
+      const swBlob = new Blob([SW_SOURCE], { type: "application/javascript" });
+      const swUrl = URL.createObjectURL(swBlob);
+      navigator.serviceWorker.register(swUrl)
+        .then(reg => { swRegistration = reg; })
+        .catch(err => { console.warn("Inline service worker blocked by browser (expected in most browsers):", err.message); });
+    }catch(e){ console.warn("Could not create inline service worker:", e); }
+  }
+
+  function desktopNotify(msg){
+    if(!("Notification" in window)){
+      console.warn("Notification API not available in this browser.");
+      return;
+    }
+    if(Notification.permission !== "granted") return;
+
+    const opts = {
+      body: msg.text,
+      tag: "relay-chat",
+      renotify: true,
+      icon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAExElEQVR4nO3b0Y1TSRCG0Wa1ZMDyQn4ERYqEwAP7gCwNZsx47Nu3q/o/J4DRqKs+l0Hw4dPnLz8HhPpn9S8AKwmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBo/67+BXb2/dvHQ37Of19/HPJz+NMH/yf4eUct+nsJ43kCeMCqhX+LIN5PAHeouvBvEcTbBHBD16W/RQyvE8CV3Rb/mhB+J4Cx/9LfIobwAFIX/1pyCJEBWPzXJYYQFYDFv09SCBEBWPzHJISw/b8FsvyPS3i7bS9AwvDOtOs12PICWP7j7fqmW12AXYdUzU7XYJsLYPnPs9NbbxHATgPpYpc3b/0VaJchdNf5K1HbC2D56+g8i5YBdH7wXXWdSbsAuj50go6zaRVAxwdO021GbQLo9rDJOs2qRQCdHpRfusysfABdHpI/dZhd6QA6PCB/V32GZQOo/nDcr/IsSwZQ+cF4TNWZlgug6kPxvIqzLRcAnKlUABU/IThWtRmXCaDawzBPpVmXCKDSg3COKjMvEQCssjyAKp8EnK/C7JcGUOEBWGv1Diy/ALDSsgBWl08dK3dhSQCWn2urdsJXIKKdHoBPf25ZsRsuANFODcCnP285e0dcAKKdFoBPf+515q64AEQ7JQCf/rzXWTvjAhBNAESbHoCvPzzqjN1xAYg2NQCf/jxr9g65AEQTANGmBeDrD0eZuUsuANEEQDQBEG1KAL7/c7RZO+UCEE0ARBMA0Q4PwPd/ZpmxWy4A0QRANAEQTQBEEwDRDg3A3wAx29E75gIQTQBEEwDRBEA0ARBNAEQTANEEQDQBEE0ARBMA0QRANAEQTQBEEwDRBEA0ARDt0AD++/rjyB8Hfzh6x1wAogmAaAIgmgCIJgCiHR6Avwlilhm75QIQTQBEEwDRpgTgzwEcbdZOuQBEEwDRBEC0aQH4cwBHmblLLgDRBEC0qQH4GsSzZu+QC0C06QG4AjzqjN1xAYgmAKKdEoCvQbzXWTvjAhDttABcAe515q64AEQ7NQBXgLecvSMuANFOD8AV4JYVu+ECEG1JAK4A11btxLILIAIuVu6Cr0BEWxqAK8DqHVh+AVY/AOtUmP3yAGClEgFU+CTgXFVmXiKAMeo8CPNVmnWZAMao9TDMUW3GpQKAs5ULoNonBMepONtyAYxR86F4TtWZlgxgjLoPxvtVnmXZAMao/XDcp/oMSwcwRv0H5LYOsysfwBg9HpLfdZlZiwDG6POg9JpVmwDG6PWwqbrNqFUAY/R74CQdZ9MugDF6PvTuus6kZQBj9H3wHXWexYdPn7/8XP1LPOv7t4+rf4VInRf/ou0FeGmHQXSzy5tvEcAY+wykg53eeouvQNd8JZpjp8W/2OYCvLTjoFbb9U23vAAvuQbP2XXxL7a8AC/tPsCZEt5u+wvwkmtwn4TFv4gK4EIIr0ta/IvIAC6E8Evi4l9EB3CRGkLy4l8I4MruMVj63wnght1CsPivE8AdusZg6d8mgAdUDcLCv58ADrAqCAv/PAFMdFQYFn0eARBt+38LBH8jAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiCYAov0PrBg15nZiZ0gAAAAASUVORK5CYII=",
+      badge: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAExElEQVR4nO3b0Y1TSRCG0Wa1ZMDyQn4ERYqEwAP7gCwNZsx47Nu3q/o/J4DRqKs+l0Hw4dPnLz8HhPpn9S8AKwmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBo/67+BXb2/dvHQ37Of19/HPJz+NMH/yf4eUct+nsJ43kCeMCqhX+LIN5PAHeouvBvEcTbBHBD16W/RQyvE8CV3Rb/mhB+J4Cx/9LfIobwAFIX/1pyCJEBWPzXJYYQFYDFv09SCBEBWPzHJISw/b8FsvyPS3i7bS9AwvDOtOs12PICWP7j7fqmW12AXYdUzU7XYJsLYPnPs9NbbxHATgPpYpc3b/0VaJchdNf5K1HbC2D56+g8i5YBdH7wXXWdSbsAuj50go6zaRVAxwdO021GbQLo9rDJOs2qRQCdHpRfusysfABdHpI/dZhd6QA6PCB/V32GZQOo/nDcr/IsSwZQ+cF4TNWZlgug6kPxvIqzLRcAnKlUABU/IThWtRmXCaDawzBPpVmXCKDSg3COKjMvEQCssjyAKp8EnK/C7JcGUOEBWGv1Diy/ALDSsgBWl08dK3dhSQCWn2urdsJXIKKdHoBPf25ZsRsuANFODcCnP285e0dcAKKdFoBPf+515q64AEQ7JQCf/rzXWTvjAhBNAESbHoCvPzzqjN1xAYg2NQCf/jxr9g65AEQTANGmBeDrD0eZuUsuANEEQDQBEG1KAL7/c7RZO+UCEE0ARBMA0Q4PwPd/ZpmxWy4A0QRANAEQTQBEEwDRDg3A3wAx29E75gIQTQBEEwDRBEA0ARBNAEQTANEEQDQBEE0ARBMA0QRANAEQTQBEEwDRBEA0ARDt0AD++/rjyB8Hfzh6x1wAogmAaAIgmgCIJgCiHR6Avwlilhm75QIQTQBEEwDRpgTgzwEcbdZOuQBEEwDRBEC0aQH4cwBHmblLLgDRBEC0qQH4GsSzZu+QC0C06QG4AjzqjN1xAYgmAKKdEoCvQbzXWTvjAhDttABcAe515q64AEQ7NQBXgLecvSMuANFOD8AV4JYVu+ECEG1JAK4A11btxLILIAIuVu6Cr0BEWxqAK8DqHVh+AVY/AOtUmP3yAGClEgFU+CTgXFVmXiKAMeo8CPNVmnWZAMao9TDMUW3GpQKAs5ULoNonBMepONtyAYxR86F4TtWZlgxgjLoPxvtVnmXZAMao/XDcp/oMSwcwRv0H5LYOsysfwBg9HpLfdZlZiwDG6POg9JpVmwDG6PWwqbrNqFUAY/R74CQdZ9MugDF6PvTuus6kZQBj9H3wHXWexYdPn7/8XP1LPOv7t4+rf4VInRf/ou0FeGmHQXSzy5tvEcAY+wykg53eeouvQNd8JZpjp8W/2OYCvLTjoFbb9U23vAAvuQbP2XXxL7a8AC/tPsCZEt5u+wvwkmtwn4TFv4gK4EIIr0ta/IvIAC6E8Evi4l9EB3CRGkLy4l8I4MruMVj63wnght1CsPivE8AdusZg6d8mgAdUDcLCv58ADrAqCAv/PAFMdFQYFn0eARBt+38LBH8jAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiCYAov0PrBg15nZiZ0gAAAAASUVORK5CYII=",
+      vibrate: [40,30,40]
+    };
+
+    // On Android/Chrome, `new Notification()` is silently unsupported —
+    // it MUST go through a service worker registration instead.
+    if(swRegistration && swRegistration.showNotification){
+      swRegistration.showNotification(contact + " · Relay", opts).catch(err=>{
+        console.warn("showNotification failed:", err);
+      });
+      return;
+    }
+    try{
+      const n = new Notification(contact + " · Relay", opts);
+      n.onclick = ()=>{ window.focus(); clearUnread(); n.close(); };
+    }catch(e){
+      console.warn("Desktop notification failed:", e);
+    }
+  }
+
+  function onNewIncomingMessage(msg){
+    // every single message notifies — sound, toast, badge, and a desktop/OS
+    // notification — no matter whether the tab is focused or not.
+    playPing();
+    ringBell();
+    unread++;
+    updateBadge();
+    desktopNotify(msg);
+    showToast(msg);
+    if(navigator.vibrate) navigator.vibrate([40,30,40]);
+  }
+
+  window.addEventListener("focus", ()=>{
+    clearUnread();
+  });
+
+  // ---------- permission banner (shows real status + reasons it can fail) ----------
+  const permBannerText = document.getElementById("permBannerText");
+
+  function updatePermBanner(){
+    const supported = "Notification" in window;
+    const dismissed = localStorage.getItem("relay_perm_dismissed") === "1";
+
+    if(!isSecureContext){
+      permBannerText.textContent = "Opened as a local file — notifications & home-screen install need it served over http(s). See instructions below.";
+      permBtn.textContent = "Got it";
+      permBanner.classList.add("show");
+      return;
+    }
+    if(!supported){
+      permBannerText.textContent = "This browser doesn't support desktop notifications.";
+      permBanner.classList.add("show");
+      permBtn.style.display = "none";
+      return;
+    }
+    if(Notification.permission === "denied"){
+      permBannerText.textContent = "Notifications are blocked for this site in your browser settings. Enable them there, then reload.";
+      permBtn.textContent = "Test sound only";
+      permBanner.classList.add("show");
+      return;
+    }
+    if(Notification.permission === "default" && !dismissed){
+      permBannerText.textContent = "Turn on desktop & sound alerts for new messages";
+      permBtn.textContent = "Enable";
+      permBanner.classList.add("show");
+      return;
+    }
+    permBanner.classList.remove("show");
+  }
+
+  permBtn.addEventListener("click", ()=>{
+    // unlock audio on this user gesture
+    try{
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      if(audioCtx.state === "suspended") audioCtx.resume();
+      playPing();
+    }catch(e){}
+
+    if(!isSecureContext){
+      localStorage.setItem("relay_perm_dismissed","1");
+      updatePermBanner();
+      return;
+    }
+    if("Notification" in window && Notification.permission === "default"){
+      Notification.requestPermission().then(()=>{
+        localStorage.setItem("relay_perm_dismissed","1");
+        updatePermBanner();
+        if(Notification.permission === "granted"){
+          desktopNotify({ text: "Notifications are on. You'll see alerts like this one." });
+        }
+      });
+    } else {
+      localStorage.setItem("relay_perm_dismissed","1");
+      updatePermBanner();
+    }
+  });
+
+  soundBtn.addEventListener("click", ()=>{
+    soundOn = !soundOn;
+    localStorage.setItem("relay_sound", soundOn ? "on" : "off");
+    soundBtn.classList.toggle("active", soundOn);
+    if(soundOn) playPing();
+  });
+
+  // ---------- install to home screen ----------
+  const installBtn = document.getElementById("installBtn");
+  let deferredInstallPrompt = null;
+
+  window.addEventListener("beforeinstallprompt", (e)=>{
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    if(isSecureContext) installBtn.style.display = "flex";
+  });
+
+  installBtn.addEventListener("click", async ()=>{
+    if(!deferredInstallPrompt) return;
+    deferredInstallPrompt.prompt();
+    await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+    installBtn.style.display = "none";
+  });
+
+  window.addEventListener("appinstalled", ()=>{
+    installBtn.style.display = "none";
+  });
+
+})();
+</script>
+</body>
+</html>
+
