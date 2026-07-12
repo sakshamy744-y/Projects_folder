@@ -117,6 +117,7 @@
     color:#0e1a17;
     position:relative;
     flex-shrink:0;
+    cursor:pointer;
   }
   .led{
     position:absolute; bottom:-1px; right:-1px;
@@ -130,6 +131,50 @@
   .header-name{ font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:16px; }
   .header-status{ font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--text-dim); }
   .header-actions{ display:flex; gap:8px; align-items:center; }
+
+  #profileMenuOverlay{
+    display:none;
+    position:fixed; inset:0;
+    background:rgba(0,0,0,0.55);
+    z-index:60;
+  }
+  #profileMenuOverlay.show{ display:block; }
+  #profileMenu{
+    position:absolute;
+    top:64px; left:14px;
+    width:230px;
+    background:var(--panel-raised);
+    border:1px solid var(--line);
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:0 12px 30px rgba(0,0,0,0.5);
+  }
+  .profile-menu-header{
+    padding:12px 14px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color:var(--text-dim);
+    border-bottom:1px solid var(--line);
+  }
+  .profile-menu-item{
+    width:100%;
+    text-align:left;
+    padding:13px 14px;
+    background:none;
+    border:none;
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    cursor:pointer;
+  }
+  .profile-menu-item:active{ background:rgba(255,255,255,0.06); }
+  .profile-menu-item svg{ width:17px; height:17px; flex-shrink:0; color:var(--text-dim); }
+  .profile-menu-item.danger{ color:var(--danger); }
+  .profile-menu-item.danger svg{ color:var(--danger); }
+  .profile-menu-divider{ height:1px; background:var(--line); margin:4px 0; }
   .icon-btn{
     width:38px; height:38px; border-radius:10px;
     border:1px solid var(--line);
@@ -382,7 +427,7 @@
     <button id="permBtn">Enable</button>
   </div>
   <div class="app-header">
-    <div class="avatar" id="contactAvatar">
+    <div class="avatar" id="contactAvatar" title="Tap for options">
       <span id="contactInitial">?</span>
       <div class="led" id="contactLed"></div>
     </div>
@@ -403,6 +448,26 @@
       </button>
     </div>
   </div>
+
+  <div id="profileMenuOverlay">
+    <div id="profileMenu">
+      <div class="profile-menu-header">Signed in as <span id="menuSelfName">—</span></div>
+      <button class="profile-menu-item" id="menuGoBack">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+        Go back (switch side)
+      </button>
+      <div class="profile-menu-divider"></div>
+      <button class="profile-menu-item danger" id="menuClearSelf">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+        Clear my messages only
+      </button>
+      <button class="profile-menu-item danger" id="menuClearBoth">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+        Clear chat for both
+      </button>
+    </div>
+  </div>
+
 
   <div id="messages"></div>
 
@@ -510,6 +575,7 @@
   const messagesEl = document.getElementById("messages");
   const textInput = document.getElementById("textInput");
   const sendBtn = document.getElementById("sendBtn");
+  const contactAvatarEl = document.getElementById("contactAvatar");
   const contactName = document.getElementById("contactName");
   const contactInitial = document.getElementById("contactInitial");
   const contactStatus = document.getElementById("contactStatus");
@@ -524,6 +590,11 @@
   const toast = document.getElementById("toast");
   const toastName = document.getElementById("toastName");
   const toastText = document.getElementById("toastText");
+  const profileMenuOverlay = document.getElementById("profileMenuOverlay");
+  const menuSelfName = document.getElementById("menuSelfName");
+  const menuGoBack = document.getElementById("menuGoBack");
+  const menuClearSelf = document.getElementById("menuClearSelf");
+  const menuClearBoth = document.getElementById("menuClearBoth");
 
   // typingRow lives in the messages list so we can insertBefore it
   messagesEl.appendChild(typingRow);
@@ -551,9 +622,66 @@
     soundBtn.classList.toggle("active", soundOn);
     updatePermBanner();
     connectRealtime();
+    menuSelfName.textContent = identity;
 
     textInput.focus();
   }
+
+  // ---------- profile menu: go back / clear my messages / clear both ----------
+  function openProfileMenu(){
+    menuSelfName.textContent = identity;
+    profileMenuOverlay.classList.add("show");
+  }
+  function closeProfileMenu(){
+    profileMenuOverlay.classList.remove("show");
+  }
+  contactAvatarEl.addEventListener("click", openProfileMenu);
+  profileMenuOverlay.addEventListener("click", (e)=>{
+    if(e.target === profileMenuOverlay) closeProfileMenu();
+  });
+
+  menuGoBack.addEventListener("click", ()=>{
+    closeProfileMenu();
+    if(channel){ sb.removeChannel(channel); channel = null; }
+    sessionStorage.removeItem("relay_identity");
+    location.reload();
+  });
+
+  menuClearSelf.addEventListener("click", async ()=>{
+    const ok = confirm("Delete only your own messages from this chat? This can't be undone, and " + contact + " will also lose them.");
+    if(!ok) return;
+    closeProfileMenu();
+    try{
+      const { error } = await sb.from("messages").delete().eq("sender", identity);
+      if(error){
+        showDebugError("Failed to clear your messages", error.message);
+        showToast({ text: "Couldn't clear messages — try again." });
+        return;
+      }
+      renderList([]);
+      showToast({ text: "Your messages were cleared." });
+    }catch(e){
+      showDebugError("Network error clearing messages", e.message || String(e));
+    }
+  });
+
+  menuClearBoth.addEventListener("click", async ()=>{
+    const ok = confirm("Delete the ENTIRE chat history for both " + identity + " and " + contact + "? This can't be undone.");
+    if(!ok) return;
+    closeProfileMenu();
+    try{
+      const { error } = await sb.from("messages").delete().gte("id", 0);
+      if(error){
+        showDebugError("Failed to clear chat", error.message);
+        showToast({ text: "Couldn't clear chat — try again." });
+        return;
+      }
+      renderList([]);
+      showToast({ text: "Chat cleared for both of you." });
+    }catch(e){
+      showDebugError("Network error clearing chat", e.message || String(e));
+    }
+  });
 
   // ---------- messages: Supabase is now the single source of truth ----------
   function rowToMsg(row){
@@ -704,6 +832,14 @@
       } else {
         scrollToBottom();
       }
+    });
+
+    channel.on("postgres_changes", { event: "DELETE", schema: "public", table: "messages" }, async ()=>{
+      // a message (or the whole chat) was cleared somewhere — refresh to match
+      const fresh = await fetchInitialMessages();
+      renderList(fresh);
+      if(fresh.length) window.__lastRenderedDay = new Date(fresh[fresh.length-1].ts).toDateString();
+      showToast({ text: "Chat history was updated." });
     });
 
     channel.on("broadcast", { event: "typing" }, ({ payload })=>{
@@ -956,3 +1092,4 @@
 </script>
 </body>
 </html>
+
