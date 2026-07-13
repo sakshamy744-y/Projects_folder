@@ -313,6 +313,67 @@
   #sendBtn:active{ transform:scale(.92); }
   #sendBtn svg{ width:19px; height:19px; }
 
+  .composer-icon-btn{
+    width:40px; height:40px; border-radius:12px;
+    background:var(--panel-raised);
+    border:1px solid var(--line);
+    color:var(--text-dim);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    flex-shrink:0;
+    transition:color .15s ease, border-color .15s ease;
+  }
+  .composer-icon-btn svg{ width:19px; height:19px; }
+  .composer-icon-btn:hover{ color:var(--amber); border-color:var(--amber); }
+  .composer-icon-btn.recording{ color:var(--danger); border-color:var(--danger); animation:mic-pulse 1s infinite; }
+  @keyframes mic-pulse{ 0%,100%{ opacity:1;} 50%{ opacity:.5;} }
+
+  #recordingBar{
+    display:none;
+    align-items:center;
+    gap:10px;
+    padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+    background:var(--panel);
+    border-top:1px solid var(--danger);
+  }
+  #recordingBar.show{ display:flex; }
+  .recording-dot{
+    width:10px; height:10px; border-radius:50%;
+    background:var(--danger);
+    animation:pulse-dot 1s infinite;
+    flex-shrink:0;
+  }
+  #recordingTime{ font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--text); }
+  .recording-label{ font-size:13px; color:var(--text-dim); flex:1; }
+  #recordCancelBtn, #recordSendBtn{
+    border:none; border-radius:10px; padding:8px 14px;
+    font-family:'Inter',sans-serif; font-size:13px; font-weight:600;
+    cursor:pointer;
+  }
+  #recordCancelBtn{ background:var(--panel-raised); color:var(--text-dim); }
+  #recordSendBtn{ background:var(--amber); color:#1a1400; }
+
+  .bubble-image{
+    max-width:220px;
+    border-radius:12px;
+    display:block;
+    cursor:pointer;
+  }
+  .bubble-audio{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .bubble-audio audio{
+    height:34px;
+    max-width:190px;
+  }
+  .bubble-uploading{
+    font-size:12.5px;
+    font-style:italic;
+    opacity:.7;
+  }
+
   /* toast */
   #toast{
     position:fixed;
@@ -476,10 +537,24 @@
   </div>
 
   <div class="composer">
+    <input type="file" id="photoInput" accept="image/*" style="display:none;">
+    <button id="attachBtn" class="composer-icon-btn" title="Send a photo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+    </button>
     <textarea id="textInput" rows="1" placeholder="Message…"></textarea>
+    <button id="micBtn" class="composer-icon-btn" title="Record a voice message">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><path d="M12 18v4"/></svg>
+    </button>
     <button id="sendBtn">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
     </button>
+  </div>
+  <div id="recordingBar">
+    <div class="recording-dot"></div>
+    <span id="recordingTime">0:00</span>
+    <span class="recording-label">Recording…</span>
+    <button id="recordCancelBtn">Cancel</button>
+    <button id="recordSendBtn">Send</button>
   </div>
 </div>
 
@@ -595,6 +670,13 @@
   const menuGoBack = document.getElementById("menuGoBack");
   const menuClearSelf = document.getElementById("menuClearSelf");
   const menuClearBoth = document.getElementById("menuClearBoth");
+  const photoInput = document.getElementById("photoInput");
+  const attachBtn = document.getElementById("attachBtn");
+  const micBtn = document.getElementById("micBtn");
+  const recordingBar = document.getElementById("recordingBar");
+  const recordingTimeEl = document.getElementById("recordingTime");
+  const recordCancelBtn = document.getElementById("recordCancelBtn");
+  const recordSendBtn = document.getElementById("recordSendBtn");
 
   // typingRow lives in the messages list so we can insertBefore it
   messagesEl.appendChild(typingRow);
@@ -685,7 +767,7 @@
 
   // ---------- messages: Supabase is now the single source of truth ----------
   function rowToMsg(row){
-    return { id: row.id, from: row.sender, text: row.text, ts: new Date(row.created_at).getTime() };
+    return { id: row.id, from: row.sender, text: row.text, ts: new Date(row.created_at).getTime(), type: row.type || "text", mediaUrl: row.media_url || null };
   }
 
   async function fetchInitialMessages(){
@@ -743,15 +825,40 @@
     const b = document.createElement("div");
     b.className = "bubble";
     if(!animate) b.style.animation = "none";
-    const textSpan = document.createElement("span");
-    textSpan.textContent = m.text;
+
+    if(m.type === "image" && m.mediaUrl){
+      const img = document.createElement("img");
+      img.className = "bubble-image";
+      img.src = m.mediaUrl;
+      img.alt = "photo";
+      img.addEventListener("click", ()=> window.open(m.mediaUrl, "_blank"));
+      b.appendChild(img);
+    } else if(m.type === "audio" && m.mediaUrl){
+      const wrap = document.createElement("div");
+      wrap.className = "bubble-audio";
+      const audio = document.createElement("audio");
+      audio.controls = true;
+      audio.src = m.mediaUrl;
+      wrap.appendChild(audio);
+      b.appendChild(wrap);
+    } else if(m.type === "uploading"){
+      const span = document.createElement("span");
+      span.className = "bubble-uploading";
+      span.textContent = m.text || "Uploading…";
+      b.appendChild(span);
+    } else {
+      const textSpan = document.createElement("span");
+      textSpan.textContent = m.text;
+      b.appendChild(textSpan);
+    }
+
     const time = document.createElement("span");
     time.className = "bubble-time";
     time.textContent = formatTime(m.ts);
-    b.appendChild(textSpan);
     b.appendChild(time);
     row.appendChild(b);
     messagesEl.insertBefore(row, typingRow);
+    return row;
   }
 
   function appendIncomingWithDivider(m){
@@ -792,6 +899,134 @@
     // no local append here — the realtime INSERT event below renders it,
     // for both this device and the other one, keeping everything in sync.
   }
+
+  // ---------- media upload helper (used by both photo and voice messages) ----------
+  async function uploadMedia(blob, ext, folder){
+    const path = folder + "/" + identity + "-" + Date.now() + "." + ext;
+    const { error: uploadError } = await sb.storage.from("chat-media").upload(path, blob, {
+      contentType: blob.type || undefined,
+      upsert: false
+    });
+    if(uploadError) throw uploadError;
+    const { data } = sb.storage.from("chat-media").getPublicUrl(path);
+    return data.publicUrl;
+  }
+
+  // ---------- photo sending ----------
+  attachBtn.addEventListener("click", ()=> photoInput.click());
+  photoInput.addEventListener("change", async ()=>{
+    const file = photoInput.files[0];
+    photoInput.value = ""; // reset so choosing the same file again still fires change
+    if(!file) return;
+    if(!file.type.startsWith("image/")){
+      showToast({ text: "That file isn't a photo." });
+      return;
+    }
+    setDebugStatus("uploading photo…");
+    try{
+      const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+      const url = await uploadMedia(file, ext, "photos");
+      const { error } = await sb.from("messages").insert({ sender: identity, text: "", type: "image", media_url: url });
+      if(error) throw error;
+      setDebugStatus("photo sent ✓");
+    } catch(e){
+      console.error("Photo send failed:", e);
+      showDebugError("Failed to send photo", e.message || String(e));
+      showToast({ text: "Photo failed to send." });
+    }
+  });
+
+  // ---------- voice message recording ----------
+  let mediaRecorder = null;
+  let recordedChunks = [];
+  let recordingStartTime = 0;
+  let recordingTimerId = null;
+  let recordingCancelled = false;
+
+  micBtn.addEventListener("click", async ()=>{
+    if(mediaRecorder && mediaRecorder.state === "recording") return; // already recording
+
+    if(!isSecureContext){
+      showDebugError("Voice recording blocked", "Microphone access requires https:// — this page isn't running as a secure context.");
+      showToast({ text: "Voice recording needs a secure (https) connection." });
+      return;
+    }
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+      showDebugError("Voice recording not supported", "navigator.mediaDevices.getUserMedia is unavailable in this browser.");
+      showToast({ text: "This browser doesn't support voice recording." });
+      return;
+    }
+    if(typeof MediaRecorder === "undefined"){
+      showDebugError("Voice recording not supported", "The MediaRecorder API is unavailable in this browser (common on some iOS browser versions).");
+      showToast({ text: "This browser can't record audio." });
+      return;
+    }
+
+    try{
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      recordedChunks = [];
+      recordingCancelled = false;
+      let mimeType = "";
+      for(const candidate of ["audio/webm", "audio/mp4", "audio/ogg"]){
+        if(MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(candidate)){
+          mimeType = candidate;
+          break;
+        }
+      }
+      mediaRecorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
+
+      mediaRecorder.ondataavailable = (e)=>{ if(e.data.size > 0) recordedChunks.push(e.data); };
+      mediaRecorder.onstop = async ()=>{
+        stream.getTracks().forEach(t=> t.stop());
+        clearInterval(recordingTimerId);
+        recordingBar.classList.remove("show");
+        micBtn.classList.remove("recording");
+        if(recordingCancelled || recordedChunks.length === 0) return;
+
+        const blob = new Blob(recordedChunks, { type: mediaRecorder.mimeType || "audio/webm" });
+        setDebugStatus("uploading voice message…");
+        try{
+          const ext = (blob.type.split("/")[1] || "webm").split(";")[0];
+          const url = await uploadMedia(blob, ext, "voice");
+          const { error } = await sb.from("messages").insert({ sender: identity, text: "", type: "audio", media_url: url });
+          if(error) throw error;
+          setDebugStatus("voice message sent ✓");
+        } catch(e){
+          console.error("Voice message send failed:", e);
+          showDebugError("Failed to send voice message", e.message || String(e));
+          showToast({ text: "Voice message failed to send." });
+        }
+      };
+
+      mediaRecorder.start();
+      micBtn.classList.add("recording");
+      recordingBar.classList.add("show");
+      recordingStartTime = Date.now();
+      recordingTimerId = setInterval(()=>{
+        const secs = Math.floor((Date.now() - recordingStartTime) / 1000);
+        const m = Math.floor(secs / 60);
+        const s = String(secs % 60).padStart(2, "0");
+        recordingTimeEl.textContent = m + ":" + s;
+      }, 250);
+    } catch(e){
+      console.error("Mic access failed:", e);
+      showDebugError("Microphone access failed", (e.name || "Error") + ": " + (e.message || String(e)) + " — check that you allowed microphone permission for this site.");
+      showToast({ text: "Couldn't access the microphone — check permissions." });
+    }
+  });
+
+  recordSendBtn.addEventListener("click", ()=>{
+    if(mediaRecorder && mediaRecorder.state === "recording"){
+      recordingCancelled = false;
+      mediaRecorder.stop();
+    }
+  });
+  recordCancelBtn.addEventListener("click", ()=>{
+    if(mediaRecorder && mediaRecorder.state === "recording"){
+      recordingCancelled = true;
+      mediaRecorder.stop();
+    }
+  });
 
   sendBtn.addEventListener("click", sendMessage);
   textInput.addEventListener("keydown", e=>{
@@ -905,7 +1140,10 @@
 
   function showToast(msg){
     toastName.textContent = contact;
-    toastText.textContent = msg.text;
+    let preview = msg.text;
+    if(msg.type === "image") preview = "📷 Photo";
+    else if(msg.type === "audio") preview = "🎤 Voice message";
+    toastText.textContent = preview;
     toast.classList.add("show");
     clearTimeout(window.__toastTimeout);
     window.__toastTimeout = setTimeout(()=> toast.classList.remove("show"), 3800);
@@ -959,7 +1197,7 @@
     if(Notification.permission !== "granted") return;
 
     const opts = {
-      body: msg.text,
+      body: msg.type === "image" ? "📷 Photo" : msg.type === "audio" ? "🎤 Voice message" : msg.text,
       tag: "relay-chat",
       renotify: true,
       icon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAETUlEQVR4nO3dTZLiRhSF0WxHeQduT7y/XpS36CX0wB4RgQmqWoB4+TLvOWMUoqT3kVL96dsff/7174BQv81+AzCTAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoH7PfwJn++fv32W8hxvcfP2e/hVN8W/k/wxn4PlYNYrkADH1vq4WwTAAGfz0rxNA+AIO/tu4RtA7A8O+jawhtvw1q+PfS9Xy2WwG6HijO02k1aLUCGP4Mnc5zmwA6HRTer8v5bhFAl4NBrQ7nfXoAHQ4C88w+/9MDgJmmBjC7fnqYOQfTAjD8XJs1D1MCMPx04R6ANmZ8MJYH4NOfr1TPhxWAaKUB+PTniMo5sQIQTQBEKwvA5Q+PqJoXKwDRBEA0ARCtJADX/zyjYm6sAEQTANEEQDQBEE0ARBMA0QRANAEQTQBEEwDRBEA0ARBNAEQTANEEQDQBEO1j9hvo5t7zq87+w4zPnpFVsR9/nPR/JQ/JW+GgH3lw2xlfx6/2U7GPs/ZT4d0P1HMJNI4f5FdOxvcfPw9tf/R1X21/5ut2Fx/Ao4PQeXB2+lqqRAfw7ABUDFrVMKdHEBvAqye+6rLp3fs4Y/uVxQYAYwiAcAIgmgCIJgCixQbw6k9Cj27/yn4q9nHG9iuLDWCM50/8o9s9s5+Kfbyy3S6iAxijbtAq7PS1VIkPYIy6y5kj2x993Vfbn/m63flt0Bt+HbqXd/+UWgC05teh4Y0EQDQBEE0ARBMA0QRANAEQTQBEEwDRBEA0ARBNAEQTANEEQDQBEE0ARBMA0UoCSP7nqzyvYm6sAEQTANEEQLSyANwH8IiqebECEK00AKsAR1TOiRWAaAKgleqrhPIAXAbRyZQVQATcM2MuXAIRbVoAVgGuzZqHqSuACBhj7hy4BGKq2R+C0wOYfQDINj2AMUSQqsN5bxHAGD0OBnW6nO+SZ4Q9wvPE9tZl8C/aBXAhhP10G/4xGl0C3ep4sHhe1/PZdgW4ZjVYV9fBv1gigDFEsJrug3+xTAAXQuhtlcG/WC6Aa2LoY7XBv1g6gFuCqLPqwN/aKoB7ukSxy8Dspu23QXdi+Pv6mP0Gdmbw+7MCvInhX4MA3sDwr0MAJzP8a3EPcBKDvyYrwAkM/7oE8CLDvzYBvMDwr08ATzL8e3AT/CCDvxcrwAMM/34EcJDh35MADjD8+xLALxj+vbkJ/oTBz2AFuMPw5xDADcOfRQBXDH8e9wDD4CeLXwEMf7boAAw/sQEYfsYIDcDwcxF1E2zwuRWzAhh+7okIwPDzme3/Nyh8JWIFgM8IgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiDaf3o9Hx+T92r1AAAAAElFTkSuQmCC",
