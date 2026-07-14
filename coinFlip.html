@@ -342,7 +342,9 @@
     <button class="download-btn" id="installBtn">⭳ Install App</button>
   </div>
 
-<script>
+<script type="module">
+  import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+
   const coin = document.getElementById('coin');
   const edge = document.getElementById('edge');
   const RING_COUNT = 24;
