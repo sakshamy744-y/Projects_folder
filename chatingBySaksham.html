@@ -373,6 +373,36 @@
     font-style:italic;
     opacity:.7;
   }
+  .bubble-video{
+    max-width:220px;
+    border-radius:12px;
+    display:block;
+  }
+  .bubble-file{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    min-width:180px;
+    padding:2px 4px;
+    cursor:pointer;
+  }
+  .bubble-file-icon{
+    width:36px; height:36px; border-radius:9px;
+    background:rgba(0,0,0,0.18);
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .bubble-file-icon svg{ width:18px; height:18px; }
+  .bubble-file-name{
+    font-size:13px;
+    font-weight:500;
+    word-break:break-word;
+    line-height:1.3;
+  }
+  .bubble-file-sub{
+    font-size:11px;
+    opacity:.7;
+  }
 
   /* toast */
   #toast{
@@ -537,9 +567,9 @@
   </div>
 
   <div class="composer">
-    <input type="file" id="photoInput" accept="image/*" style="display:none;">
-    <button id="attachBtn" class="composer-icon-btn" title="Send a photo">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+    <input type="file" id="photoInput" accept="image/*,video/*,application/pdf" multiple style="display:none;">
+    <button id="attachBtn" class="composer-icon-btn" title="Attach photos, videos, or a PDF">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
     </button>
     <textarea id="textInput" rows="1" placeholder="Message…"></textarea>
     <button id="micBtn" class="composer-icon-btn" title="Record a voice message">
@@ -833,6 +863,32 @@
       img.alt = "photo";
       img.addEventListener("click", ()=> window.open(m.mediaUrl, "_blank"));
       b.appendChild(img);
+    } else if(m.type === "video" && m.mediaUrl){
+      const video = document.createElement("video");
+      video.className = "bubble-video";
+      video.src = m.mediaUrl;
+      video.controls = true;
+      video.preload = "metadata";
+      b.appendChild(video);
+    } else if(m.type === "file" && m.mediaUrl){
+      const wrap = document.createElement("div");
+      wrap.className = "bubble-file";
+      wrap.addEventListener("click", ()=> window.open(m.mediaUrl, "_blank"));
+      const icon = document.createElement("div");
+      icon.className = "bubble-file-icon";
+      icon.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M9 15h6M9 11h1"/></svg>';
+      const textWrap = document.createElement("div");
+      const nameEl = document.createElement("div");
+      nameEl.className = "bubble-file-name";
+      nameEl.textContent = m.text || "Document.pdf";
+      const subEl = document.createElement("div");
+      subEl.className = "bubble-file-sub";
+      subEl.textContent = "PDF · tap to open";
+      textWrap.appendChild(nameEl);
+      textWrap.appendChild(subEl);
+      wrap.appendChild(icon);
+      wrap.appendChild(textWrap);
+      b.appendChild(wrap);
     } else if(m.type === "audio" && m.mediaUrl){
       const wrap = document.createElement("div");
       wrap.className = "bubble-audio";
@@ -912,27 +968,36 @@
     return data.publicUrl;
   }
 
-  // ---------- photo sending ----------
+  // ---------- attach sending: photos (multiple), video, PDF ----------
   attachBtn.addEventListener("click", ()=> photoInput.click());
   photoInput.addEventListener("change", async ()=>{
-    const file = photoInput.files[0];
-    photoInput.value = ""; // reset so choosing the same file again still fires change
-    if(!file) return;
-    if(!file.type.startsWith("image/")){
-      showToast({ text: "That file isn't a photo." });
-      return;
-    }
-    setDebugStatus("uploading photo…");
-    try{
-      const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
-      const url = await uploadMedia(file, ext, "photos");
-      const { error } = await sb.from("messages").insert({ sender: identity, text: "", type: "image", media_url: url });
-      if(error) throw error;
-      setDebugStatus("photo sent ✓");
-    } catch(e){
-      console.error("Photo send failed:", e);
-      showDebugError("Failed to send photo", e.message || String(e));
-      showToast({ text: "Photo failed to send." });
+    const files = Array.from(photoInput.files || []);
+    photoInput.value = ""; // reset so choosing the same file(s) again still fires change
+    if(!files.length) return;
+
+    for(const file of files){
+      let kind, folder;
+      if(file.type.startsWith("image/")){ kind = "image"; folder = "photos"; }
+      else if(file.type.startsWith("video/")){ kind = "video"; folder = "videos"; }
+      else if(file.type === "application/pdf"){ kind = "file"; folder = "documents"; }
+      else{
+        showToast({ text: "\"" + file.name + "\" isn't a supported type (photo, video, or PDF)." });
+        continue;
+      }
+
+      setDebugStatus("uploading " + kind + ": " + file.name + "…");
+      try{
+        const ext = (file.name.split(".").pop() || (kind === "image" ? "jpg" : kind === "video" ? "mp4" : "pdf")).toLowerCase();
+        const url = await uploadMedia(file, ext, folder);
+        const messageText = kind === "file" ? file.name : "";
+        const { error } = await sb.from("messages").insert({ sender: identity, text: messageText, type: kind, media_url: url });
+        if(error) throw error;
+        setDebugStatus(kind + " sent ✓ (" + file.name + ")");
+      } catch(e){
+        console.error("Attachment send failed:", file.name, e);
+        showDebugError("Failed to send " + file.name, e.message || String(e));
+        showToast({ text: file.name + " failed to send." });
+      }
     }
   });
 
@@ -1143,6 +1208,8 @@
     let preview = msg.text;
     if(msg.type === "image") preview = "📷 Photo";
     else if(msg.type === "audio") preview = "🎤 Voice message";
+    else if(msg.type === "video") preview = "🎬 Video";
+    else if(msg.type === "file") preview = "📄 " + (msg.text || "Document");
     toastText.textContent = preview;
     toast.classList.add("show");
     clearTimeout(window.__toastTimeout);
@@ -1197,7 +1264,11 @@
     if(Notification.permission !== "granted") return;
 
     const opts = {
-      body: msg.type === "image" ? "📷 Photo" : msg.type === "audio" ? "🎤 Voice message" : msg.text,
+      body: msg.type === "image" ? "📷 Photo"
+        : msg.type === "audio" ? "🎤 Voice message"
+        : msg.type === "video" ? "🎬 Video"
+        : msg.type === "file" ? "📄 " + (msg.text || "Document")
+        : msg.text,
       tag: "relay-chat",
       renotify: true,
       icon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAETUlEQVR4nO3dTZLiRhSF0WxHeQduT7y/XpS36CX0wB4RgQmqWoB4+TLvOWMUoqT3kVL96dsff/7174BQv81+AzCTAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoH7PfwJn++fv32W8hxvcfP2e/hVN8W/k/wxn4PlYNYrkADH1vq4WwTAAGfz0rxNA+AIO/tu4RtA7A8O+jawhtvw1q+PfS9Xy2WwG6HijO02k1aLUCGP4Mnc5zmwA6HRTer8v5bhFAl4NBrQ7nfXoAHQ4C88w+/9MDgJmmBjC7fnqYOQfTAjD8XJs1D1MCMPx04R6ANmZ8MJYH4NOfr1TPhxWAaKUB+PTniMo5sQIQTQBEKwvA5Q+PqJoXKwDRBEA0ARCtJADX/zyjYm6sAEQTANEEQDQBEE0ARBMA0QRANAEQTQBEEwDRBEA0ARBNAEQTANEEQDQBEO1j9hvo5t7zq87+w4zPnpFVsR9/nPR/JQ/JW+GgH3lw2xlfx6/2U7GPs/ZT4d0P1HMJNI4f5FdOxvcfPw9tf/R1X21/5ut2Fx/Ao4PQeXB2+lqqRAfw7ABUDFrVMKdHEBvAqye+6rLp3fs4Y/uVxQYAYwiAcAIgmgCIJgCixQbw6k9Cj27/yn4q9nHG9iuLDWCM50/8o9s9s5+Kfbyy3S6iAxijbtAq7PS1VIkPYIy6y5kj2x993Vfbn/m63flt0Bt+HbqXd/+UWgC05teh4Y0EQDQBEE0ARBMA0QRANAEQTQBEEwDRBEA0ARBNAEQTANEEQDQBEE0ARBMA0UoCSP7nqzyvYm6sAEQTANEEQLSyANwH8IiqebECEK00AKsAR1TOiRWAaAKgleqrhPIAXAbRyZQVQATcM2MuXAIRbVoAVgGuzZqHqSuACBhj7hy4BGKq2R+C0wOYfQDINj2AMUSQqsN5bxHAGD0OBnW6nO+SZ4Q9wvPE9tZl8C/aBXAhhP10G/4xGl0C3ep4sHhe1/PZdgW4ZjVYV9fBv1gigDFEsJrug3+xTAAXQuhtlcG/WC6Aa2LoY7XBv1g6gFuCqLPqwN/aKoB7ukSxy8Dspu23QXdi+Pv6mP0Gdmbw+7MCvInhX4MA3sDwr0MAJzP8a3EPcBKDvyYrwAkM/7oE8CLDvzYBvMDwr08ATzL8e3AT/CCDvxcrwAMM/34EcJDh35MADjD8+xLALxj+vbkJ/oTBz2AFuMPw5xDADcOfRQBXDH8e9wDD4CeLXwEMf7boAAw/sQEYfsYIDcDwcxF1E2zwuRWzAhh+7okIwPDzme3/Nyh8JWIFgM8IgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiDaf3o9Hx+T92r1AAAAAElFTkSuQmCC",
