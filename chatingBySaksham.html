@@ -191,6 +191,106 @@
     overflow:hidden;
     box-shadow:0 12px 30px rgba(0,0,0,0.5);
   }
+
+  #confirmOverlay{
+    display:none;
+    position:fixed; inset:0;
+    background:rgba(0,0,0,0.6);
+    backdrop-filter:blur(5px);
+    -webkit-backdrop-filter:blur(5px);
+    z-index:80;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
+  #confirmOverlay.show{ display:flex; }
+  #confirmOverlay.show #confirmModal{
+    animation: modalSpringIn .5s cubic-bezier(.34,1.56,.64,1) forwards;
+  }
+  @keyframes modalSpringIn{
+    0%{ opacity:0; transform:scale(.7) translateY(24px); }
+    60%{ opacity:1; transform:scale(1.04) translateY(-4px); }
+    80%{ transform:scale(.98) translateY(1px); }
+    100%{ opacity:1; transform:scale(1) translateY(0); }
+  }
+  #confirmModal{
+    position:relative;
+    width:100%;
+    max-width:340px;
+    background:var(--panel-raised);
+    border-radius:16px;
+    padding:20px;
+    box-shadow:
+      0 2px 4px rgba(0,0,0,0.3),
+      0 12px 24px rgba(0,0,0,0.4),
+      0 30px 60px rgba(0,0,0,0.5);
+  }
+  #confirmModal::before{
+    content:"";
+    position:absolute;
+    inset:-1.5px;
+    border-radius:17.5px;
+    padding:1.5px;
+    background:conic-gradient(from var(--glow-angle,0deg), var(--amber), var(--sage), var(--amber));
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;
+    mask-composite:exclude;
+    animation: glowSpin 3s linear infinite;
+    z-index:-1;
+  }
+  @property --glow-angle{
+    syntax:'<angle>';
+    initial-value:0deg;
+    inherits:false;
+  }
+  @keyframes glowSpin{
+    0%{ --glow-angle:0deg; }
+    100%{ --glow-angle:360deg; }
+  }
+  #confirmTitle{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:17px;
+    margin-bottom:10px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  #confirmTitle .emoji3d{
+    display:inline-block;
+    animation: emojiWiggle 1.8s ease-in-out infinite;
+  }
+  @keyframes emojiWiggle{
+    0%,100%{ transform:rotate(0deg) translateY(0); }
+    20%{ transform:rotate(-12deg) translateY(-2px); }
+    40%{ transform:rotate(10deg) translateY(-3px); }
+    60%{ transform:rotate(-6deg) translateY(-1px); }
+    80%{ transform:rotate(4deg) translateY(0); }
+  }
+  #confirmMessage{
+    font-size:14px;
+    line-height:1.5;
+    color:var(--text-dim);
+    margin-bottom:20px;
+  }
+  #confirmActions{
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+  }
+  #confirmActions button{
+    border:none;
+    border-radius:10px;
+    padding:9px 16px;
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  #confirmActions button:active{ transform:scale(.93) translateY(1px); }
+  #confirmCancelBtn{ background:var(--panel); color:var(--text-dim); }
+  #confirmOkBtn{ background:var(--danger); color:#fff; }
   .profile-menu-item.danger svg{ color:var(--danger); }
   .profile-menu-divider{ height:1px; background:var(--line); margin:4px 0; }
   .icon-btn{
@@ -502,6 +602,38 @@
 
   ::-webkit-scrollbar{ width:8px; }
   ::-webkit-scrollbar-thumb{ background:var(--line); border-radius:8px; }
+
+  /* ---------- shared button animation: hover-lift + press + ripple ---------- */
+  .ripple-btn{
+    position:relative;
+    overflow:hidden;
+    transition: transform .16s cubic-bezier(.2,.9,.3,1.3), box-shadow .2s ease;
+  }
+  .ripple-btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 6px 16px rgba(255,176,32,0.22);
+  }
+  .ripple-btn:active{
+    transform:translateY(0) scale(.91);
+  }
+  .ripple-span{
+    position:absolute;
+    border-radius:50%;
+    background:rgba(255,255,255,0.45);
+    transform:scale(0);
+    opacity:.6;
+    pointer-events:none;
+    animation: rippleExpand .55s ease-out forwards;
+  }
+  @keyframes rippleExpand{
+    to{ transform:scale(1); opacity:0; }
+  }
+  #sendBtn.ripple-btn:hover{
+    box-shadow:0 6px 20px rgba(255,176,32,0.45);
+  }
+  .dial-btn.ripple-btn:hover{
+    box-shadow:0 8px 22px rgba(255,176,32,0.2);
+  }
 </style>
 </head>
 <body>
@@ -598,6 +730,17 @@
     <button id="sendBtn">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
     </button>
+  </div>
+
+  <div id="confirmOverlay">
+    <div id="confirmModal">
+      <div id="confirmTitle">Chat GO <span class="emoji3d">💬</span></div>
+      <div id="confirmMessage"></div>
+      <div id="confirmActions">
+        <button id="confirmCancelBtn">Cancel</button>
+        <button id="confirmOkBtn">OK</button>
+      </div>
+    </div>
   </div>
 
   <div id="attachMenuOverlay">
@@ -738,6 +881,30 @@
   const menuGoBack = document.getElementById("menuGoBack");
   const menuClearSelf = document.getElementById("menuClearSelf");
   const menuClearBoth = document.getElementById("menuClearBoth");
+  const confirmOverlay = document.getElementById("confirmOverlay");
+  const confirmMessage = document.getElementById("confirmMessage");
+  const confirmCancelBtn = document.getElementById("confirmCancelBtn");
+  const confirmOkBtn = document.getElementById("confirmOkBtn");
+
+  function showConfirm(message){
+    confirmMessage.textContent = message;
+    confirmOverlay.classList.add("show");
+    return new Promise((resolve)=>{
+      function cleanup(result){
+        confirmOverlay.classList.remove("show");
+        confirmOkBtn.removeEventListener("click", onOk);
+        confirmCancelBtn.removeEventListener("click", onCancel);
+        confirmOverlay.removeEventListener("click", onOverlay);
+        resolve(result);
+      }
+      function onOk(){ cleanup(true); }
+      function onCancel(){ cleanup(false); }
+      function onOverlay(e){ if(e.target === confirmOverlay) cleanup(false); }
+      confirmOkBtn.addEventListener("click", onOk);
+      confirmCancelBtn.addEventListener("click", onCancel);
+      confirmOverlay.addEventListener("click", onOverlay);
+    });
+  }
   const photoInput = document.getElementById("photoInput");
   const videoInput = document.getElementById("videoInput");
   const pdfInput = document.getElementById("pdfInput");
@@ -754,6 +921,34 @@
 
   // typingRow lives in the messages list so we can insertBefore it
   messagesEl.appendChild(typingRow);
+
+  // ---------- shared ripple effect for all buttons ----------
+  function addRipple(el){
+    if(!el || el.__hasRipple) return;
+    el.__hasRipple = true;
+    el.classList.add("ripple-btn");
+    el.addEventListener("pointerdown", (e)=>{
+      const rect = el.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height) * 1.6;
+      const span = document.createElement("span");
+      span.className = "ripple-span";
+      span.style.width = span.style.height = size + "px";
+      span.style.left = (e.clientX - rect.left - size / 2) + "px";
+      span.style.top = (e.clientY - rect.top - size / 2) + "px";
+      el.appendChild(span);
+      setTimeout(()=> span.remove(), 600);
+    });
+  }
+  function initRipples(){
+    const selectors = [
+      ".dial-btn", ".icon-btn", ".composer-icon-btn", "#sendBtn",
+      ".profile-menu-item", "#permBtn",
+      "#recordCancelBtn", "#recordSendBtn",
+      "#confirmCancelBtn", "#confirmOkBtn"
+    ];
+    document.querySelectorAll(selectors.join(",")).forEach(addRipple);
+  }
+  initRipples();
 
   // ---------- identity selection ----------
   document.querySelectorAll(".dial-btn").forEach(btn=>{
@@ -804,7 +999,7 @@
   });
 
   menuClearSelf.addEventListener("click", async ()=>{
-    const ok = confirm("Delete only your own messages from this chat? This can't be undone, and " + contact + " will also lose them.");
+    const ok = await showConfirm("Delete only your own messages from this chat? This can't be undone, and " + contact + " will also lose them.");
     if(!ok) return;
     closeProfileMenu();
     try{
@@ -822,7 +1017,7 @@
   });
 
   menuClearBoth.addEventListener("click", async ()=>{
-    const ok = confirm("Delete the ENTIRE chat history for both " + identity + " and " + contact + "? This can't be undone.");
+    const ok = await showConfirm("Delete the ENTIRE chat history for both " + identity + " and " + contact + "? This can't be undone.");
     if(!ok) return;
     closeProfileMenu();
     try{
@@ -1462,6 +1657,5 @@
 
 })();
 </script>
-</boy>
+</body>
 </html>
-
