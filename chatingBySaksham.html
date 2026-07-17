@@ -351,8 +351,31 @@
     border-radius:20px;
     margin:10px 0;
   }
-  .bubble-row{ display:flex; }
+  .bubble-row{ display:flex; align-items:flex-end; gap:2px; }
   .bubble-row.me{ justify-content:flex-end; }
+  .msg-menu-btn{
+    order:1;
+    width:24px; height:24px; border-radius:50%;
+    border:none; background:none;
+    color:var(--text-dim);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    flex-shrink:0;
+    opacity:.55;
+    align-self:flex-end;
+    margin-bottom:2px;
+  }
+  .msg-menu-btn svg{ width:16px; height:16px; }
+  .msg-menu-btn:hover, .msg-menu-btn:active{ opacity:1; }
+  .bubble-row.me .bubble{ order:2; }
+  .bubble-row.them .bubble{ order:1; }
+  .bubble-row.them .msg-menu-btn{ order:2; }
+  .bubble-edited{
+    font-size:9.5px;
+    opacity:.6;
+    font-style:italic;
+    margin-left:3px;
+  }
   .bubble{
     max-width:75%;
     padding:9px 13px 7px;
@@ -568,6 +591,26 @@
   #replyBarName{ font-size:12px; font-weight:600; color:var(--amber); }
   #replyBarText{ font-size:12.5px; color:var(--text-dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   #replyBarClose{
+    width:26px; height:26px; border-radius:50%;
+    background:var(--panel); border:none; color:var(--text-dim);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; flex-shrink:0;
+  }
+
+  #editBar{
+    display:none;
+    align-items:center;
+    gap:10px;
+    padding:9px 14px;
+    background:var(--panel-raised);
+    border-top:1px solid var(--line);
+    border-left:3px solid var(--sage);
+  }
+  #editBar.show{ display:flex; }
+  #editBarBody{ flex:1; min-width:0; }
+  #editBarLabel{ font-size:12px; font-weight:600; color:var(--sage); }
+  #editBarText{ font-size:12.5px; color:var(--text-dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  #editBarClose{
     width:26px; height:26px; border-radius:50%;
     background:var(--panel); border:none; color:var(--text-dim);
     display:flex; align-items:center; justify-content:center;
@@ -934,6 +977,16 @@
     </button>
   </div>
 
+  <div id="editBar">
+    <div id="editBarBody">
+      <div id="editBarLabel">Editing message</div>
+      <div id="editBarText"></div>
+    </div>
+    <button id="editBarClose">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg>
+    </button>
+  </div>
+
   <div class="composer">
     <input type="file" id="photoInput" accept="image/*" multiple style="display:none;">
     <input type="file" id="videoInput" accept="video/*" style="display:none;">
@@ -1001,9 +1054,17 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 17-5-5 5-5"/><path d="M4 12h11a4 4 0 0 1 4 4v1"/></svg>
       Reply
     </button>
-    <button class="msg-action-item danger" id="msgActionDelete">
+    <button class="msg-action-item" id="msgActionEdit">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+      Edit
+    </button>
+    <button class="msg-action-item danger" id="msgActionDeleteEveryone">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
-      Delete
+      Delete for everyone
+    </button>
+    <button class="msg-action-item danger" id="msgActionDeleteMe">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+      Delete for me
     </button>
   </div>
 </div>
@@ -1300,7 +1361,8 @@
       type: row.type || "text",
       mediaUrl: row.media_url || null,
       readAt: row.read_at || null,
-      replyToId: row.reply_to_id || null
+      replyToId: row.reply_to_id || null,
+      editedAt: row.edited_at || null
     };
   }
 
@@ -2081,60 +2143,4 @@
     clearTimeout(window.__toastTimeout);
     window.__toastTimeout = setTimeout(()=> toast.classList.remove("show"), 3800);
   }
-  toast.addEventListener("click", ()=>{
-    toast.classList.remove("show");
-    clearUnread();
-    window.focus();
-  });
-
-  function updateBadge(){
-    badgeCount.textContent = unread > 9 ? "9+" : unread;
-    badgeCount.classList.toggle("show", unread > 0);
-    document.title = (unread > 0 ? "(" + unread + ") " : "") + "Chat GO — " + contact;
-  }
-  function clearUnread(){
-    unread = 0;
-    updateBadge();
-  }
-  bellBtn.addEventListener("click", clearUnread);
-
-  // ---------- service worker, inlined as a Blob (no separate .js file) ----------
-  // Note: most browsers block registering a service worker from a blob: URL
-  // for security reasons — this is attempted anyway and fails silently,
-  // falling back to the plain Notification API below. That's the one
-  // browser-enforced limitation of going fully single-file.
-  let swRegistration = null;
-  const SW_SOURCE = `
-    const CACHE = "relay-cache-v1";
-    self.addEventListener("install", () => self.skipWaiting());
-    self.addEventListener("activate", () => self.clients.claim());
-    self.addEventListener("fetch", (event) => {
-      event.respondWith(fetch(event.request).catch(() => caches.match(event.request)));
-    });
-  `;
-  if("serviceWorker" in navigator && isSecureContext){
-    try{
-      const swBlob = new Blob([SW_SOURCE], { type: "application/javascript" });
-      const swUrl = URL.createObjectURL(swBlob);
-      navigator.serviceWorker.register(swUrl)
-        .then(reg => { swRegistration = reg; })
-        .catch(err => { console.warn("Inline service worker blocked by browser (expected in most browsers):", err.message); });
-    }catch(e){ console.warn("Could not create inline service worker:", e); }
-  }
-
-  function desktopNotify(msg){
-    if(!("Notification" in window)){
-      console.warn("Notification API not available in this browser.");
-      return;
-    }
-    if(Notification.permission !== "granted") return;
-
-    const opts = {
-      body: msg.type === "image" ? "📷 Photo"
-        : msg.type === "audio" ? "🎤 Voice message"
-        : msg.type === "video" ? "🎬 Video"
-        : msg.type === "file" ? "📄 " + (msg.text || "Document")
-        : msg.text,
-      tag: "relay-chat",
-      renotify: true,
-      icon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAETUlEQVR4nO3dTZLiRhSF0WxHeQduT7y/XpS36CX0wB4RgQmqWoB4+TLvOWMUoqT3kVL96dsff/7174BQv81+AzCTAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoH7PfwJn++fv32W8hxvcfP2e/hVN8W/k/wxn4PlYNYrkADH1vq4Ww
+  toast.addEventListener("click",
