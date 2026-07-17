@@ -119,10 +119,6 @@
     flex-shrink:0;
     cursor:pointer;
   }
-  .avatar.avatar-amber{
-    background:linear-gradient(150deg, var(--amber), #ff8a3d);
-    color:#161616;
-  }
   .led{
     position:absolute; bottom:-1px; right:-1px;
     width:11px; height:11px; border-radius:50%;
@@ -195,106 +191,6 @@
     overflow:hidden;
     box-shadow:0 12px 30px rgba(0,0,0,0.5);
   }
-
-  #confirmOverlay{
-    display:none;
-    position:fixed; inset:0;
-    background:rgba(0,0,0,0.6);
-    backdrop-filter:blur(5px);
-    -webkit-backdrop-filter:blur(5px);
-    z-index:80;
-    align-items:center;
-    justify-content:center;
-    padding:24px;
-  }
-  #confirmOverlay.show{ display:flex; }
-  #confirmOverlay.show #confirmModal{
-    animation: modalSpringIn .5s cubic-bezier(.34,1.56,.64,1) forwards;
-  }
-  @keyframes modalSpringIn{
-    0%{ opacity:0; transform:scale(.7) translateY(24px); }
-    60%{ opacity:1; transform:scale(1.04) translateY(-4px); }
-    80%{ transform:scale(.98) translateY(1px); }
-    100%{ opacity:1; transform:scale(1) translateY(0); }
-  }
-  #confirmModal{
-    position:relative;
-    width:100%;
-    max-width:340px;
-    background:var(--panel-raised);
-    border-radius:16px;
-    padding:20px;
-    box-shadow:
-      0 2px 4px rgba(0,0,0,0.3),
-      0 12px 24px rgba(0,0,0,0.4),
-      0 30px 60px rgba(0,0,0,0.5);
-  }
-  #confirmModal::before{
-    content:"";
-    position:absolute;
-    inset:-1.5px;
-    border-radius:17.5px;
-    padding:1.5px;
-    background:conic-gradient(from var(--glow-angle,0deg), var(--amber), var(--sage), var(--amber));
-    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite:xor;
-    mask-composite:exclude;
-    animation: glowSpin 3s linear infinite;
-    z-index:-1;
-  }
-  @property --glow-angle{
-    syntax:'<angle>';
-    initial-value:0deg;
-    inherits:false;
-  }
-  @keyframes glowSpin{
-    0%{ --glow-angle:0deg; }
-    100%{ --glow-angle:360deg; }
-  }
-  #confirmTitle{
-    font-family:'Space Grotesk',sans-serif;
-    font-weight:700;
-    font-size:17px;
-    margin-bottom:10px;
-    display:flex;
-    align-items:center;
-    gap:8px;
-  }
-  #confirmTitle .emoji3d{
-    display:inline-block;
-    animation: emojiWiggle 1.8s ease-in-out infinite;
-  }
-  @keyframes emojiWiggle{
-    0%,100%{ transform:rotate(0deg) translateY(0); }
-    20%{ transform:rotate(-12deg) translateY(-2px); }
-    40%{ transform:rotate(10deg) translateY(-3px); }
-    60%{ transform:rotate(-6deg) translateY(-1px); }
-    80%{ transform:rotate(4deg) translateY(0); }
-  }
-  #confirmMessage{
-    font-size:14px;
-    line-height:1.5;
-    color:var(--text-dim);
-    margin-bottom:20px;
-  }
-  #confirmActions{
-    display:flex;
-    justify-content:flex-end;
-    gap:10px;
-  }
-  #confirmActions button{
-    border:none;
-    border-radius:10px;
-    padding:9px 16px;
-    font-family:'Inter',sans-serif;
-    font-size:14px;
-    font-weight:600;
-    cursor:pointer;
-    transition:transform .12s ease, box-shadow .12s ease;
-  }
-  #confirmActions button:active{ transform:scale(.93) translateY(1px); }
-  #confirmCancelBtn{ background:var(--panel); color:var(--text-dim); }
-  #confirmOkBtn{ background:var(--danger); color:#fff; }
   .profile-menu-item.danger svg{ color:var(--danger); }
   .profile-menu-divider{ height:1px; background:var(--line); margin:4px 0; }
   .icon-btn{
@@ -351,31 +247,8 @@
     border-radius:20px;
     margin:10px 0;
   }
-  .bubble-row{ display:flex; align-items:flex-end; gap:2px; }
+  .bubble-row{ display:flex; }
   .bubble-row.me{ justify-content:flex-end; }
-  .msg-menu-btn{
-    order:1;
-    width:24px; height:24px; border-radius:50%;
-    border:none; background:none;
-    color:var(--text-dim);
-    display:flex; align-items:center; justify-content:center;
-    cursor:pointer;
-    flex-shrink:0;
-    opacity:.55;
-    align-self:flex-end;
-    margin-bottom:2px;
-  }
-  .msg-menu-btn svg{ width:16px; height:16px; }
-  .msg-menu-btn:hover, .msg-menu-btn:active{ opacity:1; }
-  .bubble-row.me .bubble{ order:2; }
-  .bubble-row.them .bubble{ order:1; }
-  .bubble-row.them .msg-menu-btn{ order:2; }
-  .bubble-edited{
-    font-size:9.5px;
-    opacity:.6;
-    font-style:italic;
-    margin-left:3px;
-  }
   .bubble{
     max-width:75%;
     padding:9px 13px 7px;
@@ -518,230 +391,6 @@
     font-style:italic;
     opacity:.7;
   }
-  .loading-box{
-    width:180px; height:130px;
-    border-radius:12px;
-    position:relative;
-    overflow:hidden;
-    background:linear-gradient(100deg,
-      rgba(255,255,255,0.06) 30%,
-      rgba(255,255,255,0.16) 50%,
-      rgba(255,255,255,0.06) 70%);
-    background-size:220% 100%;
-    animation:shimmerMove 1.4s ease-in-out infinite;
-    display:flex; align-items:center; justify-content:center;
-  }
-  .loading-box.loading-file{
-    width:190px; height:56px;
-  }
-  @keyframes shimmerMove{
-    0%{ background-position:120% 0; }
-    100%{ background-position:-20% 0; }
-  }
-  .loading-spinner{
-    width:26px; height:26px;
-    border-radius:50%;
-    border:3px solid rgba(255,255,255,0.18);
-    border-top-color:var(--amber);
-    animation:spin .8s linear infinite;
-  }
-  @keyframes spin{ to{ transform:rotate(360deg); } }
-  .loading-label{
-    position:absolute;
-    bottom:8px; left:0; right:0;
-    text-align:center;
-    font-size:10.5px;
-    font-family:'JetBrains Mono',monospace;
-    color:var(--text-dim);
-  }
-
-  /* ---------- reply quote (inside a bubble) ---------- */
-  .bubble-quote{
-    border-left:3px solid rgba(0,0,0,0.35);
-    background:rgba(0,0,0,0.14);
-    border-radius:8px;
-    padding:5px 8px;
-    margin-bottom:6px;
-    font-size:12px;
-    opacity:.85;
-    max-width:100%;
-    overflow:hidden;
-  }
-  .bubble-row.them .bubble-quote{
-    border-left-color:rgba(255,255,255,0.25);
-    background:rgba(255,255,255,0.06);
-  }
-  .bubble-quote-name{ font-weight:600; font-size:11px; }
-  .bubble-quote-text{
-    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-  }
-
-  /* ---------- reply composer bar ---------- */
-  #replyBar{
-    display:none;
-    align-items:center;
-    gap:10px;
-    padding:9px 14px;
-    background:var(--panel-raised);
-    border-top:1px solid var(--line);
-    border-left:3px solid var(--amber);
-  }
-  #replyBar.show{ display:flex; }
-  #replyBarBody{ flex:1; min-width:0; }
-  #replyBarName{ font-size:12px; font-weight:600; color:var(--amber); }
-  #replyBarText{ font-size:12.5px; color:var(--text-dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  #replyBarClose{
-    width:26px; height:26px; border-radius:50%;
-    background:var(--panel); border:none; color:var(--text-dim);
-    display:flex; align-items:center; justify-content:center;
-    cursor:pointer; flex-shrink:0;
-  }
-
-  #editBar{
-    display:none;
-    align-items:center;
-    gap:10px;
-    padding:9px 14px;
-    background:var(--panel-raised);
-    border-top:1px solid var(--line);
-    border-left:3px solid var(--sage);
-  }
-  #editBar.show{ display:flex; }
-  #editBarBody{ flex:1; min-width:0; }
-  #editBarLabel{ font-size:12px; font-weight:600; color:var(--sage); }
-  #editBarText{ font-size:12.5px; color:var(--text-dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  #editBarClose{
-    width:26px; height:26px; border-radius:50%;
-    background:var(--panel); border:none; color:var(--text-dim);
-    display:flex; align-items:center; justify-content:center;
-    cursor:pointer; flex-shrink:0;
-  }
-
-  /* ---------- ticks (sent/read) ---------- */
-  .bubble-ticks{
-    display:inline-flex;
-    margin-left:4px;
-    vertical-align:middle;
-  }
-  .bubble-ticks svg{ width:14px; height:14px; }
-  .bubble-ticks.read svg{ color:#4FC3F7; }
-  .bubble-ticks:not(.read) svg{ color:rgba(14,26,23,0.55); }
-  .bubble-row.them .bubble-ticks{ display:none; }
-
-  /* ---------- reactions ---------- */
-  .bubble-reactions{
-    display:flex;
-    gap:4px;
-    margin-top:4px;
-    flex-wrap:wrap;
-  }
-  .reaction-pill{
-    background:var(--panel-raised);
-    border:1px solid var(--line);
-    border-radius:12px;
-    padding:1px 7px;
-    font-size:12px;
-    display:flex; align-items:center; gap:3px;
-    cursor:pointer;
-  }
-  .reaction-pill.mine{ border-color:var(--amber); }
-  .reaction-pill-count{ font-size:10px; color:var(--text-dim); font-family:'JetBrains Mono',monospace; }
-
-  /* ---------- long-press action menu ---------- */
-  #msgActionOverlay{
-    display:none;
-    position:fixed; inset:0;
-    background:rgba(0,0,0,0.55);
-    z-index:70;
-    align-items:flex-end;
-    justify-content:center;
-  }
-  #msgActionOverlay.show{ display:flex; }
-  #msgActionSheet{
-    width:100%;
-    max-width:480px;
-    background:var(--panel-raised);
-    border-radius:18px 18px 0 0;
-    padding:16px 14px calc(16px + env(safe-area-inset-bottom));
-    animation: sheetSlideUp .25s ease-out;
-  }
-  @keyframes sheetSlideUp{
-    from{ transform:translateY(100%); }
-    to{ transform:translateY(0); }
-  }
-  .quick-react-row{
-    display:flex;
-    justify-content:space-between;
-    padding:6px 4px 14px;
-    border-bottom:1px solid var(--line);
-    margin-bottom:8px;
-  }
-  .quick-react-btn{
-    font-size:26px;
-    background:none; border:none; cursor:pointer;
-    padding:4px;
-    border-radius:50%;
-    transition:transform .12s ease;
-  }
-  .quick-react-btn:active{ transform:scale(1.3); }
-  .msg-action-item{
-    width:100%;
-    text-align:left;
-    padding:12px 10px;
-    background:none; border:none;
-    color:var(--text);
-    font-family:'Inter',sans-serif;
-    font-size:14.5px;
-    display:flex; align-items:center; gap:12px;
-    cursor:pointer;
-  }
-  .msg-action-item svg{ width:18px; height:18px; color:var(--text-dim); flex-shrink:0; }
-  .msg-action-item.danger{ color:var(--danger); }
-  .msg-action-item.danger svg{ color:var(--danger); }
-
-  /* ---------- link previews ---------- */
-  .bubble-link{
-    color:inherit;
-    text-decoration:underline;
-    text-underline-offset:2px;
-  }
-  .link-preview-card{
-    display:block;
-    margin-top:6px;
-    border:1px solid rgba(0,0,0,0.2);
-    border-radius:10px;
-    overflow:hidden;
-    max-width:230px;
-    text-decoration:none;
-    color:inherit;
-    background:rgba(0,0,0,0.12);
-  }
-  .bubble-row.them .link-preview-card{
-    border-color:var(--line);
-    background:rgba(255,255,255,0.04);
-  }
-  .link-preview-img{
-    width:100%; height:100px;
-    object-fit:cover;
-    display:block;
-  }
-  .link-preview-body{ padding:7px 9px; }
-  .link-preview-title{
-    font-size:12px; font-weight:600;
-    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
-    overflow:hidden;
-  }
-  .link-preview-desc{
-    font-size:11px; opacity:.75; margin-top:2px;
-    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
-    overflow:hidden;
-  }
-  .link-preview-domain{
-    font-size:10px; opacity:.6; margin-top:3px;
-    text-transform:uppercase;
-    font-family:'JetBrains Mono',monospace;
-  }
-
   .bubble-video{
     max-width:220px;
     border-radius:12px;
@@ -853,38 +502,6 @@
 
   ::-webkit-scrollbar{ width:8px; }
   ::-webkit-scrollbar-thumb{ background:var(--line); border-radius:8px; }
-
-  /* ---------- shared button animation: hover-lift + press + ripple ---------- */
-  .ripple-btn{
-    position:relative;
-    overflow:hidden;
-    transition: transform .16s cubic-bezier(.2,.9,.3,1.3), box-shadow .2s ease;
-  }
-  .ripple-btn:hover{
-    transform:translateY(-2px);
-    box-shadow:0 6px 16px rgba(255,176,32,0.22);
-  }
-  .ripple-btn:active{
-    transform:translateY(0) scale(.91);
-  }
-  .ripple-span{
-    position:absolute;
-    border-radius:50%;
-    background:rgba(255,255,255,0.45);
-    transform:scale(0);
-    opacity:.6;
-    pointer-events:none;
-    animation: rippleExpand .55s ease-out forwards;
-  }
-  @keyframes rippleExpand{
-    to{ transform:scale(1); opacity:0; }
-  }
-  #sendBtn.ripple-btn:hover{
-    box-shadow:0 6px 20px rgba(255,176,32,0.45);
-  }
-  .dial-btn.ripple-btn:hover{
-    box-shadow:0 8px 22px rgba(255,176,32,0.2);
-  }
 </style>
 </head>
 <body>
@@ -967,26 +584,6 @@
     <div class="typing-dots"><span></span><span></span><span></span></div>
   </div>
 
-  <div id="replyBar">
-    <div id="replyBarBody">
-      <div id="replyBarName"></div>
-      <div id="replyBarText"></div>
-    </div>
-    <button id="replyBarClose">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg>
-    </button>
-  </div>
-
-  <div id="editBar">
-    <div id="editBarBody">
-      <div id="editBarLabel">Editing message</div>
-      <div id="editBarText"></div>
-    </div>
-    <button id="editBarClose">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg>
-    </button>
-  </div>
-
   <div class="composer">
     <input type="file" id="photoInput" accept="image/*" multiple style="display:none;">
     <input type="file" id="videoInput" accept="video/*" style="display:none;">
@@ -1001,17 +598,6 @@
     <button id="sendBtn">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
     </button>
-  </div>
-
-  <div id="confirmOverlay">
-    <div id="confirmModal">
-      <div id="confirmTitle">Chat GO <span class="emoji3d">💬</span></div>
-      <div id="confirmMessage"></div>
-      <div id="confirmActions">
-        <button id="confirmCancelBtn">Cancel</button>
-        <button id="confirmOkBtn">OK</button>
-      </div>
-    </div>
   </div>
 
   <div id="attachMenuOverlay">
@@ -1037,35 +623,6 @@
     <span class="recording-label">Recording…</span>
     <button id="recordCancelBtn">Cancel</button>
     <button id="recordSendBtn">Send</button>
-  </div>
-</div>
-
-<div id="msgActionOverlay">
-  <div id="msgActionSheet">
-    <div class="quick-react-row" id="quickReactRow">
-      <button class="quick-react-btn" data-emoji="❤️">❤️</button>
-      <button class="quick-react-btn" data-emoji="👍">👍</button>
-      <button class="quick-react-btn" data-emoji="😂">😂</button>
-      <button class="quick-react-btn" data-emoji="😮">😮</button>
-      <button class="quick-react-btn" data-emoji="😢">😢</button>
-      <button class="quick-react-btn" data-emoji="🙏">🙏</button>
-    </div>
-    <button class="msg-action-item" id="msgActionReply">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 17-5-5 5-5"/><path d="M4 12h11a4 4 0 0 1 4 4v1"/></svg>
-      Reply
-    </button>
-    <button class="msg-action-item" id="msgActionEdit">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
-      Edit
-    </button>
-    <button class="msg-action-item danger" id="msgActionDeleteEveryone">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
-      Delete for everyone
-    </button>
-    <button class="msg-action-item danger" id="msgActionDeleteMe">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
-      Delete for me
-    </button>
   </div>
 </div>
 
@@ -1181,30 +738,6 @@
   const menuGoBack = document.getElementById("menuGoBack");
   const menuClearSelf = document.getElementById("menuClearSelf");
   const menuClearBoth = document.getElementById("menuClearBoth");
-  const confirmOverlay = document.getElementById("confirmOverlay");
-  const confirmMessage = document.getElementById("confirmMessage");
-  const confirmCancelBtn = document.getElementById("confirmCancelBtn");
-  const confirmOkBtn = document.getElementById("confirmOkBtn");
-
-  function showConfirm(message){
-    confirmMessage.textContent = message;
-    confirmOverlay.classList.add("show");
-    return new Promise((resolve)=>{
-      function cleanup(result){
-        confirmOverlay.classList.remove("show");
-        confirmOkBtn.removeEventListener("click", onOk);
-        confirmCancelBtn.removeEventListener("click", onCancel);
-        confirmOverlay.removeEventListener("click", onOverlay);
-        resolve(result);
-      }
-      function onOk(){ cleanup(true); }
-      function onCancel(){ cleanup(false); }
-      function onOverlay(e){ if(e.target === confirmOverlay) cleanup(false); }
-      confirmOkBtn.addEventListener("click", onOk);
-      confirmCancelBtn.addEventListener("click", onCancel);
-      confirmOverlay.addEventListener("click", onOverlay);
-    });
-  }
   const photoInput = document.getElementById("photoInput");
   const videoInput = document.getElementById("videoInput");
   const pdfInput = document.getElementById("pdfInput");
@@ -1218,46 +751,9 @@
   const recordingTimeEl = document.getElementById("recordingTime");
   const recordCancelBtn = document.getElementById("recordCancelBtn");
   const recordSendBtn = document.getElementById("recordSendBtn");
-  const replyBar = document.getElementById("replyBar");
-  const replyBarName = document.getElementById("replyBarName");
-  const replyBarText = document.getElementById("replyBarText");
-  const replyBarClose = document.getElementById("replyBarClose");
-  const msgActionOverlay = document.getElementById("msgActionOverlay");
-  const quickReactRow = document.getElementById("quickReactRow");
-  const msgActionReply = document.getElementById("msgActionReply");
-  const msgActionDelete = document.getElementById("msgActionDelete");
 
   // typingRow lives in the messages list so we can insertBefore it
   messagesEl.appendChild(typingRow);
-
-  // ---------- shared ripple effect for all buttons ----------
-  function addRipple(el){
-    if(!el || el.__hasRipple) return;
-    el.__hasRipple = true;
-    el.classList.add("ripple-btn");
-    el.addEventListener("pointerdown", (e)=>{
-      const rect = el.getBoundingClientRect();
-      const size = Math.max(rect.width, rect.height) * 1.6;
-      const span = document.createElement("span");
-      span.className = "ripple-span";
-      span.style.width = span.style.height = size + "px";
-      span.style.left = (e.clientX - rect.left - size / 2) + "px";
-      span.style.top = (e.clientY - rect.top - size / 2) + "px";
-      el.appendChild(span);
-      setTimeout(()=> span.remove(), 600);
-    });
-  }
-  function initRipples(){
-    const selectors = [
-      ".dial-btn", ".icon-btn", ".composer-icon-btn", "#sendBtn",
-      ".profile-menu-item", "#permBtn",
-      "#recordCancelBtn", "#recordSendBtn",
-      "#confirmCancelBtn", "#confirmOkBtn",
-      ".quick-react-btn", ".msg-action-item", "#replyBarClose"
-    ];
-    document.querySelectorAll(selectors.join(",")).forEach(addRipple);
-  }
-  initRipples();
 
   // ---------- identity selection ----------
   document.querySelectorAll(".dial-btn").forEach(btn=>{
@@ -1275,12 +771,9 @@
     picker.style.display = "none";
     chatScreen.style.display = "flex";
 
-    // header shows YOU (so it's always clear which side you're on) —
-    // the contact's name/status live in the subtitle line instead.
-    contactName.textContent = identity;
-    contactInitial.textContent = identity[0];
-    contactAvatarEl.classList.toggle("avatar-amber", identity === "Saksham");
-    document.title = "Chat GO — " + identity;
+    contactName.textContent = contact;
+    contactInitial.textContent = contact[0];
+    document.title = "Chat GO — " + contact;
 
     soundBtn.classList.toggle("active", soundOn);
     updatePermBanner();
@@ -1311,7 +804,7 @@
   });
 
   menuClearSelf.addEventListener("click", async ()=>{
-    const ok = await showConfirm("Delete only your own messages from this chat? This can't be undone, and " + contact + " will also lose them.");
+    const ok = confirm("Delete only your own messages from this chat? This can't be undone, and " + contact + " will also lose them.");
     if(!ok) return;
     closeProfileMenu();
     try{
@@ -1321,7 +814,7 @@
         showToast({ text: "Couldn't clear messages — try again." });
         return;
       }
-      await renderList([]);
+      renderList([]);
       showToast({ text: "Your messages were cleared." });
     }catch(e){
       showDebugError("Network error clearing messages", e.message || String(e));
@@ -1329,7 +822,7 @@
   });
 
   menuClearBoth.addEventListener("click", async ()=>{
-    const ok = await showConfirm("Delete the ENTIRE chat history for both " + identity + " and " + contact + "? This can't be undone.");
+    const ok = confirm("Delete the ENTIRE chat history for both " + identity + " and " + contact + "? This can't be undone.");
     if(!ok) return;
     closeProfileMenu();
     try{
@@ -1339,7 +832,7 @@
         showToast({ text: "Couldn't clear chat — try again." });
         return;
       }
-      await renderList([]);
+      renderList([]);
       showToast({ text: "Chat cleared for both of you." });
     }catch(e){
       showDebugError("Network error clearing chat", e.message || String(e));
@@ -1347,29 +840,14 @@
   });
 
   // ---------- messages: Supabase is now the single source of truth ----------
-  const messagesById = new Map();     // id -> msg object (for reply lookups & live tick/reaction updates)
-  const reactionsByMessage = new Map(); // message_id -> Map(sender -> emoji)
-  let pendingReply = null;            // {id, from, text, type}
-  let currentActionMsgId = null;      // which message the long-press sheet is acting on
-
   function rowToMsg(row){
-    return {
-      id: row.id,
-      from: row.sender,
-      text: row.text,
-      ts: new Date(row.created_at).getTime(),
-      type: row.type || "text",
-      mediaUrl: row.media_url || null,
-      readAt: row.read_at || null,
-      replyToId: row.reply_to_id || null,
-      editedAt: row.edited_at || null
-    };
+    return { id: row.id, from: row.sender, text: row.text, ts: new Date(row.created_at).getTime(), type: row.type || "text", mediaUrl: row.media_url || null };
   }
 
   async function fetchInitialMessages(){
     setDebugStatus("fetching messages from Supabase…");
     try{
-      const { data, error } = await sb.from("messages").select("id,sender,text,type,media_url,created_at,read_at,reply_to_id").order("created_at", { ascending: true }).limit(300);
+      const { data, error } = await sb.from("messages").select("*").order("created_at", { ascending: true }).limit(300);
       if(error){
         console.error("Failed to load messages:", error);
         showDebugError("Failed to load messages", error.message + (error.code ? " (code " + error.code + ")" : ""));
@@ -1387,26 +865,9 @@
     }
   }
 
-  async function fetchAllReactions(){
-    reactionsByMessage.clear();
-    try{
-      const { data, error } = await sb.from("message_reactions").select("*");
-      if(error){ console.error("Failed to load reactions:", error); return; }
-      data.forEach(r=>{
-        if(!reactionsByMessage.has(r.message_id)) reactionsByMessage.set(r.message_id, new Map());
-        reactionsByMessage.get(r.message_id).set(r.sender, r.emoji);
-      });
-    } catch(e){
-      console.error("Network exception loading reactions:", e);
-    }
-  }
-
-  async function renderList(list){
+  function renderList(list){
     messagesEl.innerHTML = "";
     messagesEl.appendChild(typingRow);
-    messagesById.clear();
-    list.forEach(m=> messagesById.set(m.id, m));
-    await fetchAllReactions();
     let lastDay = "";
     list.forEach(m=>{
       const day = new Date(m.ts).toDateString();
@@ -1420,7 +881,6 @@
       appendBubble(m, false);
     });
     scrollToBottom();
-    markMessagesRead();
   }
 
   function formatDay(ts){
@@ -1433,156 +893,13 @@
     return new Date(ts).toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"});
   }
 
-  function linkifyInto(container, text){
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    let lastIndex = 0;
-    let match;
-    let firstUrl = null;
-    while((match = urlRegex.exec(text)) !== null){
-      if(match.index > lastIndex) container.appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
-      const a = document.createElement("a");
-      a.href = match[0];
-      a.target = "_blank";
-      a.rel = "noopener noreferrer";
-      a.className = "bubble-link";
-      a.textContent = match[0];
-      a.addEventListener("click", (e)=> e.stopPropagation());
-      container.appendChild(a);
-      if(!firstUrl) firstUrl = match[0];
-      lastIndex = match.index + match[0].length;
-    }
-    if(lastIndex < text.length) container.appendChild(document.createTextNode(text.slice(lastIndex)));
-    return firstUrl;
-  }
-
-  const linkPreviewCache = new Map();
-  async function attachLinkPreview(bubbleEl, url){
-    if(linkPreviewCache.has(url)){
-      const cached = linkPreviewCache.get(url);
-      if(cached) bubbleEl.appendChild(cached.cloneNode(true));
-      return;
-    }
-    try{
-      const res = await fetch("https://api.microlink.io/?url=" + encodeURIComponent(url));
-      const json = await res.json();
-      if(json.status !== "success" || !json.data || (!json.data.title && !json.data.description)){
-        linkPreviewCache.set(url, null);
-        return;
-      }
-      const d = json.data;
-      const card = document.createElement("a");
-      card.className = "link-preview-card";
-      card.href = url;
-      card.target = "_blank";
-      card.rel = "noopener noreferrer";
-      card.addEventListener("click", (e)=> e.stopPropagation());
-      if(d.image && d.image.url){
-        const img = document.createElement("img");
-        img.className = "link-preview-img";
-        img.src = d.image.url;
-        img.loading = "lazy";
-        card.appendChild(img);
-      }
-      const body = document.createElement("div");
-      body.className = "link-preview-body";
-      if(d.title){
-        const t = document.createElement("div");
-        t.className = "link-preview-title";
-        t.textContent = d.title;
-        body.appendChild(t);
-      }
-      if(d.description){
-        const desc = document.createElement("div");
-        desc.className = "link-preview-desc";
-        desc.textContent = d.description;
-        body.appendChild(desc);
-      }
-      const domain = document.createElement("div");
-      domain.className = "link-preview-domain";
-      try{ domain.textContent = new URL(url).hostname.replace(/^www\./,""); }catch(e){ domain.textContent = url; }
-      body.appendChild(domain);
-      card.appendChild(body);
-      linkPreviewCache.set(url, card);
-      bubbleEl.appendChild(card);
-    } catch(e){
-      linkPreviewCache.set(url, null);
-      console.warn("Link preview fetch failed:", url, e);
-    }
-  }
-
-  function renderReactionsForMessage(id){
-    const row = messagesEl.querySelector('.bubble-row[data-msg-id="' + id + '"]');
-    if(!row) return;
-    const bubble = row.querySelector(".bubble");
-    let reactRow = bubble.querySelector(".bubble-reactions");
-    const reactions = reactionsByMessage.get(id);
-    if(!reactions || reactions.size === 0){
-      if(reactRow) reactRow.remove();
-      return;
-    }
-    const counts = new Map(); // emoji -> count
-    let mineEmoji = null;
-    reactions.forEach((emoji, sender)=>{
-      counts.set(emoji, (counts.get(emoji) || 0) + 1);
-      if(sender === identity) mineEmoji = emoji;
-    });
-    if(!reactRow){
-      reactRow = document.createElement("div");
-      reactRow.className = "bubble-reactions";
-      bubble.appendChild(reactRow);
-    }
-    reactRow.innerHTML = "";
-    counts.forEach((count, emoji)=>{
-      const pill = document.createElement("span");
-      pill.className = "reaction-pill" + (emoji === mineEmoji ? " mine" : "");
-      pill.textContent = emoji + " ";
-      const c = document.createElement("span");
-      c.className = "reaction-pill-count";
-      c.textContent = count;
-      pill.appendChild(c);
-      pill.addEventListener("click", ()=> toggleReaction(id, emoji));
-      reactRow.appendChild(pill);
-    });
-  }
-
-  function renderTicksForMessage(id){
-    const row = messagesEl.querySelector('.bubble-row[data-msg-id="' + id + '"]');
-    if(!row) return;
-    const ticks = row.querySelector(".bubble-ticks");
-    const m = messagesById.get(id);
-    if(!ticks || !m) return;
-    ticks.classList.toggle("read", !!m.readAt);
-    ticks.innerHTML = m.readAt
-      ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m2 12 4 4L15 7"/><path d="m9 12 4 4L22 7"/></svg>'
-      : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>';
-  }
-
   function appendBubble(m, animate){
     const row = document.createElement("div");
     row.className = "bubble-row " + (m.from === identity ? "me" : "them");
-    row.dataset.msgId = m.id;
     const b = document.createElement("div");
     b.className = "bubble";
     if(!animate) b.style.animation = "none";
 
-    if(m.replyToId){
-      const quoted = messagesById.get(m.replyToId);
-      const q = document.createElement("div");
-      q.className = "bubble-quote";
-      const qName = document.createElement("div");
-      qName.className = "bubble-quote-name";
-      qName.textContent = quoted ? quoted.from : "Message";
-      const qText = document.createElement("div");
-      qText.className = "bubble-quote-text";
-      qText.textContent = quoted
-        ? (quoted.type === "text" ? quoted.text : quoted.type === "image" ? "📷 Photo" : quoted.type === "video" ? "🎬 Video" : quoted.type === "audio" ? "🎤 Voice message" : quoted.type === "file" ? "📄 " + (quoted.text || "Document") : "")
-        : "Original message unavailable";
-      q.appendChild(qName);
-      q.appendChild(qText);
-      b.appendChild(q);
-    }
-
-    let detectedUrl = null;
     if(m.type === "image" && m.mediaUrl){
       const img = document.createElement("img");
       img.className = "bubble-image";
@@ -1631,54 +948,20 @@
       b.appendChild(span);
     } else {
       const textSpan = document.createElement("span");
-      detectedUrl = linkifyInto(textSpan, m.text || "");
+      textSpan.textContent = m.text;
       b.appendChild(textSpan);
     }
 
     const time = document.createElement("span");
     time.className = "bubble-time";
     time.textContent = formatTime(m.ts);
-    if(m.from === identity){
-      const ticks = document.createElement("span");
-      ticks.className = "bubble-ticks" + (m.readAt ? " read" : "");
-      ticks.innerHTML = m.readAt
-        ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m2 12 4 4L15 7"/><path d="m9 12 4 4L22 7"/></svg>'
-        : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>';
-      time.appendChild(ticks);
-    }
     b.appendChild(time);
     row.appendChild(b);
     messagesEl.insertBefore(row, typingRow);
-
-    renderReactionsForMessage(m.id);
-    if(detectedUrl) attachLinkPreview(b, detectedUrl);
-    attachLongPress(row, m.id);
-
     return row;
   }
 
-  // ---------- long-press to open reply/react/delete sheet ----------
-  function attachLongPress(el, msgId){
-    let timer = null;
-    let fired = false;
-    const start = ()=>{
-      fired = false;
-      timer = setTimeout(()=>{
-        fired = true;
-        if(navigator.vibrate) navigator.vibrate(15);
-        openMsgActions(msgId);
-      }, 480);
-    };
-    const cancel = ()=>{ clearTimeout(timer); };
-    el.addEventListener("pointerdown", start);
-    el.addEventListener("pointerup", cancel);
-    el.addEventListener("pointerleave", cancel);
-    el.addEventListener("pointercancel", cancel);
-    el.addEventListener("contextmenu", (e)=>{ e.preventDefault(); openMsgActions(msgId); });
-  }
-
   function appendIncomingWithDivider(m){
-    messagesById.set(m.id, m);
     const lastRow = messagesEl.querySelector(".bubble-row:last-of-type, .day-divider:last-of-type");
     const needsDivider = !lastRow || (window.__lastRenderedDay !== new Date(m.ts).toDateString());
     if(needsDivider){
@@ -1698,13 +981,11 @@
   async function sendMessage(){
     const text = textInput.value.trim();
     if(!text) return;
-    const replyToId = pendingReply ? pendingReply.id : null;
     textInput.value = "";
     autoGrow();
     sendTyping(false);
-    clearReply();
     try{
-      const { error } = await sb.from("messages").insert({ sender: identity, text: text, reply_to_id: replyToId });
+      const { error } = await sb.from("messages").insert({ sender: identity, text: text });
       if(error){
         console.error("Send failed:", error);
         showDebugError("Failed to send message", error.message + (error.code ? " (code " + error.code + ")" : ""));
@@ -1718,98 +999,6 @@
     // no local append here — the realtime INSERT event below renders it,
     // for both this device and the other one, keeping everything in sync.
   }
-
-  // ---------- reply bar ----------
-  function setReply(msg){
-    pendingReply = msg;
-    replyBarName.textContent = "Replying to " + (msg.from === identity ? "yourself" : msg.from);
-    replyBarText.textContent = msg.type === "text" ? msg.text
-      : msg.type === "image" ? "📷 Photo"
-      : msg.type === "video" ? "🎬 Video"
-      : msg.type === "audio" ? "🎤 Voice message"
-      : msg.type === "file" ? "📄 " + (msg.text || "Document")
-      : "";
-    replyBar.classList.add("show");
-    textInput.focus();
-  }
-  function clearReply(){
-    pendingReply = null;
-    replyBar.classList.remove("show");
-  }
-  replyBarClose.addEventListener("click", clearReply);
-
-  // ---------- long-press action sheet: reply / react / delete ----------
-  function openMsgActions(msgId){
-    currentActionMsgId = msgId;
-    const m = messagesById.get(msgId);
-    msgActionDelete.style.display = (m && m.from === identity) ? "flex" : "none";
-    msgActionOverlay.classList.add("show");
-  }
-  function closeMsgActions(){
-    msgActionOverlay.classList.remove("show");
-    currentActionMsgId = null;
-  }
-  msgActionOverlay.addEventListener("click", (e)=>{
-    if(e.target === msgActionOverlay) closeMsgActions();
-  });
-  quickReactRow.querySelectorAll(".quick-react-btn").forEach(btn=>{
-    btn.addEventListener("click", ()=>{
-      if(currentActionMsgId != null) toggleReaction(currentActionMsgId, btn.dataset.emoji);
-      closeMsgActions();
-    });
-  });
-  msgActionReply.addEventListener("click", ()=>{
-    const m = messagesById.get(currentActionMsgId);
-    if(m) setReply(m);
-    closeMsgActions();
-  });
-  msgActionDelete.addEventListener("click", async ()=>{
-    const id = currentActionMsgId;
-    closeMsgActions();
-    if(id == null) return;
-    const ok = await showConfirm("Delete this message? This can't be undone.");
-    if(!ok) return;
-    try{
-      const { error } = await sb.from("messages").delete().eq("id", id);
-      if(error) throw error;
-    } catch(e){
-      console.error("Delete message failed:", e);
-      showDebugError("Failed to delete message", e.message || String(e));
-      showToast({ text: "Couldn't delete that message." });
-    }
-  });
-
-  // ---------- reactions ----------
-  async function toggleReaction(messageId, emoji){
-    const existing = reactionsByMessage.get(messageId);
-    const mine = existing ? existing.get(identity) : null;
-    try{
-      if(mine === emoji){
-        const { error } = await sb.from("message_reactions").delete().eq("message_id", messageId).eq("sender", identity);
-        if(error) throw error;
-      } else {
-        const { error } = await sb.from("message_reactions").upsert({ message_id: messageId, sender: identity, emoji: emoji });
-        if(error) throw error;
-      }
-    } catch(e){
-      console.error("Reaction failed:", e);
-      showDebugError("Failed to react", e.message || String(e));
-    }
-  }
-
-  // ---------- read receipts ----------
-  async function markMessagesRead(){
-    if(!identity || !contact) return;
-    if(document.visibilityState !== "visible" || !document.hasFocus()) return;
-    try{
-      const { error } = await sb.from("messages").update({ read_at: new Date().toISOString() }).eq("sender", contact).is("read_at", null);
-      if(error) console.error("Failed to mark messages read:", error);
-    } catch(e){
-      console.error("Network exception marking read:", e);
-    }
-  }
-  window.addEventListener("focus", markMessagesRead);
-  document.addEventListener("visibilitychange", ()=>{ if(document.visibilityState === "visible") markMessagesRead(); });
 
   // ---------- media upload helper (used by both photo and voice messages) ----------
   async function uploadMedia(blob, ext, folder){
@@ -1828,29 +1017,7 @@
   // often makes mobile browsers fall back to a single-select file browser
   // instead of the proper multi-select photo gallery, so each type gets
   // its own dedicated input.
-  function addLoadingPlaceholder(kind, label){
-    const row = document.createElement("div");
-    row.className = "bubble-row me";
-    const b = document.createElement("div");
-    b.className = "bubble";
-    const box = document.createElement("div");
-    box.className = "loading-box" + (kind === "file" ? " loading-file" : "");
-    const spinner = document.createElement("div");
-    spinner.className = "loading-spinner";
-    box.appendChild(spinner);
-    const labelEl = document.createElement("div");
-    labelEl.className = "loading-label";
-    labelEl.textContent = label;
-    box.appendChild(labelEl);
-    b.appendChild(box);
-    row.appendChild(b);
-    messagesEl.insertBefore(row, typingRow);
-    scrollToBottom();
-    return row;
-  }
-
   async function sendAttachment(file, kind, folder){
-    const placeholder = addLoadingPlaceholder(kind, "Uploading " + kind + "…");
     setDebugStatus("uploading " + kind + ": " + file.name + "…");
     try{
       const ext = (file.name.split(".").pop() || (kind === "image" ? "jpg" : kind === "video" ? "mp4" : "pdf")).toLowerCase();
@@ -1863,8 +1030,6 @@
       console.error("Attachment send failed:", file.name, e);
       showDebugError("Failed to send " + file.name, e.message || String(e));
       showToast({ text: file.name + " failed to send." });
-    } finally {
-      placeholder.remove();
     }
   }
 
@@ -1947,7 +1112,6 @@
         if(recordingCancelled || recordedChunks.length === 0) return;
 
         const blob = new Blob(recordedChunks, { type: mediaRecorder.mimeType || "audio/webm" });
-        const placeholder = addLoadingPlaceholder("audio", "Uploading voice message…");
         setDebugStatus("uploading voice message…");
         try{
           const ext = (blob.type.split("/")[1] || "webm").split(";")[0];
@@ -1959,8 +1123,6 @@
           console.error("Voice message send failed:", e);
           showDebugError("Failed to send voice message", e.message || String(e));
           showToast({ text: "Voice message failed to send." });
-        } finally {
-          placeholder.remove();
         }
       };
 
@@ -2018,7 +1180,7 @@
   // ---------- realtime: Supabase channel for messages, presence, typing ----------
   async function connectRealtime(){
     const initial = await fetchInitialMessages();
-    await renderList(initial);
+    renderList(initial);
     if(initial.length) window.__lastRenderedDay = new Date(initial[initial.length-1].ts).toDateString();
 
     channel = sb.channel(ROOM_NAME, { config: { presence: { key: identity } } });
@@ -2030,44 +1192,17 @@
       typingRow.classList.remove("show");
       if(m.from !== identity){
         onNewIncomingMessage(m);
-        markMessagesRead();
       } else {
         scrollToBottom();
       }
     });
 
-    channel.on("postgres_changes", { event: "UPDATE", schema: "public", table: "messages" }, (payload)=>{
-      const m = rowToMsg(payload.new);
-      messagesById.set(m.id, m);
-      renderTicksForMessage(m.id);
-    });
-
     channel.on("postgres_changes", { event: "DELETE", schema: "public", table: "messages" }, async ()=>{
       // a message (or the whole chat) was cleared somewhere — refresh to match
       const fresh = await fetchInitialMessages();
-      await renderList(fresh);
+      renderList(fresh);
       if(fresh.length) window.__lastRenderedDay = new Date(fresh[fresh.length-1].ts).toDateString();
       showToast({ text: "Chat history was updated." });
-    });
-
-    channel.on("postgres_changes", { event: "INSERT", schema: "public", table: "message_reactions" }, (payload)=>{
-      const r = payload.new;
-      if(!reactionsByMessage.has(r.message_id)) reactionsByMessage.set(r.message_id, new Map());
-      reactionsByMessage.get(r.message_id).set(r.sender, r.emoji);
-      renderReactionsForMessage(r.message_id);
-    });
-    channel.on("postgres_changes", { event: "UPDATE", schema: "public", table: "message_reactions" }, (payload)=>{
-      const r = payload.new;
-      if(!reactionsByMessage.has(r.message_id)) reactionsByMessage.set(r.message_id, new Map());
-      reactionsByMessage.get(r.message_id).set(r.sender, r.emoji);
-      renderReactionsForMessage(r.message_id);
-    });
-    channel.on("postgres_changes", { event: "DELETE", schema: "public", table: "message_reactions" }, (payload)=>{
-      const r = payload.old;
-      if(reactionsByMessage.has(r.message_id)){
-        reactionsByMessage.get(r.message_id).delete(r.sender);
-      }
-      renderReactionsForMessage(r.message_id);
     });
 
     channel.on("broadcast", { event: "typing" }, ({ payload })=>{
@@ -2081,7 +1216,7 @@
       const state = channel.presenceState();
       const online = Object.prototype.hasOwnProperty.call(state, contact);
       contactLed.classList.toggle("online", online);
-      contactStatus.textContent = contact + " · " + (online ? "online" : "offline");
+      contactStatus.textContent = online ? "online" : "offline";
     });
 
     channel.subscribe(async (status)=>{
@@ -2143,4 +1278,189 @@
     clearTimeout(window.__toastTimeout);
     window.__toastTimeout = setTimeout(()=> toast.classList.remove("show"), 3800);
   }
-  toast.addEventListener("click",
+  toast.addEventListener("click", ()=>{
+    toast.classList.remove("show");
+    clearUnread();
+    window.focus();
+  });
+
+  function updateBadge(){
+    badgeCount.textContent = unread > 9 ? "9+" : unread;
+    badgeCount.classList.toggle("show", unread > 0);
+    document.title = (unread > 0 ? "(" + unread + ") " : "") + "Chat GO — " + contact;
+  }
+  function clearUnread(){
+    unread = 0;
+    updateBadge();
+  }
+  bellBtn.addEventListener("click", clearUnread);
+
+  // ---------- service worker, inlined as a Blob (no separate .js file) ----------
+  // Note: most browsers block registering a service worker from a blob: URL
+  // for security reasons — this is attempted anyway and fails silently,
+  // falling back to the plain Notification API below. That's the one
+  // browser-enforced limitation of going fully single-file.
+  let swRegistration = null;
+  const SW_SOURCE = `
+    const CACHE = "relay-cache-v1";
+    self.addEventListener("install", () => self.skipWaiting());
+    self.addEventListener("activate", () => self.clients.claim());
+    self.addEventListener("fetch", (event) => {
+      event.respondWith(fetch(event.request).catch(() => caches.match(event.request)));
+    });
+  `;
+  if("serviceWorker" in navigator && isSecureContext){
+    try{
+      const swBlob = new Blob([SW_SOURCE], { type: "application/javascript" });
+      const swUrl = URL.createObjectURL(swBlob);
+      navigator.serviceWorker.register(swUrl)
+        .then(reg => { swRegistration = reg; })
+        .catch(err => { console.warn("Inline service worker blocked by browser (expected in most browsers):", err.message); });
+    }catch(e){ console.warn("Could not create inline service worker:", e); }
+  }
+
+  function desktopNotify(msg){
+    if(!("Notification" in window)){
+      console.warn("Notification API not available in this browser.");
+      return;
+    }
+    if(Notification.permission !== "granted") return;
+
+    const opts = {
+      body: msg.type === "image" ? "📷 Photo"
+        : msg.type === "audio" ? "🎤 Voice message"
+        : msg.type === "video" ? "🎬 Video"
+        : msg.type === "file" ? "📄 " + (msg.text || "Document")
+        : msg.text,
+      tag: "relay-chat",
+      renotify: true,
+      icon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAETUlEQVR4nO3dTZLiRhSF0WxHeQduT7y/XpS36CX0wB4RgQmqWoB4+TLvOWMUoqT3kVL96dsff/7174BQv81+AzCTAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoH7PfwJn++fv32W8hxvcfP2e/hVN8W/k/wxn4PlYNYrkADH1vq4WwTAAGfz0rxNA+AIO/tu4RtA7A8O+jawhtvw1q+PfS9Xy2WwG6HijO02k1aLUCGP4Mnc5zmwA6HRTer8v5bhFAl4NBrQ7nfXoAHQ4C88w+/9MDgJmmBjC7fnqYOQfTAjD8XJs1D1MCMPx04R6ANmZ8MJYH4NOfr1TPhxWAaKUB+PTniMo5sQIQTQBEKwvA5Q+PqJoXKwDRBEA0ARCtJADX/zyjYm6sAEQTANEEQDQBEE0ARBMA0QRANAEQTQBEEwDRBEA0ARBNAEQTANEEQDQBEO1j9hvo5t7zq87+w4zPnpFVsR9/nPR/JQ/JW+GgH3lw2xlfx6/2U7GPs/ZT4d0P1HMJNI4f5FdOxvcfPw9tf/R1X21/5ut2Fx/Ao4PQeXB2+lqqRAfw7ABUDFrVMKdHEBvAqye+6rLp3fs4Y/uVxQYAYwiAcAIgmgCIJgCixQbw6k9Cj27/yn4q9nHG9iuLDWCM50/8o9s9s5+Kfbyy3S6iAxijbtAq7PS1VIkPYIy6y5kj2x993Vfbn/m63flt0Bt+HbqXd/+UWgC05teh4Y0EQDQBEE0ARBMA0QRANAEQTQBEEwDRBEA0ARBNAEQTANEEQDQBEE0ARBMA0UoCSP7nqzyvYm6sAEQTANEEQLSyANwH8IiqebECEK00AKsAR1TOiRWAaAKgleqrhPIAXAbRyZQVQATcM2MuXAIRbVoAVgGuzZqHqSuACBhj7hy4BGKq2R+C0wOYfQDINj2AMUSQqsN5bxHAGD0OBnW6nO+SZ4Q9wvPE9tZl8C/aBXAhhP10G/4xGl0C3ep4sHhe1/PZdgW4ZjVYV9fBv1gigDFEsJrug3+xTAAXQuhtlcG/WC6Aa2LoY7XBv1g6gFuCqLPqwN/aKoB7ukSxy8Dspu23QXdi+Pv6mP0Gdmbw+7MCvInhX4MA3sDwr0MAJzP8a3EPcBKDvyYrwAkM/7oE8CLDvzYBvMDwr08ATzL8e3AT/CCDvxcrwAMM/34EcJDh35MADjD8+xLALxj+vbkJ/oTBz2AFuMPw5xDADcOfRQBXDH8e9wDD4CeLXwEMf7boAAw/sQEYfsYIDcDwcxF1E2zwuRWzAhh+7okIwPDzme3/Nyh8JWIFgM8IgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiDaf3o9Hx+T92r1AAAAAElFTkSuQmCC",
+      badge: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAETUlEQVR4nO3dTZLiRhSF0WxHeQduT7y/XpS36CX0wB4RgQmqWoB4+TLvOWMUoqT3kVL96dsff/7174BQv81+AzCTAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoH7PfwJn++fv32W8hxvcfP2e/hVN8W/k/wxn4PlYNYrkADH1vq4WwTAAGfz0rxNA+AIO/tu4RtA7A8O+jawhtvw1q+PfS9Xy2WwG6HijO02k1aLUCGP4Mnc5zmwA6HRTer8v5bhFAl4NBrQ7nfXoAHQ4C88w+/9MDgJmmBjC7fnqYOQfTAjD8XJs1D1MCMPx04R6ANmZ8MJYH4NOfr1TPhxWAaKUB+PTniMo5sQIQTQBEKwvA5Q+PqJoXKwDRBEA0ARCtJADX/zyjYm6sAEQTANEEQDQBEE0ARBMA0QRANAEQTQBEEwDRBEA0ARBNAEQTANEEQDQBEO1j9hvo5t7zq87+w4zPnpFVsR9/nPR/JQ/JW+GgH3lw2xlfx6/2U7GPs/ZT4d0P1HMJNI4f5FdOxvcfPw9tf/R1X21/5ut2Fx/Ao4PQeXB2+lqqRAfw7ABUDFrVMKdHEBvAqye+6rLp3fs4Y/uVxQYAYwiAcAIgmgCIJgCixQbw6k9Cj27/yn4q9nHG9iuLDWCM50/8o9s9s5+Kfbyy3S6iAxijbtAq7PS1VIkPYIy6y5kj2x993Vfbn/m63flt0Bt+HbqXd/+UWgC05teh4Y0EQDQBEE0ARBMA0QRANAEQTQBEEwDRBEA0ARBNAEQTANEEQDQBEE0ARBMA0UoCSP7nqzyvYm6sAEQTANEEQLSyANwH8IiqebECEK00AKsAR1TOiRWAaAKgleqrhPIAXAbRyZQVQATcM2MuXAIRbVoAVgGuzZqHqSuACBhj7hy4BGKq2R+C0wOYfQDINj2AMUSQqsN5bxHAGD0OBnW6nO+SZ4Q9wvPE9tZl8C/aBXAhhP10G/4xGl0C3ep4sHhe1/PZdgW4ZjVYV9fBv1gigDFEsJrug3+xTAAXQuhtlcG/WC6Aa2LoY7XBv1g6gFuCqLPqwN/aKoB7ukSxy8Dspu23QXdi+Pv6mP0Gdmbw+7MCvInhX4MA3sDwr0MAJzP8a3EPcBKDvyYrwAkM/7oE8CLDvzYBvMDwr08ATzL8e3AT/CCDvxcrwAMM/34EcJDh35MADjD8+xLALxj+vbkJ/oTBz2AFuMPw5xDADcOfRQBXDH8e9wDD4CeLXwEMf7boAAw/sQEYfsYIDcDwcxF1E2zwuRWzAhh+7okIwPDzme3/Nyh8JWIFgM8IgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiDaf3o9Hx+T92r1AAAAAElFTkSuQmCC",
+      vibrate: [40,30,40]
+    };
+
+    // On Android/Chrome, `new Notification()` is silently unsupported —
+    // it MUST go through a service worker registration instead.
+    if(swRegistration && swRegistration.showNotification){
+      swRegistration.showNotification(contact + " · Chat GO", opts).catch(err=>{
+        console.warn("showNotification failed:", err);
+      });
+      return;
+    }
+    try{
+      const n = new Notification(contact + " · Chat GO", opts);
+      n.onclick = ()=>{ window.focus(); clearUnread(); n.close(); };
+    }catch(e){
+      console.warn("Desktop notification failed:", e);
+    }
+  }
+
+  function onNewIncomingMessage(msg){
+    // every single message notifies — sound, toast, badge, and a desktop/OS
+    // notification — no matter whether the tab is focused or not.
+    playPing();
+    ringBell();
+    unread++;
+    updateBadge();
+    desktopNotify(msg);
+    showToast(msg);
+    if(navigator.vibrate) navigator.vibrate([40,30,40]);
+  }
+
+  window.addEventListener("focus", ()=>{
+    clearUnread();
+  });
+
+  // ---------- permission banner (shows real status + reasons it can fail) ----------
+
+  function updatePermBanner(){
+    const supported = "Notification" in window;
+    const dismissed = localStorage.getItem("relay_perm_dismissed") === "1";
+
+    if(!isSecureContext){
+      permBannerText.textContent = "Opened as a local file — notifications & home-screen install need it served over http(s). See instructions below.";
+      permBtn.textContent = "Got it";
+      permBanner.classList.add("show");
+      return;
+    }
+    if(!supported){
+      permBannerText.textContent = "This browser doesn't support desktop notifications.";
+      permBanner.classList.add("show");
+      permBtn.style.display = "none";
+      return;
+    }
+    if(Notification.permission === "denied"){
+      permBannerText.textContent = "Notifications are blocked for this site in your browser settings. Enable them there, then reload.";
+      permBtn.textContent = "Test sound only";
+      permBanner.classList.add("show");
+      return;
+    }
+    if(Notification.permission === "default" && !dismissed){
+      permBannerText.textContent = "Turn on desktop & sound alerts for new messages";
+      permBtn.textContent = "Enable";
+      permBanner.classList.add("show");
+      return;
+    }
+    permBanner.classList.remove("show");
+  }
+
+  permBtn.addEventListener("click", ()=>{
+    // unlock audio on this user gesture
+    try{
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      if(audioCtx.state === "suspended") audioCtx.resume();
+      playPing();
+    }catch(e){}
+
+    if(!isSecureContext){
+      localStorage.setItem("relay_perm_dismissed","1");
+      updatePermBanner();
+      return;
+    }
+    if("Notification" in window && Notification.permission === "default"){
+      Notification.requestPermission().then(()=>{
+        localStorage.setItem("relay_perm_dismissed","1");
+        updatePermBanner();
+        if(Notification.permission === "granted"){
+          desktopNotify({ text: "Notifications are on. You'll see alerts like this one." });
+        }
+      });
+    } else {
+      localStorage.setItem("relay_perm_dismissed","1");
+      updatePermBanner();
+    }
+  });
+
+  soundBtn.addEventListener("click", ()=>{
+    soundOn = !soundOn;
+    localStorage.setItem("relay_sound", soundOn ? "on" : "off");
+    soundBtn.classList.toggle("active", soundOn);
+    if(soundOn) playPing();
+  });
+
+  // ---------- install to home screen ----------
+  const installBtn = document.getElementById("installBtn");
+  let deferredInstallPrompt = null;
+
+  window.addEventListener("beforeinstallprompt", (e)=>{
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    if(isSecureContext) installBtn.style.display = "flex";
+  });
+
+  installBtn.addEventListener("click", async ()=>{
+    if(!deferredInstallPrompt) return;
+    deferredInstallPrompt.prompt();
+    await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+    installBtn.style.display = "none";
+  });
+
+  window.addEventListener("appinstalled", ()=>{
+    installBtn.style.display = "none";
+  });
+
+})();
+</script>
+</boy>
+          </html>
