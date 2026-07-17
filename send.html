@@ -42,81 +42,121 @@ button{
 <script>
 let db;
 
-const request=indexedDB.open("LocalFiles",1);
+const request = indexedDB.open("LocalFiles", 1);
 
-request.onupgradeneeded=e=>{
-    db=e.target.result;
-    db.createObjectStore("files",{keyPath:"id",autoIncrement:true});
+request.onupgradeneeded = function(e) {
+    db = e.target.result;
+    if (!db.objectStoreNames.contains("files")) {
+        db.createObjectStore("files", {
+            keyPath: "id",
+            autoIncrement: true
+        });
+    }
 };
 
-request.onsuccess=e=>{
-    db=e.target.result;
+request.onsuccess = function(e) {
+    db = e.target.result;
     loadFiles();
 };
 
-function saveFiles(){
-
-const files=document.getElementById("files").files;
-
-const tx=db.transaction("files","readwrite");
-const store=tx.objectStore("files");
-
-for(let file of files){
-
-const reader=new FileReader();
-
-reader.onload=function(){
-
-store.add({
-name:file.name,
-type:file.type,
-size:file.size,
-data:reader.result
-});
-
+request.onerror = function() {
+    alert("Database failed to open!");
 };
 
-reader.readAsDataURL(file);
+function saveFiles() {
 
-}
+    const files = document.getElementById("files").files;
 
-tx.oncomplete=()=>{
-setTimeout(loadFiles,300);
-};
+    if(files.length===0){
+        alert("Select a file first.");
+        return;
+    }
+
+    for(const file of files){
+
+        const reader = new FileReader();
+
+        reader.onload = function(){
+
+            const tx = db.transaction("files","readwrite");
+            const store = tx.objectStore("files");
+
+            store.add({
+                name:file.name,
+                type:file.type,
+                size:file.size,
+                date:new Date().toLocaleString(),
+                data:reader.result
+            });
+
+            tx.oncomplete=function(){
+                loadFiles();
+            };
+
+        };
+
+        reader.readAsDataURL(file);
+
+    }
 
 }
 
 function loadFiles(){
 
-const list=document.getElementById("list");
-list.innerHTML="";
+    const list=document.getElementById("list");
+    list.innerHTML="";
 
-const tx=db.transaction("files","readonly");
-const store=tx.objectStore("files");
+    const tx=db.transaction("files","readonly");
+    const store=tx.objectStore("files");
 
-store.openCursor().onsuccess=e=>{
+    store.openCursor().onsuccess=function(e){
 
-const cursor=e.target.result;
+        const cursor=e.target.result;
 
-if(cursor){
+        if(cursor){
 
-const f=cursor.value;
+            const f=cursor.value;
 
-list.innerHTML+=`
-<div class="file">
-<b>${f.name}</b><br>
-${(f.size/1024).toFixed(2)} KB<br>
-<a href="${f.data}" download="${f.name}">
-<button>Download</button>
-</a>
-</div>
-`;
+            let preview="";
 
-cursor.continue();
+            if(f.type.startsWith("image/")){
+                preview=`<img src="${f.data}" style="width:120px;border-radius:8px;margin-bottom:8px;">`;
+            }
+
+            list.innerHTML+=`
+            <div class="file">
+                ${preview}
+                <b>${f.name}</b><br>
+                📅 ${f.date}<br>
+                📦 ${(f.size/1024).toFixed(2)} KB<br><br>
+
+                <a href="${f.data}" download="${f.name}">
+                    <button>Download</button>
+                </a>
+
+                <button onclick="deleteFile(${f.id})">
+                    Delete
+                </button>
+            </div>
+            `;
+
+            cursor.continue();
+
+        }
+
+    };
 
 }
 
-};
+function deleteFile(id){
+
+    const tx=db.transaction("files","readwrite");
+
+    tx.objectStore("files").delete(id);
+
+    tx.oncomplete=function(){
+        loadFiles();
+    };
 
 }
 </script>
