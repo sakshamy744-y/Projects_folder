@@ -199,42 +199,55 @@
   #stickerMenuOverlay{
     display:none;
     position:fixed; inset:0;
-    background:rgba(0,0,0,0.55);
-    z-index:60;
-    align-items:flex-end;
-    justify-content:center;
+    background:var(--bg);
+    z-index:90;
+    height:100dvh;
   }
   #stickerMenuOverlay.show{ display:flex; }
   #stickerMenu{
     width:100%;
-    max-width:480px;
-    background:var(--panel-raised);
-    border-radius:18px 18px 0 0;
-    padding:14px 14px calc(14px + env(safe-area-inset-bottom));
-    animation: sheetSlideUp .25s ease-out;
-    max-height:50vh;
+    height:100%;
+    min-height:0;
+    background:var(--bg);
+    padding:0;
+    animation: stickerFadeIn .2s ease-out;
     display:flex;
     flex-direction:column;
+  }
+  @keyframes stickerFadeIn{
+    from{ opacity:0; transform:scale(.98); }
+    to{ opacity:1; transform:scale(1); }
   }
   #stickerMenuHeader{
     font-family:'Space Grotesk',sans-serif;
     font-weight:700;
-    font-size:15px;
-    margin-bottom:10px;
+    font-size:17px;
+    padding:14px 16px;
+    padding-top:calc(14px + env(safe-area-inset-top));
+    display:flex;
+    align-items:center;
+    gap:12px;
     flex-shrink:0;
+    background:var(--panel);
+    border-bottom:1px solid var(--line);
   }
   #stickerGrid{
     display:grid;
     grid-template-columns:repeat(5, 1fr);
-    gap:4px;
+    align-content:start;
+    gap:6px;
     overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    padding:16px 16px calc(16px + env(safe-area-inset-bottom));
+    flex:1 1 auto;
+    min-height:0;
   }
   .sticker-item{
     background:none;
     border:none;
-    font-size:34px;
-    padding:8px;
-    border-radius:12px;
+    font-size:40px;
+    padding:14px 8px;
+    border-radius:14px;
     cursor:pointer;
     line-height:1;
     transition:transform .12s ease, background .12s ease;
@@ -1074,9 +1087,6 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
     </button>
     <textarea id="textInput" rows="1" placeholder="Message…"></textarea>
-    <button id="stickerBtn" class="composer-icon-btn" title="Send a sticker">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
-    </button>
     <button id="micBtn" class="composer-icon-btn" title="Record a voice message">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><path d="M12 18v4"/></svg>
     </button>
@@ -1110,12 +1120,21 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>
         Document (PDF)
       </button>
+      <button class="profile-menu-item" id="attachStickers">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+        Stickers
+      </button>
     </div>
   </div>
 
   <div id="stickerMenuOverlay">
     <div id="stickerMenu">
-      <div id="stickerMenuHeader">Stickers</div>
+      <div id="stickerMenuHeader">
+        <button id="stickerBackBtn" class="icon-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+        </button>
+        <span>Stickers</span>
+      </div>
       <div id="stickerGrid"></div>
     </div>
   </div>
@@ -1319,9 +1338,10 @@
   const attachPhotos = document.getElementById("attachPhotos");
   const attachVideo = document.getElementById("attachVideo");
   const attachPdf = document.getElementById("attachPdf");
-  const stickerBtn = document.getElementById("stickerBtn");
+  const attachStickers = document.getElementById("attachStickers");
   const stickerMenuOverlay = document.getElementById("stickerMenuOverlay");
   const stickerGrid = document.getElementById("stickerGrid");
+  const stickerBackBtn = document.getElementById("stickerBackBtn");
   const micBtn = document.getElementById("micBtn");
   const recordingBar = document.getElementById("recordingBar");
   const recordingTimeEl = document.getElementById("recordingTime");
@@ -2205,12 +2225,12 @@
 
   // ---------- stickers: a built-in emoji set, no external assets needed ----------
   const STICKER_SET = [
-    "😀","😂","🥹","😍","😘","😎","🤩","🥳","😭","😡",
-    "🤔","🙄","😴","🤯","🥶","🤗","😇","🙈","👻","💀",
-    "👍","👎","👏","🙏","💪","✌️","🤝","👋","🫶","🤙",
+    "😀","😂","😍","😘","😎","😢","😭","😡","😱","😴",
+    "🤔","🙄","😇","🙈","👻","💀","😊","😉","😜","😳",
+    "👍","👎","👏","🙏","💪","✌️","👋","🤝","👌","🤙",
     "❤️","🧡","💛","💚","💙","💜","🖤","💔","💯","🔥",
     "🎉","🎂","🎁","✨","⭐","🌈","☀️","🌙","⚡","💧",
-    "🐶","🐱","🐼","🦄","🐸","🐷","🦋","🌸","🍕","☕"
+    "🐶","🐱","🐼","🐸","🐷","🦋","🌸","🍕","☕","😊"
   ];
   STICKER_SET.forEach(emoji=>{
     const btn = document.createElement("button");
@@ -2225,10 +2245,9 @@
   });
   function openStickerMenu(){ stickerMenuOverlay.classList.add("show"); }
   function closeStickerMenu(){ stickerMenuOverlay.classList.remove("show"); }
-  stickerBtn.addEventListener("click", openStickerMenu);
-  stickerMenuOverlay.addEventListener("click", (e)=>{
-    if(e.target === stickerMenuOverlay) closeStickerMenu();
-  });
+  attachStickers.addEventListener("click", ()=>{ closeAttachMenu(); openStickerMenu(); });
+  stickerBackBtn.addEventListener("click", closeStickerMenu);
+  addRipple(stickerBackBtn);
   async function sendSticker(emoji){
     try{
       const { error } = await sb.from("messages").insert({ sender: identity, text: emoji, type: "sticker" });
