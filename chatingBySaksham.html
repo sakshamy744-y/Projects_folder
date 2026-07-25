@@ -196,6 +196,70 @@
     box-shadow:0 12px 30px rgba(0,0,0,0.5);
   }
 
+  #stickerMenuOverlay{
+    display:none;
+    position:fixed; inset:0;
+    background:rgba(0,0,0,0.55);
+    z-index:60;
+    align-items:flex-end;
+    justify-content:center;
+  }
+  #stickerMenuOverlay.show{ display:flex; }
+  #stickerMenu{
+    width:100%;
+    max-width:480px;
+    background:var(--panel-raised);
+    border-radius:18px 18px 0 0;
+    padding:14px 14px calc(14px + env(safe-area-inset-bottom));
+    animation: sheetSlideUp .25s ease-out;
+    max-height:50vh;
+    display:flex;
+    flex-direction:column;
+  }
+  #stickerMenuHeader{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:15px;
+    margin-bottom:10px;
+    flex-shrink:0;
+  }
+  #stickerGrid{
+    display:grid;
+    grid-template-columns:repeat(5, 1fr);
+    gap:4px;
+    overflow-y:auto;
+  }
+  .sticker-item{
+    background:none;
+    border:none;
+    font-size:34px;
+    padding:8px;
+    border-radius:12px;
+    cursor:pointer;
+    line-height:1;
+    transition:transform .12s ease, background .12s ease;
+  }
+  .sticker-item:hover{ background:rgba(255,255,255,0.06); }
+  .sticker-item:active{ transform:scale(1.25); }
+
+  .bubble-row .bubble.sticker-bubble{
+    background:none !important;
+    padding:0 !important;
+    box-shadow:none;
+    animation:none;
+  }
+  .bubble-sticker-emoji{
+    font-size:64px;
+    line-height:1;
+    display:block;
+  }
+  .bubble.sticker-bubble .bubble-time{
+    display:block;
+    text-align:inherit;
+    color:var(--text-dim);
+    opacity:.7;
+  }
+
   #confirmOverlay{
     display:none;
     position:fixed; inset:0;
@@ -1010,6 +1074,9 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
     </button>
     <textarea id="textInput" rows="1" placeholder="Message…"></textarea>
+    <button id="stickerBtn" class="composer-icon-btn" title="Send a sticker">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+    </button>
     <button id="micBtn" class="composer-icon-btn" title="Record a voice message">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><path d="M12 18v4"/></svg>
     </button>
@@ -1043,6 +1110,13 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>
         Document (PDF)
       </button>
+    </div>
+  </div>
+
+  <div id="stickerMenuOverlay">
+    <div id="stickerMenu">
+      <div id="stickerMenuHeader">Stickers</div>
+      <div id="stickerGrid"></div>
     </div>
   </div>
 
@@ -1245,6 +1319,9 @@
   const attachPhotos = document.getElementById("attachPhotos");
   const attachVideo = document.getElementById("attachVideo");
   const attachPdf = document.getElementById("attachPdf");
+  const stickerBtn = document.getElementById("stickerBtn");
+  const stickerMenuOverlay = document.getElementById("stickerMenuOverlay");
+  const stickerGrid = document.getElementById("stickerGrid");
   const micBtn = document.getElementById("micBtn");
   const recordingBar = document.getElementById("recordingBar");
   const recordingTimeEl = document.getElementById("recordingTime");
@@ -1634,7 +1711,7 @@
       const qText = document.createElement("div");
       qText.className = "bubble-quote-text";
       qText.textContent = quoted
-        ? (quoted.type === "text" ? quoted.text : quoted.type === "image" ? "📷 Photo" : quoted.type === "video" ? "🎬 Video" : quoted.type === "audio" ? "🎤 Voice message" : quoted.type === "file" ? "📄 " + (quoted.text || "Document") : "")
+        ? (quoted.type === "text" ? quoted.text : quoted.type === "image" ? "📷 Photo" : quoted.type === "video" ? "🎬 Video" : quoted.type === "audio" ? "🎤 Voice message" : quoted.type === "file" ? "📄 " + (quoted.text || "Document") : quoted.type === "sticker" ? quoted.text + " Sticker" : "")
         : "Original message unavailable";
       q.appendChild(qName);
       q.appendChild(qText);
@@ -1683,6 +1760,12 @@
       audio.src = m.mediaUrl;
       wrap.appendChild(audio);
       b.appendChild(wrap);
+    } else if(m.type === "sticker"){
+      b.classList.add("sticker-bubble");
+      const emojiSpan = document.createElement("span");
+      emojiSpan.className = "bubble-sticker-emoji";
+      emojiSpan.textContent = m.text || "🙂";
+      b.appendChild(emojiSpan);
     } else if(m.type === "uploading"){
       const span = document.createElement("span");
       span.className = "bubble-uploading";
@@ -1836,6 +1919,7 @@
       : msg.type === "video" ? "🎬 Video"
       : msg.type === "audio" ? "🎤 Voice message"
       : msg.type === "file" ? "📄 " + (msg.text || "Document")
+      : msg.type === "sticker" ? msg.text + " Sticker"
       : "";
     replyBar.classList.add("show");
     textInput.focus();
@@ -1875,7 +1959,7 @@
     const isMedia = !!(m && ["image","video","file","audio"].includes(m.type) && m.mediaUrl);
     msgActionEdit.style.display = (isMine && m.type === "text") ? "flex" : "none";
     msgActionDeleteEveryone.style.display = isMine ? "flex" : "none";
-    msgActionCopy.style.display = (m && m.type === "text") ? "flex" : "none";
+    msgActionCopy.style.display = (m && (m.type === "text" || m.type === "sticker")) ? "flex" : "none";
     msgActionDownload.style.display = isMedia ? "flex" : "none";
     msgActionOverlay.classList.add("show");
   }
@@ -1900,7 +1984,7 @@
   msgActionCopy.addEventListener("click", ()=>{
     const m = messagesById.get(currentActionMsgId);
     closeMsgActions();
-    if(m && m.type === "text") copyMessageText(m.text || "");
+    if(m && (m.type === "text" || m.type === "sticker")) copyMessageText(m.text || "");
   });
   msgActionDownload.addEventListener("click", ()=>{
     const m = messagesById.get(currentActionMsgId);
@@ -2118,6 +2202,43 @@
   attachPhotos.addEventListener("click", ()=>{ closeAttachMenu(); photoInput.click(); });
   attachVideo.addEventListener("click", ()=>{ closeAttachMenu(); videoInput.click(); });
   attachPdf.addEventListener("click", ()=>{ closeAttachMenu(); pdfInput.click(); });
+
+  // ---------- stickers: a built-in emoji set, no external assets needed ----------
+  const STICKER_SET = [
+    "😀","😂","🥹","😍","😘","😎","🤩","🥳","😭","😡",
+    "🤔","🙄","😴","🤯","🥶","🤗","😇","🙈","👻","💀",
+    "👍","👎","👏","🙏","💪","✌️","🤝","👋","🫶","🤙",
+    "❤️","🧡","💛","💚","💙","💜","🖤","💔","💯","🔥",
+    "🎉","🎂","🎁","✨","⭐","🌈","☀️","🌙","⚡","💧",
+    "🐶","🐱","🐼","🦄","🐸","🐷","🦋","🌸","🍕","☕"
+  ];
+  STICKER_SET.forEach(emoji=>{
+    const btn = document.createElement("button");
+    btn.className = "sticker-item";
+    btn.textContent = emoji;
+    btn.addEventListener("click", ()=>{
+      closeStickerMenu();
+      sendSticker(emoji);
+    });
+    addRipple(btn);
+    stickerGrid.appendChild(btn);
+  });
+  function openStickerMenu(){ stickerMenuOverlay.classList.add("show"); }
+  function closeStickerMenu(){ stickerMenuOverlay.classList.remove("show"); }
+  stickerBtn.addEventListener("click", openStickerMenu);
+  stickerMenuOverlay.addEventListener("click", (e)=>{
+    if(e.target === stickerMenuOverlay) closeStickerMenu();
+  });
+  async function sendSticker(emoji){
+    try{
+      const { error } = await sb.from("messages").insert({ sender: identity, text: emoji, type: "sticker" });
+      if(error) throw error;
+    } catch(e){
+      console.error("Sticker send failed:", e);
+      showDebugError("Failed to send sticker", e.message || String(e));
+      showToast({ text: "Sticker failed to send." });
+    }
+  }
 
   photoInput.addEventListener("change", async ()=>{
     const files = Array.from(photoInput.files || []);
@@ -2379,6 +2500,7 @@
     else if(msg.type === "audio") preview = "🎤 Voice message";
     else if(msg.type === "video") preview = "🎬 Video";
     else if(msg.type === "file") preview = "📄 " + (msg.text || "Document");
+    else if(msg.type === "sticker") preview = msg.text + " Sticker";
     toastText.textContent = preview;
     toast.classList.add("show");
     clearTimeout(window.__toastTimeout);
@@ -2437,6 +2559,7 @@
         : msg.type === "audio" ? "🎤 Voice message"
         : msg.type === "video" ? "🎬 Video"
         : msg.type === "file" ? "📄 " + (msg.text || "Document")
+        : msg.type === "sticker" ? msg.text + " Sticker"
         : msg.text,
       tag: "relay-chat",
       renotify: true,
