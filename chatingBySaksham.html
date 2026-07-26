@@ -198,21 +198,21 @@
 
   #stickerMenuOverlay{
     display:none;
-    position:fixed; inset:0;
+    position:fixed;
+    top:0; left:0; right:0; bottom:0;
+    width:100%;
+    height:100dvh;
     background:var(--bg);
     z-index:90;
-    height:100dvh;
   }
-  #stickerMenuOverlay.show{ display:flex; }
+  #stickerMenuOverlay.show{ display:block; }
   #stickerMenu{
+    display:grid;
+    grid-template-rows:auto minmax(0, 1fr);
     width:100%;
     height:100%;
-    min-height:0;
     background:var(--bg);
-    padding:0;
     animation: stickerFadeIn .2s ease-out;
-    display:flex;
-    flex-direction:column;
   }
   @keyframes stickerFadeIn{
     from{ opacity:0; transform:scale(.98); }
@@ -227,20 +227,81 @@
     display:flex;
     align-items:center;
     gap:12px;
-    flex-shrink:0;
     background:var(--panel);
     border-bottom:1px solid var(--line);
+  }
+  #pickerTabs{
+    display:flex;
+    gap:6px;
+    flex:1;
+  }
+  .picker-tab{
+    background:none;
+    border:none;
+    color:var(--text-dim);
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:15px;
+    padding:6px 12px;
+    border-radius:20px;
+    cursor:pointer;
+  }
+  .picker-tab.active{
+    color:#1a1400;
+    background:var(--amber);
+  }
+  #pickerContent{
+    overflow:hidden;
+    min-height:0;
   }
   #stickerGrid{
     display:grid;
     grid-template-columns:repeat(5, 1fr);
+    grid-auto-rows:min-content;
     align-content:start;
     gap:6px;
-    overflow-y:auto;
+    height:100%;
+    overflow-y:scroll;
     -webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain;
     padding:16px 16px calc(16px + env(safe-area-inset-bottom));
-    flex:1 1 auto;
-    min-height:0;
+  }
+  #gifGrid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    grid-auto-rows:min-content;
+    align-content:start;
+    gap:10px;
+    height:100%;
+    overflow-y:scroll;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain;
+    padding:16px 16px calc(16px + env(safe-area-inset-bottom));
+  }
+  .gif-item{
+    background:var(--panel-raised);
+    border:1px solid var(--line);
+    border-radius:14px;
+    overflow:hidden;
+    cursor:pointer;
+    padding:0;
+    display:flex;
+    flex-direction:column;
+    transition:transform .12s ease;
+  }
+  .gif-item:active{ transform:scale(.95); }
+  .gif-item img{
+    width:100%;
+    height:100px;
+    object-fit:cover;
+    display:block;
+  }
+  .gif-item-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color:var(--text-dim);
+    text-align:center;
+    padding:6px 4px;
   }
   .sticker-item{
     background:none;
@@ -272,6 +333,105 @@
     color:var(--text-dim);
     opacity:.7;
   }
+
+  /* ---------- calling ---------- */
+  #voiceCallBtn:disabled, #videoCallBtn:disabled{ opacity:.3; cursor:not-allowed; }
+  #voiceCallBtn:disabled:hover, #videoCallBtn:disabled:hover{ color:var(--text-dim); border-color:var(--line); }
+
+  #callOverlay{
+    display:none;
+    position:fixed; inset:0;
+    z-index:100;
+    background:linear-gradient(160deg, #1c2030, #0c0e14);
+    overflow:hidden;
+  }
+  #callOverlay.show{ display:block; }
+  #remoteVideo{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    object-fit:cover;
+    background:#000;
+    display:none;
+  }
+  #callOverlay.video-active #remoteVideo{ display:block; }
+  #callBackdrop{
+    position:absolute; inset:0;
+    background:radial-gradient(circle at 50% 30%, rgba(255,176,32,0.10), transparent 60%);
+  }
+  #callTopInfo{
+    position:relative;
+    z-index:2;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding-top:calc(60px + env(safe-area-inset-top));
+    gap:8px;
+  }
+  #callOverlay.video-active.state-active #callTopInfo{
+    padding-top:calc(20px + env(safe-area-inset-top));
+  }
+  #callAvatar{
+    width:96px; height:96px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:34px;
+    background:linear-gradient(150deg, var(--sage), #3f9ea9);
+    color:#0e1a17;
+    box-shadow:0 0 0 6px rgba(255,255,255,0.06);
+  }
+  #callOverlay.video-active.state-active #callAvatar{ display:none; }
+  #callContactName{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:22px;
+    color:#fff;
+  }
+  #callStatusText{
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;
+    color:rgba(255,255,255,0.6);
+  }
+  #localVideo{
+    display:none;
+    position:absolute;
+    top:calc(16px + env(safe-area-inset-top)); right:16px;
+    width:100px; height:140px;
+    object-fit:cover;
+    border-radius:14px;
+    border:2px solid rgba(255,255,255,0.2);
+    z-index:3;
+    background:#111;
+  }
+  #callOverlay.video-active.state-active #localVideo{ display:block; }
+  #callControls{
+    position:absolute;
+    left:0; right:0; bottom:calc(50px + env(safe-area-inset-bottom));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:22px;
+    z-index:3;
+  }
+  .call-ctrl-btn{
+    width:60px; height:60px; border-radius:50%;
+    border:none;
+    background:rgba(255,255,255,0.12);
+    color:#fff;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+  }
+  .call-ctrl-btn svg{ width:24px; height:24px; }
+  .call-ctrl-btn.danger{ background:var(--danger); }
+  .call-ctrl-btn.active{ background:var(--amber); color:#1a1400; }
+  #callHangupBtn{ width:66px; height:66px; }
+
+  #callOverlay.state-outgoing #callHangupBtn{ display:flex; }
+  #callOverlay.state-incoming #callAcceptBtn{ display:flex; background:var(--sage); color:#0e1a17; }
+  #callOverlay.state-incoming #callDeclineBtn{ display:flex; }
+  #callOverlay.state-active #callMuteBtn{ display:flex; }
+  #callOverlay.state-active #callHangupBtn{ display:flex; }
+  #callOverlay.state-active.video-active #callCameraBtn{ display:flex; }
 
   #confirmOverlay{
     display:none;
@@ -1023,6 +1183,12 @@
       <button class="icon-btn" id="installBtn" title="Install to home screen" style="display:none;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
       </button>
+      <button class="icon-btn" id="voiceCallBtn" title="Voice call" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      </button>
+      <button class="icon-btn" id="videoCallBtn" title="Video call" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 8-6 4 6 4V8Z"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg>
+      </button>
       <button class="icon-btn" id="soundBtn" title="Toggle sound">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
       </button>
@@ -1095,6 +1261,34 @@
     </button>
   </div>
 
+  <div id="callOverlay">
+    <video id="remoteVideo" autoplay playsinline></video>
+    <div id="callBackdrop"></div>
+    <div id="callTopInfo">
+      <div id="callAvatar"><span id="callAvatarInitial">?</span></div>
+      <div id="callContactName"></div>
+      <div id="callStatusText">Calling…</div>
+    </div>
+    <video id="localVideo" autoplay playsinline muted></video>
+    <div id="callControls">
+      <button class="call-ctrl-btn" id="callDeclineBtn" title="Decline">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45c.36.12.73.22 1.11.3A2 2 0 0 1 20 16.72V19a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 9 17.13"/><path d="M2 2l20 20"/><path d="M8.5 8.5a19.8 19.8 0 0 0-1.5 1.4"/><path d="M2 9.11A19.79 19.79 0 0 1 3.11 4.1 2 2 0 0 1 5 3h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.7 2.81"/></svg>
+      </button>
+      <button class="call-ctrl-btn" id="callAcceptBtn" title="Accept">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      </button>
+      <button class="call-ctrl-btn" id="callMuteBtn" title="Mute">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><path d="M12 18v4"/></svg>
+      </button>
+      <button class="call-ctrl-btn" id="callCameraBtn" title="Toggle camera">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 8-6 4 6 4V8Z"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg>
+      </button>
+      <button class="call-ctrl-btn danger" id="callHangupBtn" title="Hang up">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45c.36.12.73.22 1.11.3A2 2 0 0 1 20 16.72V19a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 9 17.13"/><path d="M2 2l20 20"/><path d="M8.5 8.5a19.8 19.8 0 0 0-1.5 1.4"/><path d="M2 9.11A19.79 19.79 0 0 1 3.11 4.1 2 2 0 0 1 5 3h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.7 2.81"/></svg>
+      </button>
+    </div>
+  </div>
+
   <div id="confirmOverlay">
     <div id="confirmModal">
       <div id="confirmTitle">Chat GO <span class="emoji3d">💬</span></div>
@@ -1133,9 +1327,15 @@
         <button id="stickerBackBtn" class="icon-btn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
         </button>
-        <span>Stickers</span>
+        <div id="pickerTabs">
+          <button class="picker-tab active" id="tabStickers">Stickers</button>
+          <button class="picker-tab" id="tabGifs">GIFs</button>
+        </div>
       </div>
-      <div id="stickerGrid"></div>
+      <div id="pickerContent">
+        <div id="stickerGrid"></div>
+        <div id="gifGrid" style="display:none;"></div>
+      </div>
     </div>
   </div>
 
@@ -1280,6 +1480,24 @@
   const hiddenForMe = new Set();      // message ids hidden locally via "delete for me"
   let currentActionMsgId = null;      // which message the long-press sheet is acting on
 
+  // ---------- calling state (declared early to avoid TDZ issues) ----------
+  let callState = "idle"; // idle | outgoing | incoming | active
+  let pc = null;
+  let localStream = null;
+  let isVideoCall = false;
+  let pendingOffer = null;
+  let callTimeoutId = null;
+  let callDurationTimerId = null;
+  let callStartTime = null;
+  let isMuted = false;
+  let isCameraOff = false;
+  const ICE_SERVERS = [
+    { urls: "stun:stun.l.google.com:19302" },
+    { urls: "stun:stun1.l.google.com:19302" },
+    { urls: "turn:openrelay.metered.ca:80", username: "openrelayproject", credential: "openrelayproject" },
+    { urls: "turn:openrelay.metered.ca:443", username: "openrelayproject", credential: "openrelayproject" }
+  ];
+
   // ---------- elements ----------
   const picker = document.getElementById("picker");
   const chatScreen = document.getElementById("chat");
@@ -1292,6 +1510,20 @@
   const contactStatus = document.getElementById("contactStatus");
   const contactLed = document.getElementById("contactLed");
   const bellBtn = document.getElementById("bellBtn");
+  const voiceCallBtn = document.getElementById("voiceCallBtn");
+  const videoCallBtn = document.getElementById("videoCallBtn");
+  const callOverlay = document.getElementById("callOverlay");
+  const remoteVideo = document.getElementById("remoteVideo");
+  const localVideo = document.getElementById("localVideo");
+  const callAvatar = document.getElementById("callAvatar");
+  const callAvatarInitial = document.getElementById("callAvatarInitial");
+  const callContactName = document.getElementById("callContactName");
+  const callStatusText = document.getElementById("callStatusText");
+  const callAcceptBtn = document.getElementById("callAcceptBtn");
+  const callDeclineBtn = document.getElementById("callDeclineBtn");
+  const callMuteBtn = document.getElementById("callMuteBtn");
+  const callCameraBtn = document.getElementById("callCameraBtn");
+  const callHangupBtn = document.getElementById("callHangupBtn");
   const badgeCount = document.getElementById("badgeCount");
   const soundBtn = document.getElementById("soundBtn");
   const permBanner = document.getElementById("permBanner");
@@ -1341,6 +1573,9 @@
   const attachStickers = document.getElementById("attachStickers");
   const stickerMenuOverlay = document.getElementById("stickerMenuOverlay");
   const stickerGrid = document.getElementById("stickerGrid");
+  const gifGrid = document.getElementById("gifGrid");
+  const tabStickers = document.getElementById("tabStickers");
+  const tabGifs = document.getElementById("tabGifs");
   const stickerBackBtn = document.getElementById("stickerBackBtn");
   const micBtn = document.getElementById("micBtn");
   const recordingBar = document.getElementById("recordingBar");
@@ -1389,7 +1624,8 @@
       ".profile-menu-item", "#permBtn",
       "#recordCancelBtn", "#recordSendBtn",
       "#confirmCancelBtn", "#confirmOkBtn",
-      ".quick-react-btn", ".msg-action-item", "#replyBarClose"
+      ".quick-react-btn", ".msg-action-item", "#replyBarClose",
+      ".call-ctrl-btn"
     ];
     document.querySelectorAll(selectors.join(",")).forEach(addRipple);
   }
@@ -1731,7 +1967,7 @@
       const qText = document.createElement("div");
       qText.className = "bubble-quote-text";
       qText.textContent = quoted
-        ? (quoted.type === "text" ? quoted.text : quoted.type === "image" ? "📷 Photo" : quoted.type === "video" ? "🎬 Video" : quoted.type === "audio" ? "🎤 Voice message" : quoted.type === "file" ? "📄 " + (quoted.text || "Document") : quoted.type === "sticker" ? quoted.text + " Sticker" : "")
+        ? (quoted.type === "text" ? quoted.text : quoted.type === "image" ? "📷 Photo" : quoted.type === "gif" ? "🎞️ " + (quoted.text || "GIF") : quoted.type === "video" ? "🎬 Video" : quoted.type === "audio" ? "🎤 Voice message" : quoted.type === "file" ? "📄 " + (quoted.text || "Document") : quoted.type === "sticker" ? quoted.text + " Sticker" : "")
         : "Original message unavailable";
       q.appendChild(qName);
       q.appendChild(qText);
@@ -1745,6 +1981,12 @@
       img.src = m.mediaUrl;
       img.alt = "photo";
       img.addEventListener("click", ()=> window.open(m.mediaUrl, "_blank"));
+      b.appendChild(img);
+    } else if(m.type === "gif" && m.mediaUrl){
+      const img = document.createElement("img");
+      img.className = "bubble-image";
+      img.src = m.mediaUrl;
+      img.alt = m.text || "gif";
       b.appendChild(img);
     } else if(m.type === "video" && m.mediaUrl){
       const video = document.createElement("video");
@@ -1922,793 +2164,4 @@
       }
     } catch(e){
       console.error("Network exception while sending:", e);
-      showDebugError("Network error sending message", (e.message || String(e)) + " — try disabling Data Saver / Lite mode, switching to Wi-Fi, or opening this link in your real browser app instead of an in-app browser.");
-      showToast({ text: "Message failed to send — network issue." });
-    }
-    // no local append here — the realtime INSERT event below renders it,
-    // for both this device and the other one, keeping everything in sync.
-  }
-
-  // ---------- reply bar ----------
-  function setReply(msg){
-    clearEditing();
-    pendingReply = msg;
-    replyBarName.textContent = "Replying to " + (msg.from === identity ? "yourself" : msg.from);
-    replyBarText.textContent = msg.type === "text" ? msg.text
-      : msg.type === "image" ? "📷 Photo"
-      : msg.type === "video" ? "🎬 Video"
-      : msg.type === "audio" ? "🎤 Voice message"
-      : msg.type === "file" ? "📄 " + (msg.text || "Document")
-      : msg.type === "sticker" ? msg.text + " Sticker"
-      : "";
-    replyBar.classList.add("show");
-    textInput.focus();
-  }
-  function clearReply(){
-    pendingReply = null;
-    replyBar.classList.remove("show");
-  }
-  replyBarClose.addEventListener("click", clearReply);
-
-  // ---------- edit bar ----------
-  function setEditing(msg){
-    clearReply();
-    editingMessageId = msg.id;
-    editBarText.textContent = msg.text;
-    editBar.classList.add("show");
-    textInput.value = msg.text;
-    autoGrow();
-    textInput.focus();
-  }
-  function clearEditing(){
-    editingMessageId = null;
-    editBar.classList.remove("show");
-    editBarText.textContent = "";
-  }
-  editBarClose.addEventListener("click", ()=>{
-    clearEditing();
-    textInput.value = "";
-    autoGrow();
-  });
-
-  // ---------- message action sheet: reply / edit / react / delete ----------
-  function openMsgActions(msgId){
-    currentActionMsgId = msgId;
-    const m = messagesById.get(msgId);
-    const isMine = !!(m && m.from === identity);
-    const isMedia = !!(m && ["image","video","file","audio"].includes(m.type) && m.mediaUrl);
-    msgActionEdit.style.display = (isMine && m.type === "text") ? "flex" : "none";
-    msgActionDeleteEveryone.style.display = isMine ? "flex" : "none";
-    msgActionCopy.style.display = (m && (m.type === "text" || m.type === "sticker")) ? "flex" : "none";
-    msgActionDownload.style.display = isMedia ? "flex" : "none";
-    msgActionOverlay.classList.add("show");
-  }
-  function closeMsgActions(){
-    msgActionOverlay.classList.remove("show");
-    currentActionMsgId = null;
-  }
-  msgActionOverlay.addEventListener("click", (e)=>{
-    if(e.target === msgActionOverlay) closeMsgActions();
-  });
-  quickReactRow.querySelectorAll(".quick-react-btn").forEach(btn=>{
-    btn.addEventListener("click", ()=>{
-      if(currentActionMsgId != null) toggleReaction(currentActionMsgId, btn.dataset.emoji);
-      closeMsgActions();
-    });
-  });
-  msgActionReply.addEventListener("click", ()=>{
-    const m = messagesById.get(currentActionMsgId);
-    if(m) setReply(m);
-    closeMsgActions();
-  });
-  msgActionCopy.addEventListener("click", ()=>{
-    const m = messagesById.get(currentActionMsgId);
-    closeMsgActions();
-    if(m && (m.type === "text" || m.type === "sticker")) copyMessageText(m.text || "");
-  });
-  msgActionDownload.addEventListener("click", ()=>{
-    const m = messagesById.get(currentActionMsgId);
-    closeMsgActions();
-    if(!m || !m.mediaUrl) return;
-    const ext = m.type === "image" ? "jpg" : m.type === "video" ? "mp4" : m.type === "audio" ? "webm" : "pdf";
-    const suggestedName = m.type === "file" ? (m.text || "document.pdf") : (m.type + "-" + m.id + "." + ext);
-    downloadMedia(m.mediaUrl, suggestedName);
-  });
-  msgActionEdit.addEventListener("click", ()=>{
-    const m = messagesById.get(currentActionMsgId);
-    if(m) setEditing(m);
-    closeMsgActions();
-  });
-  msgActionDeleteEveryone.addEventListener("click", async ()=>{
-    const id = currentActionMsgId;
-    closeMsgActions();
-    if(id == null) return;
-    const ok = await showConfirm("Delete this message for everyone? This can't be undone.");
-    if(!ok) return;
-    try{
-      const { error } = await sb.from("messages").delete().eq("id", id);
-      if(error) throw error;
-    } catch(e){
-      console.error("Delete message failed:", e);
-      showDebugError("Failed to delete message", e.message || String(e));
-      showToast({ text: "Couldn't delete that message." });
-    }
-  });
-  msgActionDeleteMe.addEventListener("click", ()=>{
-    const id = currentActionMsgId;
-    closeMsgActions();
-    if(id == null) return;
-    hiddenForMe.add(id);
-    saveHiddenForMe();
-    const row = messagesEl.querySelector('.bubble-row[data-msg-id="' + id + '"]');
-    if(row) row.remove();
-    showToast({ text: "Removed from your view." });
-  });
-
-  // ---------- reactions ----------
-  async function toggleReaction(messageId, emoji){
-    const existing = reactionsByMessage.get(messageId);
-    const mine = existing ? existing.get(identity) : null;
-    try{
-      if(mine === emoji){
-        const { error } = await sb.from("message_reactions").delete().eq("message_id", messageId).eq("sender", identity);
-        if(error) throw error;
-      } else {
-        const { error } = await sb.from("message_reactions").upsert({ message_id: messageId, sender: identity, emoji: emoji });
-        if(error) throw error;
-      }
-    } catch(e){
-      console.error("Reaction failed:", e);
-      showDebugError("Failed to react", e.message || String(e));
-    }
-  }
-
-  // ---------- read receipts ----------
-  async function markMessagesRead(){
-    if(!identity || !contact) return;
-    if(document.visibilityState !== "visible" || !document.hasFocus()) return;
-    try{
-      const { error } = await sb.from("messages").update({ read_at: new Date().toISOString() }).eq("sender", contact).is("read_at", null);
-      if(error) console.error("Failed to mark messages read:", error);
-    } catch(e){
-      console.error("Network exception marking read:", e);
-    }
-  }
-  window.addEventListener("focus", markMessagesRead);
-  document.addEventListener("visibilitychange", ()=>{ if(document.visibilityState === "visible") markMessagesRead(); });
-
-  // ---------- media upload helper (used by both photo and voice messages) ----------
-  function uploadMediaWithProgress(blob, ext, folder, onProgress){
-    return new Promise((resolve, reject)=>{
-      const path = folder + "/" + identity + "-" + Date.now() + "." + ext;
-      const encodedPath = path.split("/").map(encodeURIComponent).join("/");
-      const url = SUPABASE_URL + "/storage/v1/object/chat-media/" + encodedPath;
-      const xhr = new XMLHttpRequest();
-      xhr.open("POST", url, true);
-      xhr.setRequestHeader("apikey", SUPABASE_KEY);
-      xhr.setRequestHeader("Authorization", "Bearer " + SUPABASE_KEY);
-      xhr.setRequestHeader("Content-Type", blob.type || "application/octet-stream");
-      xhr.setRequestHeader("x-upsert", "false");
-      xhr.upload.onprogress = (e)=>{
-        if(e.lengthComputable && onProgress) onProgress(Math.round((e.loaded / e.total) * 100));
-      };
-      xhr.onload = ()=>{
-        if(xhr.status >= 200 && xhr.status < 300){
-          if(onProgress) onProgress(100);
-          const { data } = sb.storage.from("chat-media").getPublicUrl(path);
-          resolve(data.publicUrl);
-        } else {
-          reject(new Error("Upload failed (" + xhr.status + "): " + xhr.responseText));
-        }
-      };
-      xhr.onerror = ()=> reject(new Error("Network error during upload"));
-      xhr.send(blob);
-    });
-  }
-  // kept for any caller that doesn't need progress reporting
-  async function uploadMedia(blob, ext, folder){
-    return uploadMediaWithProgress(blob, ext, folder, null);
-  }
-
-  // ---------- copy / download helpers (used from the message action sheet) ----------
-  async function copyMessageText(text){
-    try{
-      await navigator.clipboard.writeText(text);
-      showToast({ text: "Copied to clipboard." });
-    } catch(e){
-      console.warn("Clipboard API failed, falling back:", e);
-      try{
-        const ta = document.createElement("textarea");
-        ta.value = text;
-        ta.style.position = "fixed";
-        ta.style.opacity = "0";
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand("copy");
-        ta.remove();
-        showToast({ text: "Copied to clipboard." });
-      } catch(e2){
-        showDebugError("Copy failed", (e2.message || String(e2)));
-        showToast({ text: "Couldn't copy — your browser blocked clipboard access." });
-      }
-    }
-  }
-
-  async function downloadMedia(url, suggestedName){
-    showToast({ text: "Downloading…" });
-    try{
-      const res = await fetch(url);
-      if(!res.ok) throw new Error("HTTP " + res.status);
-      const blob = await res.blob();
-      const objUrl = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = objUrl;
-      a.download = suggestedName || "download";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      setTimeout(()=> URL.revokeObjectURL(objUrl), 4000);
-    } catch(e){
-      console.error("Download failed:", e);
-      showDebugError("Download failed", e.message || String(e));
-      showToast({ text: "Download failed — opening in a new tab instead." });
-      window.open(url, "_blank");
-    }
-  }
-
-  // ---------- attach sending: photos (multiple), video, PDF ----------
-  // Separate pickers per type — combining image/video/pdf into one <input>
-  // often makes mobile browsers fall back to a single-select file browser
-  // instead of the proper multi-select photo gallery, so each type gets
-  // its own dedicated input.
-  function addLoadingPlaceholder(kind, label){
-    const row = document.createElement("div");
-    row.className = "bubble-row me";
-    const b = document.createElement("div");
-    b.className = "bubble";
-    const box = document.createElement("div");
-    box.className = "loading-box" + (kind === "file" ? " loading-file" : "");
-    const percentEl = document.createElement("div");
-    percentEl.className = "loading-percent";
-    percentEl.textContent = "0%";
-    box.appendChild(percentEl);
-    const barTrack = document.createElement("div");
-    barTrack.className = "loading-bar-track";
-    const barFill = document.createElement("div");
-    barFill.className = "loading-bar-fill";
-    barTrack.appendChild(barFill);
-    box.appendChild(barTrack);
-    const labelEl = document.createElement("div");
-    labelEl.className = "loading-label";
-    labelEl.textContent = label;
-    box.appendChild(labelEl);
-    b.appendChild(box);
-    row.appendChild(b);
-    messagesEl.insertBefore(row, typingRow);
-    scrollToBottom();
-    row.__setProgress = (pct)=>{
-      percentEl.textContent = pct + "%";
-      barFill.style.width = pct + "%";
-    };
-    return row;
-  }
-
-  async function sendAttachment(file, kind, folder){
-    const placeholder = addLoadingPlaceholder(kind, "Uploading " + kind + "…");
-    setDebugStatus("uploading " + kind + ": " + file.name + "…");
-    try{
-      const ext = (file.name.split(".").pop() || (kind === "image" ? "jpg" : kind === "video" ? "mp4" : "pdf")).toLowerCase();
-      const url = await uploadMediaWithProgress(file, ext, folder, (pct)=> placeholder.__setProgress(pct));
-      const messageText = kind === "file" ? file.name : "";
-      const { error } = await sb.from("messages").insert({ sender: identity, text: messageText, type: kind, media_url: url });
-      if(error) throw error;
-      setDebugStatus(kind + " sent ✓ (" + file.name + ")");
-    } catch(e){
-      console.error("Attachment send failed:", file.name, e);
-      showDebugError("Failed to send " + file.name, e.message || String(e));
-      showToast({ text: file.name + " failed to send." });
-    } finally {
-      placeholder.remove();
-    }
-  }
-
-  function openAttachMenu(){ attachMenuOverlay.classList.add("show"); }
-  function closeAttachMenu(){ attachMenuOverlay.classList.remove("show"); }
-  attachBtn.addEventListener("click", openAttachMenu);
-  attachMenuOverlay.addEventListener("click", (e)=>{
-    if(e.target === attachMenuOverlay) closeAttachMenu();
-  });
-
-  attachPhotos.addEventListener("click", ()=>{ closeAttachMenu(); photoInput.click(); });
-  attachVideo.addEventListener("click", ()=>{ closeAttachMenu(); videoInput.click(); });
-  attachPdf.addEventListener("click", ()=>{ closeAttachMenu(); pdfInput.click(); });
-
-  // ---------- stickers: a built-in emoji set, no external assets needed ----------
-  const STICKER_SET = [
-    "😀","😂","😍","😘","😎","😢","😭","😡","😱","😴",
-    "🤔","🙄","😇","🙈","👻","💀","😊","😉","😜","😳",
-    "👍","👎","👏","🙏","💪","✌️","👋","🤝","👌","🤙",
-    "❤️","🧡","💛","💚","💙","💜","🖤","💔","💯","🔥",
-    "🎉","🎂","🎁","✨","⭐","🌈","☀️","🌙","⚡","💧",
-    "🐶","🐱","🐼","🐸","🐷","🦋","🌸","🍕","☕","😊"
-  ];
-  STICKER_SET.forEach(emoji=>{
-    const btn = document.createElement("button");
-    btn.className = "sticker-item";
-    btn.textContent = emoji;
-    btn.addEventListener("click", ()=>{
-      closeStickerMenu();
-      sendSticker(emoji);
-    });
-    addRipple(btn);
-    stickerGrid.appendChild(btn);
-  });
-  function openStickerMenu(){ stickerMenuOverlay.classList.add("show"); }
-  function closeStickerMenu(){ stickerMenuOverlay.classList.remove("show"); }
-  attachStickers.addEventListener("click", ()=>{ closeAttachMenu(); openStickerMenu(); });
-  stickerBackBtn.addEventListener("click", closeStickerMenu);
-  addRipple(stickerBackBtn);
-  async function sendSticker(emoji){
-    try{
-      const { error } = await sb.from("messages").insert({ sender: identity, text: emoji, type: "sticker" });
-      if(error) throw error;
-    } catch(e){
-      console.error("Sticker send failed:", e);
-      showDebugError("Failed to send sticker", e.message || String(e));
-      showToast({ text: "Sticker failed to send." });
-    }
-  }
-
-  photoInput.addEventListener("change", async ()=>{
-    const files = Array.from(photoInput.files || []);
-    photoInput.value = ""; // reset so choosing the same file(s) again still fires change
-    for(const file of files){
-      await sendAttachment(file, "image", "photos");
-    }
-  });
-
-  videoInput.addEventListener("change", async ()=>{
-    const file = videoInput.files && videoInput.files[0];
-    videoInput.value = "";
-    if(file) await sendAttachment(file, "video", "videos");
-  });
-
-  pdfInput.addEventListener("change", async ()=>{
-    const file = pdfInput.files && pdfInput.files[0];
-    pdfInput.value = "";
-    if(file) await sendAttachment(file, "file", "documents");
-  });
-
-  // ---------- voice message recording ----------
-  let mediaRecorder = null;
-  let recordedChunks = [];
-  let recordingStartTime = 0;
-  let recordingTimerId = null;
-  let recordingCancelled = false;
-
-  micBtn.addEventListener("click", async ()=>{
-    if(mediaRecorder && mediaRecorder.state === "recording") return; // already recording
-
-    if(!isSecureContext){
-      showDebugError("Voice recording blocked", "Microphone access requires https:// — this page isn't running as a secure context.");
-      showToast({ text: "Voice recording needs a secure (https) connection." });
-      return;
-    }
-    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
-      showDebugError("Voice recording not supported", "navigator.mediaDevices.getUserMedia is unavailable in this browser.");
-      showToast({ text: "This browser doesn't support voice recording." });
-      return;
-    }
-    if(typeof MediaRecorder === "undefined"){
-      showDebugError("Voice recording not supported", "The MediaRecorder API is unavailable in this browser (common on some iOS browser versions).");
-      showToast({ text: "This browser can't record audio." });
-      return;
-    }
-
-    try{
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      recordedChunks = [];
-      recordingCancelled = false;
-      let mimeType = "";
-      for(const candidate of ["audio/webm", "audio/mp4", "audio/ogg"]){
-        if(MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(candidate)){
-          mimeType = candidate;
-          break;
-        }
-      }
-      mediaRecorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
-
-      mediaRecorder.ondataavailable = (e)=>{ if(e.data.size > 0) recordedChunks.push(e.data); };
-      mediaRecorder.onstop = async ()=>{
-        stream.getTracks().forEach(t=> t.stop());
-        clearInterval(recordingTimerId);
-        recordingBar.classList.remove("show");
-        micBtn.classList.remove("recording");
-        if(recordingCancelled || recordedChunks.length === 0) return;
-
-        const blob = new Blob(recordedChunks, { type: mediaRecorder.mimeType || "audio/webm" });
-        const placeholder = addLoadingPlaceholder("audio", "Uploading voice message…");
-        setDebugStatus("uploading voice message…");
-        try{
-          const ext = (blob.type.split("/")[1] || "webm").split(";")[0];
-          const url = await uploadMediaWithProgress(blob, ext, "voice", (pct)=> placeholder.__setProgress(pct));
-          const { error } = await sb.from("messages").insert({ sender: identity, text: "", type: "audio", media_url: url });
-          if(error) throw error;
-          setDebugStatus("voice message sent ✓");
-        } catch(e){
-          console.error("Voice message send failed:", e);
-          showDebugError("Failed to send voice message", e.message || String(e));
-          showToast({ text: "Voice message failed to send." });
-        } finally {
-          placeholder.remove();
-        }
-      };
-
-      mediaRecorder.start();
-      micBtn.classList.add("recording");
-      recordingBar.classList.add("show");
-      recordingStartTime = Date.now();
-      recordingTimerId = setInterval(()=>{
-        const secs = Math.floor((Date.now() - recordingStartTime) / 1000);
-        const m = Math.floor(secs / 60);
-        const s = String(secs % 60).padStart(2, "0");
-        recordingTimeEl.textContent = m + ":" + s;
-      }, 250);
-    } catch(e){
-      console.error("Mic access failed:", e);
-      showDebugError("Microphone access failed", (e.name || "Error") + ": " + (e.message || String(e)) + " — check that you allowed microphone permission for this site.");
-      showToast({ text: "Couldn't access the microphone — check permissions." });
-    }
-  });
-
-  recordSendBtn.addEventListener("click", ()=>{
-    if(mediaRecorder && mediaRecorder.state === "recording"){
-      recordingCancelled = false;
-      mediaRecorder.stop();
-    }
-  });
-  recordCancelBtn.addEventListener("click", ()=>{
-    if(mediaRecorder && mediaRecorder.state === "recording"){
-      recordingCancelled = true;
-      mediaRecorder.stop();
-    }
-  });
-
-  sendBtn.addEventListener("click", sendMessage);
-  textInput.addEventListener("keydown", e=>{
-    if(e.key === "Enter" && !e.shiftKey){
-      e.preventDefault();
-      sendMessage();
-    }
-  });
-  textInput.addEventListener("input", ()=>{
-    autoGrow();
-    sendTyping(textInput.value.length > 0);
-    clearTimeout(window.__typingTimeout);
-    window.__typingTimeout = setTimeout(()=> sendTyping(false), 1500);
-  });
-  function autoGrow(){
-    textInput.style.height = "auto";
-    textInput.style.height = Math.min(textInput.scrollHeight, 120) + "px";
-  }
-  function sendTyping(active){
-    if(channel) channel.send({ type: "broadcast", event: "typing", payload: { from: identity, active } });
-  }
-
-  // ---------- realtime: Supabase channel for messages, presence, typing ----------
-  async function connectRealtime(){
-    const initial = await fetchInitialMessages();
-    await renderList(initial);
-    if(initial.length) window.__lastRenderedDay = new Date(initial[initial.length-1].ts).toDateString();
-
-    channel = sb.channel(ROOM_NAME, { config: { presence: { key: identity } } });
-    setDebugStatus("connecting to realtime channel…");
-
-    channel.on("postgres_changes", { event: "INSERT", schema: "public", table: "messages" }, (payload)=>{
-      const m = rowToMsg(payload.new);
-      appendIncomingWithDivider(m);
-      typingRow.classList.remove("show");
-      if(m.from !== identity){
-        onNewIncomingMessage(m);
-        markMessagesRead();
-      } else {
-        scrollToBottom();
-      }
-    });
-
-    channel.on("postgres_changes", { event: "UPDATE", schema: "public", table: "messages" }, (payload)=>{
-      const m = rowToMsg(payload.new);
-      messagesById.set(m.id, m);
-      renderTicksForMessage(m.id);
-      updateBubbleTextIfChanged(m);
-    });
-
-    channel.on("postgres_changes", { event: "DELETE", schema: "public", table: "messages" }, async ()=>{
-      // a message (or the whole chat) was cleared somewhere — refresh to match
-      const fresh = await fetchInitialMessages();
-      await renderList(fresh);
-      if(fresh.length) window.__lastRenderedDay = new Date(fresh[fresh.length-1].ts).toDateString();
-      showToast({ text: "Chat history was updated." });
-    });
-
-    channel.on("postgres_changes", { event: "INSERT", schema: "public", table: "message_reactions" }, (payload)=>{
-      const r = payload.new;
-      if(!reactionsByMessage.has(r.message_id)) reactionsByMessage.set(r.message_id, new Map());
-      reactionsByMessage.get(r.message_id).set(r.sender, r.emoji);
-      renderReactionsForMessage(r.message_id);
-    });
-    channel.on("postgres_changes", { event: "UPDATE", schema: "public", table: "message_reactions" }, (payload)=>{
-      const r = payload.new;
-      if(!reactionsByMessage.has(r.message_id)) reactionsByMessage.set(r.message_id, new Map());
-      reactionsByMessage.get(r.message_id).set(r.sender, r.emoji);
-      renderReactionsForMessage(r.message_id);
-    });
-    channel.on("postgres_changes", { event: "DELETE", schema: "public", table: "message_reactions" }, (payload)=>{
-      const r = payload.old;
-      if(reactionsByMessage.has(r.message_id)){
-        reactionsByMessage.get(r.message_id).delete(r.sender);
-      }
-      renderReactionsForMessage(r.message_id);
-    });
-
-    channel.on("broadcast", { event: "typing" }, ({ payload })=>{
-      if(payload.from !== identity){
-        typingRow.classList.toggle("show", !!payload.active);
-        if(payload.active) scrollToBottom();
-      }
-    });
-
-    channel.on("presence", { event: "sync" }, ()=>{
-      const state = channel.presenceState();
-      const online = Object.prototype.hasOwnProperty.call(state, contact);
-      contactLed.classList.toggle("online", online);
-      contactStatus.textContent = contact + " · " + (online ? "online" : "offline");
-    });
-
-    channel.subscribe(async (status)=>{
-      if(status === "SUBSCRIBED"){
-        await channel.track({ online: true });
-        setDebugStatus("connected ✓ realtime live — waiting for messages…");
-      }
-      if(status === "CHANNEL_ERROR" || status === "TIMED_OUT"){
-        contactStatus.textContent = "connection issue";
-        setDebugStatus("realtime status: " + status);
-        showDebugError("Realtime connection failed", "status = " + status + " — check that you ran the SQL setup (realtime publication + RLS policies) in Supabase.");
-        showToast({ text: "Realtime connection issue — messages may be delayed." });
-      }
-      if(status === "CLOSED"){
-        setDebugStatus("realtime connection closed");
-      }
-    });
-  }
-
-  // ---------- notifications: sound, toast, desktop/OS ----------
-  let audioCtx = null;
-  function playPing(){
-    if(!soundOn) return;
-    try{
-      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-      if(audioCtx.state === "suspended") audioCtx.resume();
-      const now = audioCtx.currentTime;
-      [880, 1320].forEach((freq, i)=>{
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = "sine";
-        osc.frequency.value = freq;
-        const start = now + i*0.09;
-        gain.gain.setValueAtTime(0, start);
-        gain.gain.linearRampToValueAtTime(0.18, start + 0.015);
-        gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.22);
-        osc.connect(gain).connect(audioCtx.destination);
-        osc.start(start);
-        osc.stop(start + 0.25);
-      });
-    }catch(e){ /* audio unavailable */ }
-  }
-
-  function ringBell(){
-    bellBtn.classList.remove("bell-ring");
-    void bellBtn.offsetWidth;
-    bellBtn.classList.add("bell-ring");
-  }
-
-  function showToast(msg){
-    toastName.textContent = contact;
-    let preview = msg.text;
-    if(msg.type === "image") preview = "📷 Photo";
-    else if(msg.type === "audio") preview = "🎤 Voice message";
-    else if(msg.type === "video") preview = "🎬 Video";
-    else if(msg.type === "file") preview = "📄 " + (msg.text || "Document");
-    else if(msg.type === "sticker") preview = msg.text + " Sticker";
-    toastText.textContent = preview;
-    toast.classList.add("show");
-    clearTimeout(window.__toastTimeout);
-    window.__toastTimeout = setTimeout(()=> toast.classList.remove("show"), 3800);
-  }
-  toast.addEventListener("click", ()=>{
-    toast.classList.remove("show");
-    clearUnread();
-    window.focus();
-  });
-
-  function updateBadge(){
-    badgeCount.textContent = unread > 9 ? "9+" : unread;
-    badgeCount.classList.toggle("show", unread > 0);
-    document.title = (unread > 0 ? "(" + unread + ") " : "") + "Chat GO — " + contact;
-  }
-  function clearUnread(){
-    unread = 0;
-    updateBadge();
-  }
-  bellBtn.addEventListener("click", clearUnread);
-
-  // ---------- service worker, inlined as a Blob (no separate .js file) ----------
-  // Note: most browsers block registering a service worker from a blob: URL
-  // for security reasons — this is attempted anyway and fails silently,
-  // falling back to the plain Notification API below. That's the one
-  // browser-enforced limitation of going fully single-file.
-  let swRegistration = null;
-  const SW_SOURCE = `
-    const CACHE = "relay-cache-v1";
-    self.addEventListener("install", () => self.skipWaiting());
-    self.addEventListener("activate", () => self.clients.claim());
-    self.addEventListener("fetch", (event) => {
-      event.respondWith(fetch(event.request).catch(() => caches.match(event.request)));
-    });
-  `;
-  if("serviceWorker" in navigator && isSecureContext){
-    try{
-      const swBlob = new Blob([SW_SOURCE], { type: "application/javascript" });
-      const swUrl = URL.createObjectURL(swBlob);
-      navigator.serviceWorker.register(swUrl)
-        .then(reg => { swRegistration = reg; })
-        .catch(err => { console.warn("Inline service worker blocked by browser (expected in most browsers):", err.message); });
-    }catch(e){ console.warn("Could not create inline service worker:", e); }
-  }
-
-  function desktopNotify(msg){
-    if(!("Notification" in window)){
-      console.warn("Notification API not available in this browser.");
-      return;
-    }
-    if(Notification.permission !== "granted") return;
-
-    const opts = {
-      body: msg.type === "image" ? "📷 Photo"
-        : msg.type === "audio" ? "🎤 Voice message"
-        : msg.type === "video" ? "🎬 Video"
-        : msg.type === "file" ? "📄 " + (msg.text || "Document")
-        : msg.type === "sticker" ? msg.text + " Sticker"
-        : msg.text,
-      tag: "relay-chat",
-      renotify: true,
-      icon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAETUlEQVR4nO3dTZLiRhSF0WxHeQduT7y/XpS36CX0wB4RgQmqWoB4+TLvOWMUoqT3kVL96dsff/7174BQv81+AzCTAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoH7PfwJn++fv32W8hxvcfP2e/hVN8W/k/wxn4PlYNYrkADH1vq4WwTAAGfz0rxNA+AIO/tu4RtA7A8O+jawhtvw1q+PfS9Xy2WwG6HijO02k1aLUCGP4Mnc5zmwA6HRTer8v5bhFAl4NBrQ7nfXoAHQ4C88w+/9MDgJmmBjC7fnqYOQfTAjD8XJs1D1MCMPx04R6ANmZ8MJYH4NOfr1TPhxWAaKUB+PTniMo5sQIQTQBEKwvA5Q+PqJoXKwDRBEA0ARCtJADX/zyjYm6sAEQTANEEQDQBEE0ARBMA0QRANAEQTQBEEwDRBEA0ARBNAEQTANEEQDQBEO1j9hvo5t7zq87+w4zPnpFVsR9/nPR/JQ/JW+GgH3lw2xlfx6/2U7GPs/ZT4d0P1HMJNI4f5FdOxvcfPw9tf/R1X21/5ut2Fx/Ao4PQeXB2+lqqRAfw7ABUDFrVMKdHEBvAqye+6rLp3fs4Y/uVxQYAYwiAcAIgmgCIJgCixQbw6k9Cj27/yn4q9nHG9iuLDWCM50/8o9s9s5+Kfbyy3S6iAxijbtAq7PS1VIkPYIy6y5kj2x993Vfbn/m63flt0Bt+HbqXd/+UWgC05teh4Y0EQDQBEE0ARBMA0QRANAEQTQBEEwDRBEA0ARBNAEQTANEEQDQBEE0ARBMA0UoCSP7nqzyvYm6sAEQTANEEQLSyANwH8IiqebECEK00AKsAR1TOiRWAaAKgleqrhPIAXAbRyZQVQATcM2MuXAIRbVoAVgGuzZqHqSuACBhj7hy4BGKq2R+C0wOYfQDINj2AMUSQqsN5bxHAGD0OBnW6nO+SZ4Q9wvPE9tZl8C/aBXAhhP10G/4xGl0C3ep4sHhe1/PZdgW4ZjVYV9fBv1gigDFEsJrug3+xTAAXQuhtlcG/WC6Aa2LoY7XBv1g6gFuCqLPqwN/aKoB7ukSxy8Dspu23QXdi+Pv6mP0Gdmbw+7MCvInhX4MA3sDwr0MAJzP8a3EPcBKDvyYrwAkM/7oE8CLDvzYBvMDwr08ATzL8e3AT/CCDvxcrwAMM/34EcJDh35MADjD8+xLALxj+vbkJ/oTBz2AFuMPw5xDADcOfRQBXDH8e9wDD4CeLXwEMf7boAAw/sQEYfsYIDcDwcxF1E2zwuRWzAhh+7okIwPDzme3/Nyh8JWIFgM8IgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiDaf3o9Hx+T92r1AAAAAElFTkSuQmCC",
-      badge: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAETUlEQVR4nO3dTZLiRhSF0WxHeQduT7y/XpS36CX0wB4RgQmqWoB4+TLvOWMUoqT3kVL96dsff/7174BQv81+AzCTAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoH7PfwJn++fv32W8hxvcfP2e/hVN8W/k/wxn4PlYNYrkADH1vq4WwTAAGfz0rxNA+AIO/tu4RtA7A8O+jawhtvw1q+PfS9Xy2WwG6HijO02k1aLUCGP4Mnc5zmwA6HRTer8v5bhFAl4NBrQ7nfXoAHQ4C88w+/9MDgJmmBjC7fnqYOQfTAjD8XJs1D1MCMPx04R6ANmZ8MJYH4NOfr1TPhxWAaKUB+PTniMo5sQIQTQBEKwvA5Q+PqJoXKwDRBEA0ARCtJADX/zyjYm6sAEQTANEEQDQBEE0ARBMA0QRANAEQTQBEEwDRBEA0ARBNAEQTANEEQDQBEO1j9hvo5t7zq87+w4zPnpFVsR9/nPR/JQ/JW+GgH3lw2xlfx6/2U7GPs/ZT4d0P1HMJNI4f5FdOxvcfPw9tf/R1X21/5ut2Fx/Ao4PQeXB2+lqqRAfw7ABUDFrVMKdHEBvAqye+6rLp3fs4Y/uVxQYAYwiAcAIgmgCIJgCixQbw6k9Cj27/yn4q9nHG9iuLDWCM50/8o9s9s5+Kfbyy3S6iAxijbtAq7PS1VIkPYIy6y5kj2x993Vfbn/m63flt0Bt+HbqXd/+UWgC05teh4Y0EQDQBEE0ARBMA0QRANAEQTQBEEwDRBEA0ARBNAEQTANEEQDQBEE0ARBMA0UoCSP7nqzyvYm6sAEQTANEEQLSyANwH8IiqebECEK00AKsAR1TOiRWAaAKgleqrhPIAXAbRyZQVQATcM2MuXAIRbVoAVgGuzZqHqSuACBhj7hy4BGKq2R+C0wOYfQDINj2AMUSQqsN5bxHAGD0OBnW6nO+SZ4Q9wvPE9tZl8C/aBXAhhP10G/4xGl0C3ep4sHhe1/PZdgW4ZjVYV9fBv1gigDFEsJrug3+xTAAXQuhtlcG/WC6Aa2LoY7XBv1g6gFuCqLPqwN/aKoB7ukSxy8Dspu23QXdi+Pv6mP0Gdmbw+7MCvInhX4MA3sDwr0MAJzP8a3EPcBKDvyYrwAkM/7oE8CLDvzYBvMDwr08ATzL8e3AT/CCDvxcrwAMM/34EcJDh35MADjD8+xLALxj+vbkJ/oTBz2AFuMPw5xDADcOfRQBXDH8e9wDD4CeLXwEMf7boAAw/sQEYfsYIDcDwcxF1E2zwuRWzAhh+7okIwPDzme3/Nyh8JWIFgM8IgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiDaf3o9Hx+T92r1AAAAAElFTkSuQmCC",
-      vibrate: [40,30,40]
-    };
-
-    // On Android/Chrome, `new Notification()` is silently unsupported —
-    // it MUST go through a service worker registration instead.
-    if(swRegistration && swRegistration.showNotification){
-      swRegistration.showNotification(contact + " · Chat GO", opts).catch(err=>{
-        console.warn("showNotification failed:", err);
-      });
-      return;
-    }
-    try{
-      const n = new Notification(contact + " · Chat GO", opts);
-      n.onclick = ()=>{ window.focus(); clearUnread(); n.close(); };
-    }catch(e){
-      console.warn("Desktop notification failed:", e);
-    }
-  }
-
-  function onNewIncomingMessage(msg){
-    // every single message notifies — sound, toast, badge, and a desktop/OS
-    // notification — no matter whether the tab is focused or not.
-    playPing();
-    ringBell();
-    unread++;
-    updateBadge();
-    desktopNotify(msg);
-    showToast(msg);
-    if(navigator.vibrate) navigator.vibrate([40,30,40]);
-  }
-
-  window.addEventListener("focus", ()=>{
-    clearUnread();
-  });
-
-  // ---------- permission banner (shows real status + reasons it can fail) ----------
-
-  function updatePermBanner(){
-    const supported = "Notification" in window;
-    const dismissed = localStorage.getItem("relay_perm_dismissed") === "1";
-
-    if(!isSecureContext){
-      permBannerText.textContent = "Opened as a local file — notifications & home-screen install need it served over http(s). See instructions below.";
-      permBtn.textContent = "Got it";
-      permBanner.classList.add("show");
-      return;
-    }
-    if(!supported){
-      permBannerText.textContent = "This browser doesn't support desktop notifications.";
-      permBanner.classList.add("show");
-      permBtn.style.display = "none";
-      return;
-    }
-    if(Notification.permission === "denied"){
-      permBannerText.textContent = "Notifications are blocked for this site in your browser settings. Enable them there, then reload.";
-      permBtn.textContent = "Test sound only";
-      permBanner.classList.add("show");
-      return;
-    }
-    if(Notification.permission === "default" && !dismissed){
-      permBannerText.textContent = "Turn on desktop & sound alerts for new messages";
-      permBtn.textContent = "Enable";
-      permBanner.classList.add("show");
-      return;
-    }
-    permBanner.classList.remove("show");
-  }
-
-  permBtn.addEventListener("click", ()=>{
-    // unlock audio on this user gesture
-    try{
-      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-      if(audioCtx.state === "suspended") audioCtx.resume();
-      playPing();
-    }catch(e){}
-
-    if(!isSecureContext){
-      localStorage.setItem("relay_perm_dismissed","1");
-      updatePermBanner();
-      return;
-    }
-    if("Notification" in window && Notification.permission === "default"){
-      Notification.requestPermission().then(()=>{
-        localStorage.setItem("relay_perm_dismissed","1");
-        updatePermBanner();
-        if(Notification.permission === "granted"){
-          desktopNotify({ text: "Notifications are on. You'll see alerts like this one." });
-        }
-      });
-    } else {
-      localStorage.setItem("relay_perm_dismissed","1");
-      updatePermBanner();
-    }
-  });
-
-  soundBtn.addEventListener("click", ()=>{
-    soundOn = !soundOn;
-    localStorage.setItem("relay_sound", soundOn ? "on" : "off");
-    soundBtn.classList.toggle("active", soundOn);
-    if(soundOn) playPing();
-  });
-
-  // ---------- install to home screen ----------
-  const installBtn = document.getElementById("installBtn");
-  let deferredInstallPrompt = null;
-
-  window.addEventListener("beforeinstallprompt", (e)=>{
-    e.preventDefault();
-    deferredInstallPrompt = e;
-    if(isSecureContext) installBtn.style.display = "flex";
-  });
-
-  installBtn.addEventListener("click", async ()=>{
-    if(!deferredInstallPrompt) return;
-    deferredInstallPrompt.prompt();
-    await deferredInstallPrompt.userChoice;
-    deferredInstallPrompt = null;
-    installBtn.style.display = "none";
-  });
-
-  window.addEventListener("appinstalled", ()=>{
-    installBtn.style.display = "none";
-  });
-
-})();
-</script>
-</body>
-  </html>
+      showDebugE
