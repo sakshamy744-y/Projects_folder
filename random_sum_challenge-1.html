@@ -1,0 +1,1605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Memory Math Challenge</title>
+
+<style>
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background: #020617;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .app {
+    width: 100%;
+    max-width: 950px;
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 25px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,.4);
+  }
+
+  header {
+    padding: 30px;
+    border-bottom: 1px solid #334155;
+  }
+
+  .eyebrow {
+    color: #67e8f9;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 38px;
+  }
+
+  .subtitle {
+    color: #94a3b8;
+    line-height: 1.5;
+    margin: 10px 0 0;
+  }
+
+  main { padding: 30px; }
+
+  .control {
+    background: #020617;
+    border: 1px solid #334155;
+    border-radius: 18px;
+    padding: 18px;
+  }
+
+  .controls {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+
+  .control-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    color: #cbd5e1;
+  }
+
+  .value {
+    background: #1e293b;
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-weight: bold;
+  }
+
+  select,
+  input[type="number"] {
+    width: 100%;
+    padding: 13px;
+    border-radius: 12px;
+    background: #0f172a;
+    color: white;
+    border: 1px solid #334155;
+    font-size: 16px;
+    outline: none;
+  }
+
+  select:focus,
+  input[type="number"]:focus {
+    border-color: #67e8f9;
+  }
+
+  input[type="range"] {
+    width: 100%;
+    accent-color: #22d3ee;
+    cursor: pointer;
+  }
+
+  .range-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #64748b;
+    margin-top: 6px;
+  }
+
+  .help-text {
+    color: #64748b;
+    font-size: 12px;
+    margin-top: 8px;
+    line-height: 1.4;
+  }
+
+  .range-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .stage {
+    min-height: 320px;
+    border: 1px solid #164e63;
+    border-radius: 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin-bottom: 20px;
+    padding: 30px;
+    background: linear-gradient(
+      180deg,
+      rgba(34,211,238,.08),
+      rgba(255,255,255,0)
+    );
+    overflow: hidden;
+  }
+
+  .progress {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    right: 18px;
+    height: 5px;
+    background: #1e293b;
+    border-radius: 20px;
+    overflow: hidden;
+  }
+
+  .progress-bar {
+    width: 0%;
+    height: 100%;
+    background: #67e8f9;
+    transition: width .2s;
+  }
+
+  .status {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: #64748b;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+
+  #number {
+    max-width: 95%;
+    text-align: center;
+    font-size: clamp(50px, 12vw, 120px);
+    font-weight: 900;
+    line-height: 1.05;
+    word-break: break-word;
+  }
+
+  .pop {
+    animation: pop .25s ease;
+  }
+
+  @keyframes pop {
+    from {
+      opacity: 0;
+      transform: scale(.6);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .hint {
+    color: #94a3b8;
+    margin-top: 15px;
+    text-align: center;
+    max-width: 650px;
+  }
+
+  .answer-box {
+    background: #020617;
+    border: 1px solid #334155;
+    border-radius: 18px;
+    padding: 18px;
+    margin-bottom: 18px;
+  }
+
+  .answer-label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  .answer-row {
+    display: flex;
+    gap: 10px;
+  }
+
+  .answer-row input { flex: 1; }
+
+  button {
+    border: none;
+    border-radius: 12px;
+    padding: 14px 20px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform .15s, opacity .15s;
+  }
+
+  button:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
+
+  button:disabled {
+    opacity: .4;
+    cursor: not-allowed;
+  }
+
+  .primary {
+    background: white;
+    color: #020617;
+    width: 100%;
+    font-size: 17px;
+  }
+
+  .secondary {
+    background: #1e293b;
+    color: white;
+    border: 1px solid #334155;
+  }
+
+  .actions {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+  }
+
+  .feedback {
+    margin-top: 12px;
+    padding: 12px;
+    border-radius: 12px;
+    line-height: 1.5;
+  }
+
+  .correct {
+    background: rgba(16,185,129,.12);
+    border: 1px solid rgba(16,185,129,.3);
+    color: #6ee7b7;
+  }
+
+  .incorrect {
+    background: rgba(244,63,94,.12);
+    border: 1px solid rgba(244,63,94,.3);
+    color: #fda4af;
+  }
+
+  .hidden { display: none; }
+
+  @media (max-width: 700px) {
+    .controls {
+      grid-template-columns: 1fr;
+    }
+
+    .actions {
+      grid-template-columns: 1fr;
+    }
+
+    .answer-row,
+    .range-inputs {
+      grid-template-columns: 1fr;
+      flex-direction: column;
+    }
+
+    h1 { font-size: 30px; }
+
+    header, main {
+      padding: 22px;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <header>
+    <div class="eyebrow">MEMORY MATH</div>
+    <h1>Math Memory Challenge</h1>
+    <p class="subtitle">
+      Numbers appear one by one. Remember them and calculate the final result.
+    </p>
+  </header>
+
+  <main>
+
+    <div class="controls">
+
+      <!-- Math Operation Dropdown -->
+      <div class="control">
+
+        <div class="control-top">
+          <span>Mathematical operation</span>
+          <span id="operationLabel" class="value">+</span>
+        </div>
+
+        <select id="operation">
+          <option value="add">＋ Addition (+)</option>
+          <option value="subtract">− Subtraction (−)</option>
+          <option value="multiply">× Multiplication (×)</option>
+          <option value="divide">÷ Division (÷)</option>
+          <option value="sqrt">√ Square Root (√)</option>
+          <option value="square">² Square (x²)</option>
+          <option value="random">🎲 Random (+ − × ÷)</option>
+        </select>
+
+        <div class="help-text">
+          Choose the operation used in the challenge.
+        </div>
+      </div>
+
+
+      <!-- Number Size -->
+      <div class="control">
+
+        <div class="control-top">
+          <span>Number size</span>
+          <span class="value">Default</span>
+        </div>
+
+        <select id="numberSize">
+          <option value="one">1 Digit (1–9)</option>
+          <option value="two">2 Digits (10–99)</option>
+          <option value="random">Random (1–99)</option>
+        </select>
+
+        <div class="help-text">
+          Used when the Min/Max range is empty.
+        </div>
+      </div>
+
+
+      <!-- Min / Max -->
+      <div class="control">
+
+        <div class="control-top">
+          <span>Optional number range</span>
+          <span class="value">Min → Max</span>
+        </div>
+
+        <div class="range-inputs">
+          <input
+            id="minNumber"
+            type="number"
+            min="1"
+            max="999999999"
+            placeholder="Min e.g. 20"
+          >
+
+          <input
+            id="maxNumber"
+            type="number"
+            min="1"
+            max="999999999"
+            placeholder="Max e.g. 50"
+          >
+        </div>
+
+        <div class="help-text">
+          Example: 20 to 50 gives numbers only from 20 through 50.
+        </div>
+      </div>
+
+
+      <!-- Number Count -->
+      <div class="control">
+
+        <div class="control-top">
+          <span>How many numbers?</span>
+
+          <span id="countValue" class="value">
+            7
+          </span>
+        </div>
+
+        <input
+          id="countSlider"
+          type="range"
+          min="1"
+          max="100"
+          value="7"
+        >
+
+        <div class="range-labels">
+          <span>1</span>
+          <span>100</span>
+        </div>
+      </div>
+
+
+      <!-- Delay -->
+      <div class="control">
+
+        <div class="control-top">
+          <span>Delay</span>
+
+          <span id="delayValue" class="value">
+            1.2s
+          </span>
+        </div>
+
+        <input
+          id="delaySlider"
+          type="range"
+          min="300"
+          max="5000"
+          step="100"
+          value="1200"
+        >
+
+        <div class="range-labels">
+          <span>0.3s</span>
+          <span>5.0s</span>
+        </div>
+      </div>
+
+
+      <!-- Voice -->
+      <div class="control">
+
+        <div class="control-top">
+          <span>Voice</span>
+
+          <span id="voiceState" class="value">
+            ON
+          </span>
+        </div>
+
+        <button
+          id="voiceBtn"
+          class="secondary"
+          style="width:100%;">
+          🔊 Voice Enabled
+        </button>
+
+        <div class="help-text">
+          The browser speaks each number and operation.
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- Number display -->
+    <div class="stage">
+
+      <div class="progress">
+        <div
+          id="progressBar"
+          class="progress-bar">
+        </div>
+      </div>
+
+      <div
+        id="status"
+        class="status">
+        Ready
+      </div>
+
+      <div id="number">
+        1 + 4 + 7
+      </div>
+
+      <div
+        id="hint"
+        class="hint">
+        Choose an operation and press Start.
+      </div>
+
+    </div>
+
+
+    <!-- Answer -->
+    <div
+      id="answerBox"
+      class="answer-box hidden">
+
+      <label
+        class="answer-label"
+        for="answer">
+        Enter the final result
+      </label>
+
+      <div class="answer-row">
+
+        <input
+          id="answer"
+          type="number"
+          step="any"
+          placeholder="Enter the result"
+        >
+
+        <button
+          id="checkBtn"
+          class="secondary">
+          Check
+        </button>
+
+      </div>
+
+      <div
+        id="feedback"
+        class="feedback hidden">
+      </div>
+    </div>
+
+
+    <!-- Actions -->
+    <div class="actions">
+
+      <button
+        id="startBtn"
+        class="primary">
+        ▶ Start Challenge
+      </button>
+
+      <button
+        id="resetBtn"
+        class="secondary">
+        ↻ Reset
+      </button>
+
+    </div>
+
+  </main>
+
+</div>
+
+
+<script>
+
+  const operationSelect =
+    document.getElementById("operation");
+
+  const operationLabel =
+    document.getElementById("operationLabel");
+
+  const numberSize =
+    document.getElementById("numberSize");
+
+  const minNumber =
+    document.getElementById("minNumber");
+
+  const maxNumber =
+    document.getElementById("maxNumber");
+
+  const countSlider =
+    document.getElementById("countSlider");
+
+  const delaySlider =
+    document.getElementById("delaySlider");
+
+  const countValue =
+    document.getElementById("countValue");
+
+  const delayValue =
+    document.getElementById("delayValue");
+
+  const numberEl =
+    document.getElementById("number");
+
+  const status =
+    document.getElementById("status");
+
+  const hint =
+    document.getElementById("hint");
+
+  const progressBar =
+    document.getElementById("progressBar");
+
+  const answerBox =
+    document.getElementById("answerBox");
+
+  const answer =
+    document.getElementById("answer");
+
+  const checkBtn =
+    document.getElementById("checkBtn");
+
+  const feedback =
+    document.getElementById("feedback");
+
+  const startBtn =
+    document.getElementById("startBtn");
+
+  const resetBtn =
+    document.getElementById("resetBtn");
+
+  const voiceBtn =
+    document.getElementById("voiceBtn");
+
+  const voiceState =
+    document.getElementById("voiceState");
+
+
+  let values = [];
+  let index = 0;
+  let timer = null;
+
+  let running = false;
+  let finished = false;
+
+  let operation = "add";
+  let voiceEnabled = true;
+
+
+  // -------------------------------
+  // RANDOM NUMBER
+  // -------------------------------
+
+  function randomNumber() {
+
+    let min = Number(minNumber.value);
+    let max = Number(maxNumber.value);
+
+    const hasMin =
+      minNumber.value.trim() !== "";
+
+    const hasMax =
+      maxNumber.value.trim() !== "";
+
+
+    // Custom range
+    if (hasMin || hasMax) {
+
+      if (!hasMin) min = 1;
+      if (!hasMax) max = min;
+
+      min = Math.floor(min);
+      max = Math.floor(max);
+
+      if (min > max) {
+        const temp = min;
+        min = max;
+        max = temp;
+      }
+
+      min = Math.max(1, min);
+      max = Math.max(min, max);
+
+      return Math.floor(
+        Math.random() * (max - min + 1)
+      ) + min;
+    }
+
+
+    // 1 digit
+    if (numberSize.value === "one") {
+      return Math.floor(Math.random() * 9) + 1;
+    }
+
+
+    // 2 digits
+    if (numberSize.value === "two") {
+      return Math.floor(Math.random() * 90) + 10;
+    }
+
+
+    // Random 1–99
+    return Math.floor(Math.random() * 99) + 1;
+  }
+
+
+  // -------------------------------
+  // GET RANDOM OPERATION
+  // -------------------------------
+
+  function getRandomOperation() {
+
+    const operations = [
+      "add",
+      "subtract",
+      "multiply",
+      "divide"
+    ];
+
+    return operations[
+      Math.floor(
+        Math.random() * operations.length
+      )
+    ];
+  }
+
+
+  // -------------------------------
+  // CALCULATE
+  // -------------------------------
+
+  function calculateResult() {
+
+    if (values.length === 0) {
+      return 0;
+    }
+
+
+    let result = values[0];
+
+
+    // Unary operations
+    if (operation === "sqrt") {
+
+      result = Math.sqrt(values[0]);
+
+      for (let i = 1; i < values.length; i++) {
+        result += Math.sqrt(values[i]);
+      }
+
+      return result;
+    }
+
+
+    if (operation === "square") {
+
+      result = values[0] ** 2;
+
+      for (let i = 1; i < values.length; i++) {
+        result += values[i] ** 2;
+      }
+
+      return result;
+    }
+
+
+    // Random binary operations
+    if (operation === "random") {
+
+      result = values[0];
+
+      for (let i = 1; i < values.length; i++) {
+
+        const op =
+          values[i].operation;
+
+        const number =
+          values[i].value;
+
+        if (op === "add") {
+          result += number;
+        }
+
+        if (op === "subtract") {
+          result -= number;
+        }
+
+        if (op === "multiply") {
+          result *= number;
+        }
+
+        if (op === "divide") {
+          if (number !== 0) {
+            result /= number;
+          }
+        }
+      }
+
+      return result;
+    }
+
+
+    // Normal operations
+    for (let i = 1; i < values.length; i++) {
+
+      const number = values[i];
+
+      if (operation === "add") {
+        result += number;
+      }
+
+      if (operation === "subtract") {
+        result -= number;
+      }
+
+      if (operation === "multiply") {
+        result *= number;
+      }
+
+      if (operation === "divide") {
+
+        if (number !== 0) {
+          result /= number;
+        }
+      }
+    }
+
+    return result;
+  }
+
+
+  // -------------------------------
+  // GENERATE VALUES
+  // -------------------------------
+
+  function generateValues() {
+
+    const count =
+      Number(countSlider.value);
+
+    values = [];
+
+
+    if (operation === "random") {
+
+      // First number
+      values.push({
+        value: randomNumber(),
+        operation: null
+      });
+
+
+      for (
+        let i = 1;
+        i < count;
+        i++
+      ) {
+
+        let number =
+          randomNumber();
+
+        let op =
+          getRandomOperation();
+
+
+        // Avoid zero for division
+        if (
+          op === "divide" &&
+          number === 0
+        ) {
+          number = 1;
+        }
+
+
+        values.push({
+          value: number,
+          operation: op
+        });
+      }
+
+      return;
+    }
+
+
+    for (
+      let i = 0;
+      i < count;
+      i++
+    ) {
+
+      values.push(
+        randomNumber()
+      );
+    }
+  }
+
+
+  // -------------------------------
+  // DISPLAY TEXT
+  // -------------------------------
+
+  function getDisplayText(i) {
+
+    const value = values[i];
+
+
+    // Random mode
+    if (operation === "random") {
+
+      if (i === 0) {
+        return String(value.value);
+      }
+
+
+      const symbols = {
+        add: "+",
+        subtract: "−",
+        multiply: "×",
+        divide: "÷"
+      };
+
+
+      return (
+        symbols[value.operation] +
+        " " +
+        value.value
+      );
+    }
+
+
+    // Square root
+    if (operation === "sqrt") {
+
+      return "√" + value;
+
+    }
+
+
+    // Square
+    if (operation === "square") {
+
+      return value + "²";
+
+    }
+
+
+    // Binary
+    if (i === 0) {
+
+      return String(value);
+
+    }
+
+
+    const symbols = {
+      add: "+",
+      subtract: "−",
+      multiply: "×",
+      divide: "÷"
+    };
+
+
+    return (
+      symbols[operation] +
+      " " +
+      value
+    );
+  }
+
+
+  // -------------------------------
+  // SPEECH
+  // -------------------------------
+
+  function speakCurrent(i) {
+
+    if (!voiceEnabled) {
+      return;
+    }
+
+    if (!("speechSynthesis" in window)) {
+      return;
+    }
+
+
+    window.speechSynthesis.cancel();
+
+
+    let spokenText = "";
+
+
+    if (operation === "sqrt") {
+
+      spokenText =
+        "square root of " +
+        values[i];
+
+    }
+
+    else if (operation === "square") {
+
+      spokenText =
+        values[i] +
+        " squared";
+
+    }
+
+    else if (operation === "random") {
+
+      if (i === 0) {
+
+        spokenText =
+          String(values[i].value);
+
+      } else {
+
+        const names = {
+          add: "plus",
+          subtract: "minus",
+          multiply: "times",
+          divide: "divided by"
+        };
+
+
+        spokenText =
+          names[values[i].operation] +
+          " " +
+          values[i].value;
+      }
+
+    }
+
+    else {
+
+      if (i === 0) {
+
+        spokenText =
+          String(values[i]);
+
+      } else {
+
+        const names = {
+          add: "plus",
+          subtract: "minus",
+          multiply: "times",
+          divide: "divided by"
+        };
+
+
+        spokenText =
+          names[operation] +
+          " " +
+          values[i];
+      }
+    }
+
+
+    const speech =
+      new SpeechSynthesisUtterance(
+        spokenText
+      );
+
+
+    speech.rate = 0.95;
+    speech.pitch = 1;
+    speech.volume = 1;
+
+
+    window.speechSynthesis.speak(
+      speech
+    );
+  }
+
+
+  // -------------------------------
+  // OPERATION LABEL
+  // -------------------------------
+
+  function updateOperationUI() {
+
+    operation =
+      operationSelect.value;
+
+
+    const labels = {
+      add: "+",
+      subtract: "−",
+      multiply: "×",
+      divide: "÷",
+      sqrt: "√",
+      square: "²",
+      random: "🎲"
+    };
+
+
+    operationLabel.textContent =
+      labels[operation];
+
+
+    const hints = {
+      add: "Addition: add all numbers.",
+      subtract: "Subtraction: subtract each following number.",
+      multiply: "Multiplication: multiply each following number.",
+      divide: "Division: divide by each following number.",
+      sqrt: "Square root: add the square roots of the displayed numbers.",
+      square: "Square: square each displayed number, then add the results.",
+      random: "Random: each step randomly uses +, −, ×, or ÷."
+    };
+
+
+    hint.textContent =
+      hints[operation];
+
+
+    if (operation === "sqrt") {
+
+      numberEl.textContent =
+        "√9 + √16 + √25";
+
+    }
+
+    else if (operation === "square") {
+
+      numberEl.textContent =
+        "3² + 4² + 5²";
+
+    }
+
+    else if (operation === "multiply") {
+
+      numberEl.textContent =
+        "3 × 4 × 2";
+
+    }
+
+    else if (operation === "divide") {
+
+      numberEl.textContent =
+        "100 ÷ 5 ÷ 2";
+
+    }
+
+    else if (operation === "random") {
+
+      numberEl.textContent =
+        "8 + 3 × 2 − 4";
+
+    }
+
+    else if (operation === "subtract") {
+
+      numberEl.textContent =
+        "8 − 3 − 2";
+
+    }
+
+    else {
+
+      numberEl.textContent =
+        "1 + 4 + 7";
+
+    }
+  }
+
+
+  // -------------------------------
+  // SETTINGS
+  // -------------------------------
+
+  function updateControls() {
+
+    countValue.textContent =
+      countSlider.value;
+
+    delayValue.textContent =
+      (
+        Number(delaySlider.value) / 1000
+      ).toFixed(1) + "s";
+  }
+
+
+  function setControlsDisabled(disabled) {
+
+    operationSelect.disabled =
+      disabled;
+
+    numberSize.disabled =
+      disabled;
+
+    minNumber.disabled =
+      disabled;
+
+    maxNumber.disabled =
+      disabled;
+
+    countSlider.disabled =
+      disabled;
+
+    delaySlider.disabled =
+      disabled;
+  }
+
+
+  // -------------------------------
+  // SHOW NUMBER
+  // -------------------------------
+
+  function showCurrent() {
+
+    numberEl.classList.remove("pop");
+
+    void numberEl.offsetWidth;
+
+    numberEl.classList.add("pop");
+
+    numberEl.textContent =
+      getDisplayText(index);
+  }
+
+
+  // -------------------------------
+  // NEXT NUMBER
+  // -------------------------------
+
+  function showNextNumber() {
+
+    if (!running) {
+      return;
+    }
+
+
+    if (index >= values.length) {
+
+      finishRound();
+      return;
+    }
+
+
+    showCurrent();
+
+    speakCurrent(index);
+
+
+    status.textContent =
+      `Number ${index + 1} of ${values.length}`;
+
+
+    progressBar.style.width =
+      ((index / values.length) * 100) + "%";
+
+
+    index++;
+
+
+    timer = setTimeout(
+      showNextNumber,
+      Number(delaySlider.value)
+    );
+  }
+
+
+  // -------------------------------
+  // FINISH
+  // -------------------------------
+
+  function finishRound() {
+
+    clearTimeout(timer);
+
+    running = false;
+    finished = true;
+
+    setControlsDisabled(false);
+
+    status.textContent =
+      "Sequence complete";
+
+    numberEl.textContent =
+      "?";
+
+    hint.textContent =
+      "Calculate the final result from memory.";
+
+    progressBar.style.width =
+      "100%";
+
+    answerBox.classList.remove("hidden");
+
+    answer.focus();
+
+    startBtn.disabled = false;
+
+    startBtn.textContent =
+      "↻ New Challenge";
+  }
+
+
+  // -------------------------------
+  // START
+  // -------------------------------
+
+  function startRound() {
+
+    if (running) {
+      return;
+    }
+
+
+    generateValues();
+
+
+    index = 0;
+
+    running = true;
+    finished = false;
+
+
+    setControlsDisabled(true);
+
+
+    answerBox.classList.add("hidden");
+
+
+    feedback.className =
+      "feedback hidden";
+
+    feedback.innerHTML = "";
+
+    answer.value = "";
+
+    checkBtn.disabled = false;
+
+    progressBar.style.width = "0%";
+
+
+    startBtn.disabled = true;
+
+    startBtn.textContent =
+      "Playing…";
+
+
+    showNextNumber();
+  }
+
+
+  // -------------------------------
+  // CHECK ANSWER
+  // -------------------------------
+
+  function checkAnswer() {
+
+    if (
+      !finished ||
+      answer.value.trim() === ""
+    ) {
+      return;
+    }
+
+
+    const userAnswer =
+      Number(answer.value);
+
+
+    const correctAnswer =
+      calculateResult();
+
+
+    // Allow small floating point error
+    const correct =
+      Math.abs(
+        userAnswer - correctAnswer
+      ) < 0.000001;
+
+
+    feedback.classList.remove(
+      "hidden"
+    );
+
+
+    if (correct) {
+
+      feedback.className =
+        "feedback correct";
+
+      feedback.innerHTML =
+        `
+        <strong>✓ Correct!</strong>
+        <br>
+        The correct result is
+        ${formatResult(correctAnswer)}.
+        `;
+
+    } else {
+
+      feedback.className =
+        "feedback incorrect";
+
+      feedback.innerHTML =
+        `
+        <strong>✕ Not quite.</strong>
+        <br>
+        The correct result is
+        ${formatResult(correctAnswer)}.
+        `;
+
+    }
+
+
+    checkBtn.disabled = true;
+  }
+
+
+  // -------------------------------
+  // FORMAT RESULT
+  // -------------------------------
+
+  function formatResult(value) {
+
+    if (
+      Number.isInteger(value)
+    ) {
+      return value;
+    }
+
+    return value.toFixed(4)
+      .replace(/0+$/, "")
+      .replace(/\.$/, "");
+  }
+
+
+  // -------------------------------
+  // RESET
+  // -------------------------------
+
+  function resetApp() {
+
+    clearTimeout(timer);
+
+
+    if (
+      "speechSynthesis" in window
+    ) {
+
+      window.speechSynthesis.cancel();
+
+    }
+
+
+    values = [];
+
+    index = 0;
+
+    running = false;
+    finished = false;
+
+
+    setControlsDisabled(false);
+
+
+    progressBar.style.width = "0%";
+
+
+    status.textContent =
+      "Ready";
+
+
+    updateOperationUI();
+
+
+    answerBox.classList.add(
+      "hidden"
+    );
+
+
+    feedback.className =
+      "feedback hidden";
+
+    feedback.innerHTML = "";
+
+    answer.value = "";
+
+    checkBtn.disabled = false;
+
+    startBtn.disabled = false;
+
+    startBtn.textContent =
+      "▶ Start Challenge";
+  }
+
+
+  // -------------------------------
+  // OPERATION CHANGE
+  // -------------------------------
+
+  operationSelect.addEventListener(
+    "change",
+    updateOperationUI
+  );
+
+
+  // -------------------------------
+  // VOICE
+  // -------------------------------
+
+  voiceBtn.addEventListener(
+    "click",
+    () => {
+
+      voiceEnabled =
+        !voiceEnabled;
+
+
+      if (!voiceEnabled) {
+
+        if (
+          "speechSynthesis" in window
+        ) {
+
+          window.speechSynthesis.cancel();
+
+        }
+
+
+        voiceBtn.textContent =
+          "🔇 Voice Off";
+
+        voiceState.textContent =
+          "OFF";
+
+      } else {
+
+        voiceBtn.textContent =
+          "🔊 Voice Enabled";
+
+        voiceState.textContent =
+          "ON";
+      }
+    }
+  );
+
+
+  // -------------------------------
+  // SLIDERS
+  // -------------------------------
+
+  countSlider.addEventListener(
+    "input",
+    updateControls
+  );
+
+
+  delaySlider.addEventListener(
+    "input",
+    updateControls
+  );
+
+
+  // -------------------------------
+  // BUTTONS
+  // -------------------------------
+
+  startBtn.addEventListener(
+    "click",
+    () => {
+
+      if (finished) {
+        resetApp();
+      }
+
+      startRound();
+    }
+  );
+
+
+  resetBtn.addEventListener(
+    "click",
+    resetApp
+  );
+
+
+  checkBtn.addEventListener(
+    "click",
+    checkAnswer
+  );
+
+
+  answer.addEventListener(
+    "keydown",
+    event => {
+
+      if (event.key === "Enter") {
+        checkAnswer();
+      }
+    }
+  );
+
+
+  // -------------------------------
+  // INITIALIZE
+  // -------------------------------
+
+  updateControls();
+  updateOperationUI();
+
+</script>
+
+</body>
+</html>
