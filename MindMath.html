@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+  <title>Target Forge — build the number</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --ink: #0d1a13;
+      --felt: #1a382b;
+      --felt-light: #1a8856;
+      --felt-line: #2c5c46;
+      --paper: #f2ead4;
+      --paper-edge: #ddcd9d;
+      --gold: #e8b34c;
+      --gold-dim: #b98a35;
+      --num: #164fdf;
+      --num-dark: #1f355f;
+      --op: #e42525;
+      --op-dark: #a92020;
+      --danger: #d0553f;
+      --success: #5aa876;
+      --cream-text: #f2ead4;
+      --ink-text: #20261d;
+      --radius: 14px;
+      --shadow-lg: 0 18px 40px rgba(0, 0, 0, 0.674);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Space Grotesk', sans-serif;
+      background:
+        radial-gradient(ellipse at 20% -10%, #1c4432 0%, transparent 55%),
+        radial-gradient(ellipse at 100% 110%, #143528 0%, transparent 50%),
+        var(--ink);
+      color: var(--cream-text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.001s !important;
+        transition-duration: 0.001s !important;
+      }
+    }
+
+    .app {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 18px 18px 28px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* ---------- Header ---------- */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand .eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: .85;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: .01em;
+      position: relative;
+      display: inline-block;
+    }
+
+    .brand h1 svg {
+      position: absolute;
+      left: 0;
+      bottom: -8px;
+      width: 100%;
+      height: 10px;
+    }
+
+    .target-panel {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: linear-gradient(180deg, var(--felt-light), var(--felt));
+      border: 1px solid var(--felt-line);
+      border-radius: 18px;
+      padding: 8px 10px 8px 18px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .05), 0 8px 22px rgba(0, 0, 0, .35);
+    }
+
+    .target-panel .label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--paper-edge);
+      opacity: .8;
+    }
+
+    .target-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 800;
+      font-size: 34px;
+      color: var(--gold);
+      min-width: 52px;
+      text-align: center;
+      text-shadow: 0 0 18px rgba(232, 179, 76, .35);
+      transition: transform .25s ease;
+    }
+
+    .target-number.pulse {
+      animation: targetPulse .5s ease;
+    }
+
+    @keyframes targetPulse {
+      0% {
+        transform: scale(1);
+      }
+
+      40% {
+        transform: scale(1.28);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .icon-btn {
+      appearance: none;
+      border: 1px solid var(--felt-line);
+      background: var(--felt);
+      color: var(--cream-text);
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform .18s ease, background .18s ease;
+    }
+
+    .icon-btn:hover {
+      background: var(--felt-light);
+    }
+
+    .icon-btn:active {
+      transform: scale(.9) rotate(35deg);
+    }
+
+    .icon-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* ---------- Layout ---------- */
+    main.layout {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 236px;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .play-arena {
+      position: relative;
+      background:
+        repeating-linear-gradient(0deg, rgba(255, 255, 255, .025) 0 1px, transparent 1px 34px),
+        repeating-linear-gradient(90deg, rgba(255, 255, 255, .025) 0 1px, transparent 1px 34px),
+        radial-gradient(ellipse at 50% 0%, var(--felt-light), var(--felt) 70%);
+      border: 2px dashed var(--felt-line);
+      border-radius: 22px;
+      min-height: 420px;
+      display: flex;
+      flex-direction: column;
+      padding: 18px;
+      gap: 14px;
+      transition: border-color .18s ease, background .18s ease;
+    }
+
+    .play-arena.drag-over {
+      border-color: var(--gold-dim);
+      background:
+        repeating-linear-gradient(0deg, rgba(255, 255, 255, .035) 0 1px, transparent 1px 34px),
+        repeating-linear-gradient(90deg, rgba(255, 255, 255, .035) 0 1px, transparent 1px 34px),
+        radial-gradient(ellipse at 50% 0%, var(--felt-light), var(--felt) 70%);
+    }
+
+    .equation-strip {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 19px;
+      font-weight: 500;
+      min-height: 28px;
+      color: var(--paper-edge);
+      letter-spacing: .02em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .equation-strip .eq-value {
+      color: var(--gold);
+      font-weight: 800;
+    }
+
+    .equation-strip .eq-value.bad {
+      color: var(--danger);
+    }
+
+    .equation-strip .eq-value.good {
+      color: var(--success);
+    }
+
+    .arena-cards {
+      flex: 1;
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+      gap: 10px;
+      min-height: 120px;
+      position: relative;
+    }
+
+    .arena-cards .card {
+      margin-right: 0;
+    }
+
+    .arena-cards .card.glue-right {
+      margin-right: -6px;
+      border-top-right-radius: 4px;
+      border-bottom-right-radius: 4px;
+    }
+
+    .arena-cards .card.glue-left {
+      border-top-left-radius: 4px;
+      border-bottom-left-radius: 4px;
+    }
+
+    .arena-hint {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      pointer-events: none;
+      color: rgba(242, 234, 212, .28);
+      font-size: 15px;
+      letter-spacing: .03em;
+      padding: 0 30px;
+    }
+
+    .arena-hint.hidden {
+      display: none;
+    }
+
+    .arena-discard {
+      flex: 0 0 auto;
+      margin-top: auto;
+      border-top: 1px dashed var(--felt-line);
+      padding-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 52px;
+      border-radius: 0 0 10px 10px;
+      transition: background .15s ease, border-color .15s ease;
+    }
+
+    .discard-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: rgba(242, 234, 212, .4);
+      font-size: 12.5px;
+      letter-spacing: .03em;
+      transition: color .15s ease;
+    }
+
+    .arena-discard .discard-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 1.5px solid currentColor;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      flex: 0 0 auto;
+    }
+
+    .arena-discard.drag-over {
+      background: rgba(208, 85, 63, .1);
+      border-top-color: var(--danger);
+    }
+
+    .arena-discard.drag-over .discard-header {
+      color: var(--danger);
+    }
+
+    .discard-cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding-bottom: 2px;
+    }
+
+    /* ---------- Cards ---------- */
+    .card {
+      --accent: var(--num);
+      --accent-dark: var(--num-dark);
+      width: 64px;
+      height: 88px;
+      border-radius: 10px;
+      background: var(--paper);
+      color: var(--ink-text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 800;
+      font-size: 28px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, .35), inset 0 0 0 3px var(--accent);
+      position: relative;
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+      transition: transform .12s ease;
+      flex: 0 0 auto;
+    }
+
+    .card.op {
+      --accent: var(--op);
+      --accent-dark: var(--op-dark);
+      font-size: 26px;
+    }
+
+    .card.wide {
+      font-size: 21px;
+    }
+
+    .card.mini {
+      width: 38px;
+      height: 52px;
+      font-size: 18px;
+      opacity: .72;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, .3), inset 0 0 0 2px var(--accent);
+    }
+
+    .card.mini:hover {
+      opacity: 1;
+    }
+
+    .card.mini.op {
+      font-size: 16px;
+    }
+
+    .card.mini::before,
+    .card.mini::after {
+      font-size: 8px;
+    }
+
+    .card::before,
+    .card::after {
+      content: attr(data-corner);
+      position: absolute;
+      font-size: 10px;
+      color: var(--accent-dark);
+      font-weight: 700;
+    }
+
+    .card::before {
+      top: 6px;
+      left: 7px;
+    }
+
+    .card::after {
+      bottom: 6px;
+      right: 7px;
+      transform: rotate(180deg);
+    }
+
+    .card:active {
+      cursor: grabbing;
+      transform: scale(1.04);
+    }
+
+    .card.entering {
+      animation: cardDrop .28s cubic-bezier(.2, .9, .3, 1.2);
+    }
+
+    @keyframes cardDrop {
+      0% {
+        transform: translateY(-14px) scale(.85);
+        opacity: 0;
+      }
+
+      100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+    }
+
+    .card.flash-bad {
+      animation: shake .35s ease;
+    }
+
+    @keyframes shake {
+
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      25% {
+        transform: translateX(-5px);
+      }
+
+      75% {
+        transform: translateX(5px);
+      }
+    }
+
+    /* ghost dragged card */
+    .drag-ghost {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 64px;
+      height: 88px;
+      pointer-events: none;
+      z-index: 999;
+      transform: translate(-1000px, -1000px);
+      filter: drop-shadow(0 14px 22px rgba(0, 0, 0, .5));
+    }
+
+    .drag-ghost.hidden {
+      display: none;
+    }
+
+    .flip-inner {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform .32s cubic-bezier(.3, .4, .2, 1);
+    }
+
+    .flip-inner.revealed {
+      transform: rotateY(180deg);
+    }
+
+    .flip-face {
+      position: absolute;
+      inset: 0;
+      border-radius: 10px;
+      backface-visibility: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 800;
+    }
+
+    .flip-back {
+      background:
+        repeating-linear-gradient(45deg, var(--accent-dark, var(--num-dark)) 0 6px, var(--accent, var(--num)) 6px 12px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, .4);
+    }
+
+    .flip-back span {
+      color: rgba(242, 234, 212, .85);
+      font-size: 20px;
+    }
+
+    .flip-face-front {
+      background: var(--paper);
+      color: var(--ink-text);
+      font-size: 28px;
+      transform: rotateY(180deg);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, .4), inset 0 0 0 3px var(--accent, var(--num));
+    }
+
+    .flip-face-front.wide {
+      font-size: 21px;
+    }
+
+    /* ---------- Deck dock ---------- */
+    .deck-dock {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+
+    .dock-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: .24em;
+      text-transform: uppercase;
+      color: var(--paper-edge);
+      opacity: .7;
+      margin: 0 0 2px 4px;
+    }
+
+    .deck-wrap {
+      background: linear-gradient(180deg, var(--felt-light), var(--felt));
+      border: 1px solid var(--felt-line);
+      border-radius: 16px;
+      padding: 16px 12px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .deck-stack {
+      position: relative;
+      width: 64px;
+      height: 88px;
+      margin-bottom: 6px;
+    }
+
+    .deck-stack .stack-card {
+      position: absolute;
+      inset: 0;
+      border-radius: 10px;
+      background: repeating-linear-gradient(45deg, var(--accent-dark) 0 6px, var(--accent) 6px 12px);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, .4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .deck-stack[data-type="number"] .stack-card {
+      --accent: var(--num);
+      --accent-dark: var(--num-dark);
+    }
+
+    .deck-stack[data-type="operator"] .stack-card {
+      --accent: var(--op);
+      --accent-dark: var(--op-dark);
+    }
+
+    .deck-stack .stack-card:nth-child(1) {
+      transform: translate(3px, 5px) rotate(3deg);
+      opacity: .55;
+    }
+
+    .deck-stack .stack-card:nth-child(2) {
+      transform: translate(-2px, 2px) rotate(-2deg);
+      opacity: .8;
+    }
+
+    .deck-stack .stack-card:nth-child(3) {
+      cursor: grab;
+      touch-action: none;
+      z-index: 2;
+    }
+
+    .deck-stack .stack-card:nth-child(3) span {
+      color: rgba(242, 234, 212, .9);
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 800;
+      font-size: 22px;
+    }
+
+    .deck-stack:active .stack-card:nth-child(3) {
+      transform: scale(.95);
+    }
+
+    .deck-stack.idle .stack-card:nth-child(3) {
+      animation: idleWiggle 4.4s ease-in-out infinite;
+    }
+
+    @keyframes idleWiggle {
+
+      0%,
+      100% {
+        transform: rotate(0deg);
+      }
+
+      50% {
+        transform: rotate(-2.5deg);
+      }
+    }
+
+    .deck-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--cream-text);
+    }
+
+    .deck-sub {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      color: var(--paper-edge);
+      opacity: .65;
+      text-align: center;
+    }
+
+    .used-box {
+      background: linear-gradient(180deg, var(--felt-light), var(--felt));
+      border: 1px solid var(--felt-line);
+      border-radius: 16px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: border-color .15s ease, background .15s ease;
+    }
+
+    .used-box.drag-over {
+      border-color: var(--danger);
+      background: #2a1d18;
+    }
+
+    .used-box .used-stack {
+      position: relative;
+      width: 40px;
+      height: 56px;
+      flex: 0 0 auto;
+    }
+
+    .used-box .used-stack .u-card {
+      position: absolute;
+      inset: 0;
+      border-radius: 7px;
+      background: #3a382c;
+      border: 1px solid #55523f;
+    }
+
+    .used-box .used-stack .u-card:nth-child(1) {
+      transform: translate(2px, 3px) rotate(4deg);
+    }
+
+    .used-box .used-stack .u-card:nth-child(2) {
+      transform: translate(-1px, 1px) rotate(-3deg);
+    }
+
+    .used-box .used-info {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .used-box .used-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--paper-edge);
+      opacity: .7;
+    }
+
+    .used-box .used-count {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 800;
+      font-size: 20px;
+      color: var(--cream-text);
+    }
+
+    /* ---------- Footer ---------- */
+    footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .result-msg {
+      font-size: 14.5px;
+      min-height: 20px;
+      color: var(--paper-edge);
+    }
+
+    .result-msg.good {
+      color: var(--success);
+      font-weight: 600;
+    }
+
+    .result-msg.bad {
+      color: var(--danger);
+      font-weight: 600;
+    }
+
+    .done-btn {
+      appearance: none;
+      border: none;
+      border-radius: 30px;
+      padding: 13px 34px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: .03em;
+      background: linear-gradient(180deg, #f2c368, var(--gold-dim));
+      color: #2a1c05;
+      cursor: pointer;
+      box-shadow: 0 10px 22px rgba(232, 179, 76, .28), inset 0 1px 0 rgba(255, 255, 255, .4);
+      transition: transform .12s ease, box-shadow .12s ease;
+    }
+
+    .done-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .done-btn:active {
+      transform: translateY(1px) scale(.98);
+    }
+
+    .done-btn:disabled {
+      opacity: .4;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ---------- Mobile layout ---------- */
+    @media (max-width: 760px) {
+      main.layout {
+        grid-template-columns: 1fr;
+      }
+
+      .deck-dock {
+        order: -1;
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+
+      .deck-wrap {
+        flex: 1 1 94px;
+        padding: 10px 8px 8px;
+      }
+
+      .used-box {
+        flex: 1 1 100%;
+      }
+
+      .play-arena {
+        min-height: 300px;
+      }
+
+      .brand h1 {
+        font-size: 21px;
+      }
+
+      .target-number {
+        font-size: 27px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+
+    <header>
+      <div class="brand">
+        <span class="eyebrow">Card Arithmetic</span>
+        <h1>Target Forge
+          <svg viewBox="0 0 220 10" preserveAspectRatio="none">
+            <path d="M2,6 C 40,2 80,9 120,5 C 160,1 190,7 218,4" stroke="#e8b34c" stroke-width="2.4" fill="none"
+              stroke-linecap="round" opacity="0.7" />
+          </svg>
+        </h1>
+      </div>
+      <div class="target-panel">
+        <span class="label">Target</span>
+        <span class="target-number" id="targetNumber">—</span>
+        <button class="icon-btn" id="rerollBtn" title="New round" aria-label="New round">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <polyline points="1 20 1 14 7 14"></polyline>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="play-arena" id="playArena">
+        <div class="equation-strip" id="equationStrip">
+          <span class="eq-empty">Drag number and operator cards in to build an expression…</span>
+        </div>
+        <div class="arena-cards" id="arenaCards"></div>
+        <div class="arena-hint" id="arenaHint">Drag &amp; drop cards from the deck to reach the target number</div>
+        <div class="arena-discard" id="arenaDiscard">
+          <div class="discard-header">
+            <span class="discard-icon">&#10005;</span>
+            <span>Extra / unwanted cards — parked here, not counted in your equation</span>
+          </div>
+          <div class="discard-cards" id="discardCards"></div>
+        </div>
+      </section>
+
+      <aside class="deck-dock">
+        <div>
+          <!-- <p class="dock-title">Cards</p> -->
+          <div class="deck-wrap">
+            <div class="deck-stack idle" data-type="number" id="numberDeck">
+              <div class="stack-card"></div>
+              <div class="stack-card"></div>
+              <div class="stack-card"><span>#</span></div>
+            </div>
+            <span class="deck-name">Numbers</span>
+            <span class="deck-sub">1–9 · hidden</span>
+          </div>
+        </div>
+
+        <div class="deck-wrap">
+          <div class="deck-stack idle" data-type="operator" id="operatorDeck">
+            <div class="stack-card"></div>
+            <div class="stack-card"></div>
+            <div class="stack-card"><span>%</span></div>
+          </div>
+          <span class="deck-name">Operators</span>
+          <span class="deck-sub">+ − × ÷ · hidden</span>
+        </div>
+
+        <div class="used-box" id="usedBox">
+          <div class="used-stack">
+            <div class="u-card"></div>
+            <div class="u-card" style="display: flex; align-items: center; justify-content: center;">$</div>
+          </div>
+          <div class="used-info">
+            <span class="used-label">Cards Score</span>
+            <span class="used-count" id="usedCount" style="display: none;">0</span>
+            <span class="used-count" id="scCount">0</span>
+
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <footer>
+      <span class="result-msg" id="resultMsg">Get +5 point for right answer and -1 for wrong</span>
+      <button class="done-btn" id="doneBtn">Done ✓</button>
+    </footer>
+
+  </div>
+
+  <div class="drag-ghost hidden" id="dragGhost">
+    <div class="flip-inner" id="ghostFlip">
+      <div class="flip-face flip-back" id="ghostBack"><span></span></div>
+      <div class="flip-face flip-face-front" id="ghostFront"></div>
+    </div>
+  </div>
+
+  <script>
+    var score = 0;
+    (function () {
+      "use strict";
+
+      var OPS = ['+', '-', '×', '÷'];
+
+      var els = {
+        target: document.getElementById('targetNumber'),
+        reroll: document.getElementById('rerollBtn'),
+        arena: document.getElementById('playArena'),
+        arenaCards: document.getElementById('arenaCards'),
+        arenaHint: document.getElementById('arenaHint'),
+        equation: document.getElementById('equationStrip'),
+        numberDeck: document.getElementById('numberDeck'),
+        operatorDeck: document.getElementById('operatorDeck'),
+        usedBox: document.getElementById('usedBox'),
+        arenaDiscard: document.getElementById('arenaDiscard'),
+        discardCards: document.getElementById('discardCards'),
+        usedCount: document.getElementById('usedCount'),
+        result: document.getElementById('resultMsg'),
+        doneBtn: document.getElementById('doneBtn'),
+        ghost: document.getElementById('dragGhost'),
+        ghostFlip: document.getElementById('ghostFlip'),
+        ghostBack: document.getElementById('ghostBack'),
+        ghostFront: document.getElementById('ghostFront')
+      };
+
+      var state = {
+        target: 0,
+        arena: [],     // { id, kind:'number'|'operator', value } — counted in the equation
+        parked: [],    // cards set aside as extra/unwanted — kept visible, excluded from the equation
+        uid: 1
+      };
+
+      function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+      function newTarget() {
+        state.target = rand(10, 99);
+        els.target.textContent = state.target;
+        els.target.classList.remove('pulse');
+        void els.target.offsetWidth;
+        els.target.classList.add('pulse');
+      }
+
+      function newRound() {
+        state.arena = [];
+        state.parked = [];
+        renderArena();
+        renderParked();
+        setResult('Get +5 point for right answer and -1 for wrong', '');
+        newTarget();
+      }
+
+      function setResult(msg, kind) {
+        els.result.textContent = msg;
+        els.result.className = 'result-msg' + (kind ? ' ' + kind : '');
+      }
+
+      /* ---------------- rendering ---------------- */
+
+      function cardAccentClass(kind) { return kind === 'operator' ? 'op' : ''; }
+
+      function buildCardEl(item, opts) {
+        opts = opts || {};
+        var el = document.createElement('div');
+        var cls = 'card ' + cardAccentClass(item.kind);
+        if (opts.mini) { cls += ' mini'; }
+        if (opts.glueRight) { cls += ' glue-right'; }
+        if (opts.glueLeft) { cls += ' glue-left'; }
+        if (opts.entering) { cls += ' entering'; }
+        el.className = cls;
+        el.dataset.id = item.id;
+        el.dataset.kind = item.kind;
+        el.dataset.corner = item.value;
+        el.textContent = item.value;
+        el.addEventListener('pointerdown', opts.mini ? onParkedCardPointerDown : onArenaCardPointerDown);
+        return el;
+      }
+
+      function renderArena() {
+        els.arenaCards.innerHTML = '';
+        state.arena.forEach(function (item, i) {
+          var prev = state.arena[i - 1];
+          var next = state.arena[i + 1];
+          var glueRight = item.kind === 'number' && next && next.kind === 'number';
+          var glueLeft = item.kind === 'number' && prev && prev.kind === 'number';
+          els.arenaCards.appendChild(buildCardEl(item, { glueRight: glueRight, glueLeft: glueLeft }));
+        });
+        els.arenaHint.classList.toggle('hidden', state.arena.length > 0);
+        renderEquation();
+      }
+
+      function renderParked() {
+        els.discardCards.innerHTML = '';
+        state.parked.forEach(function (item) {
+          els.discardCards.appendChild(buildCardEl(item, { mini: true }));
+        });
+        renderUsed();
+      }
+
+      function renderEquation() {
+        if (state.arena.length === 0) {
+          els.equation.innerHTML = '<span class="eq-empty">Line up digit cards to form numbers (e.g. 1 2 = twelve), drop operators between them…</span>';
+          return;
+        }
+        var grouped = groupTokens(state.arena);
+        var text;
+        if (grouped.valid) {
+          text = grouped.groups.map(function (g) { return g.value; }).join(' ');
+        } else {
+          // best-effort display while the hand is still incomplete
+          text = state.arena.reduce(function (acc, item, i) {
+            var prev = state.arena[i - 1];
+            var sep = (prev && prev.kind === 'number' && item.kind === 'number') ? '' : (i === 0 ? '' : ' ');
+            return acc + sep + item.value;
+          }, '');
+        }
+        var evalResult = evaluateArena();
+        var valueHtml = '';
+        if (evalResult.valid) {
+          var cls = evalResult.value === state.target ? 'good' : '';
+          valueHtml = ' <span class="eq-value ' + cls + '"> =  ? </span>';
+        } else {
+          valueHtml = ' <span class="eq-value">…</span>';
+        }
+        els.equation.innerHTML = '<span>' + escapeHtml(text) + '</span>' + valueHtml;
+      }
+
+      function trimNum(n) {
+        return Math.round(n * 1000) / 1000;
+      }
+
+      function escapeHtml(s) {
+        return s.replace(/[&<>]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]; });
+      }
+
+      function renderUsed() {
+        els.usedCount.textContent = state.parked.length;
+      }
+
+      /* ---------------- evaluation ---------------- */
+
+      // Walks the arena tokens and glues consecutive number cards into a single
+      // multi-digit number (e.g. cards "1","2" side by side become 12), while
+      // operator cards break the run. Returns alternating number/operator groups.
+      function groupTokens(tokens) {
+        if (tokens.length === 0) { return { valid: false, groups: [] }; }
+        var groups = [];
+        var buffer = '';
+        for (var i = 0; i < tokens.length; i++) {
+          var t = tokens[i];
+          if (t.kind === 'number') {
+            buffer += t.value;
+          } else {
+            if (buffer === '') { return { valid: false, groups: [] }; } // op with no number before it
+            groups.push({ type: 'number', value: buffer });
+            buffer = '';
+            groups.push({ type: 'op', value: t.value });
+          }
+        }
+        if (buffer === '') { return { valid: false, groups: [] }; } // trailing operator
+        groups.push({ type: 'number', value: buffer });
+        return { valid: true, groups: groups };
+      }
+
+      function evaluateArena() {
+        var grouped = groupTokens(state.arena);
+        if (!grouped.valid) { return { valid: false }; }
+        var groups = grouped.groups;
+
+        var vals = [Number(groups[0].value)];
+        var ops = [];
+        for (var j = 1; j < groups.length; j += 2) {
+          ops.push(groups[j].value);
+          vals.push(Number(groups[j + 1].value));
+        }
+        // pass 1: × ÷
+        var vals2 = [vals[0]];
+        var ops2 = [];
+        for (var k = 0; k < ops.length; k++) {
+          if (ops[k] === '×' || ops[k] === '÷') {
+            var prev = vals2.pop();
+            var nxt = vals[k + 1];
+            if (ops[k] === '÷' && nxt === 0) { return { valid: false }; }
+            vals2.push(ops[k] === '×' ? prev * nxt : prev / nxt);
+          } else {
+            ops2.push(ops[k]);
+            vals2.push(vals[k + 1]);
+          }
+        }
+        // pass 2: + -
+        var result = vals2[0];
+        for (var m = 0; m < ops2.length; m++) {
+          result = ops2[m] === '+' ? result + vals2[m + 1] : result - vals2[m + 1];
+        }
+        return { valid: true, value: result };
+      }
+
+      /* ---------------- drag: draw from deck ---------------- */
+
+      var drag = null; // active drag session
+
+      function pointerInsideEl(el, x, y) {
+        var r = el.getBoundingClientRect();
+        return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+      }
+
+      function startGhost(kind, value, revealed) {
+        els.ghost.classList.remove('hidden');
+        els.ghost.dataset.kind = kind;
+        els.ghostFlip.classList.toggle('revealed', !!revealed);
+        els.ghostBack.querySelector('span').textContent = kind === 'operator' ? '%' : '#';
+        els.ghostFront.textContent = value;
+        els.ghostFront.className = 'flip-face flip-face-front' + (String(value).length > 1 ? ' wide' : '');
+        els.ghostBack.className = 'flip-face flip-back';
+        if (kind === 'operator') {
+          els.ghostFront.style.setProperty('--accent', 'var(--op)');
+          els.ghostBack.style.setProperty('--accent-dark', 'var(--op-dark)');
+          els.ghostBack.style.setProperty('--accent', 'var(--op)');
+        } else {
+          els.ghostFront.style.removeProperty('--accent');
+          els.ghostBack.style.removeProperty('--accent-dark');
+          els.ghostBack.style.removeProperty('--accent');
+        }
+        moveGhost(drag.x, drag.y);
+      }
+
+      function moveGhost(x, y) {
+        els.ghost.style.transform = 'translate(' + (x - 32) + 'px,' + (y - 44) + 'px)';
+      }
+
+      function endGhost() {
+        els.ghost.classList.add('hidden');
+        els.ghostFlip.classList.remove('revealed');
+      }
+
+      function drawValue(kind) {
+        return kind === 'operator' ? OPS[rand(0, OPS.length - 1)] : String(rand(1, 9));
+      }
+
+      function onDeckPointerDown(kind) {
+        return function (e) {
+          e.preventDefault();
+          var value = drawValue(kind);
+          drag = { source: 'deck', kind: kind, value: value, x: e.clientX, y: e.clientY };
+          startGhost(kind, value, false);
+          document.addEventListener('pointermove', onDragMove);
+          document.addEventListener('pointerup', onDeckPointerUp, { once: true });
+        };
+      }
+
+      function onDeckPointerUp(e) {
+        document.removeEventListener('pointermove', onDragMove);
+        var overDiscard = pointerInsideEl(els.arenaDiscard, e.clientX, e.clientY) || pointerInsideEl(els.usedBox, e.clientX, e.clientY);
+        if (overDiscard && drag) {
+          els.ghostFlip.classList.add('revealed');
+          var parkedItem = { id: 'c' + (state.uid++), kind: drag.kind, value: drag.value };
+          setTimeout(function () {
+            state.parked.push(parkedItem);
+            renderParked();
+            endGhost();
+            drag = null;
+          }, 150);
+          return;
+        }
+        var overArena = els.arena.contains(document.elementFromPoint(e.clientX, e.clientY)) ||
+          pointerInsideEl(els.arena, e.clientX, e.clientY);
+        if (overArena && drag) {
+          els.ghostFlip.classList.add('revealed');
+          var idx = getDropIndex(els.arenaCards, e.clientX, e.clientY, null);
+          var item = { id: 'c' + (state.uid++), kind: drag.kind, value: drag.value };
+          setTimeout(function () {
+            state.arena.splice(idx, 0, item);
+            renderArena();
+            var el = els.arenaCards.children[idx];
+            if (el) { el.classList.add('entering'); }
+            endGhost();
+            drag = null;
+          }, 150);
+          return;
+        }
+        els.arena.classList.remove('drag-over');
+        endGhost();
+        drag = null;
+      }
+
+      /* ---------------- drag: reorder / park arena cards ---------------- */
+
+      function onArenaCardPointerDown(e) {
+        e.preventDefault();
+        var el = e.currentTarget;
+        var id = el.dataset.id;
+        var idx = state.arena.findIndex(function (c) { return c.id === id; });
+        if (idx === -1) return;
+        var item = state.arena[idx];
+
+        var startX = e.clientX, startY = e.clientY;
+        var moved = false;
+        var originalIndex = idx;
+
+        drag = { source: 'arena', id: id, kind: item.kind, value: item.value, x: e.clientX, y: e.clientY };
+
+        function onMove(ev) {
+          var dx = ev.clientX - startX, dy = ev.clientY - startY;
+          if (!moved && Math.hypot(dx, dy) > 6) {
+            moved = true;
+            // remove from arena while dragging
+            state.arena.splice(originalIndex, 1);
+            renderArena();
+            startGhost(item.kind, item.value, true);
+          }
+          if (moved) {
+            drag.x = ev.clientX; drag.y = ev.clientY;
+            moveGhost(ev.clientX, ev.clientY);
+            var overDiscardNow = pointerInsideEl(els.arenaDiscard, ev.clientX, ev.clientY) || pointerInsideEl(els.usedBox, ev.clientX, ev.clientY);
+            els.arena.classList.toggle('drag-over', !overDiscardNow && pointerInsideEl(els.arena, ev.clientX, ev.clientY));
+            els.usedBox.classList.toggle('drag-over', pointerInsideEl(els.usedBox, ev.clientX, ev.clientY));
+            els.arenaDiscard.classList.toggle('drag-over', pointerInsideEl(els.arenaDiscard, ev.clientX, ev.clientY));
+          }
+        }
+
+        function onUp(ev) {
+          document.removeEventListener('pointermove', onMove);
+          els.arena.classList.remove('drag-over');
+          els.usedBox.classList.remove('drag-over');
+          els.arenaDiscard.classList.remove('drag-over');
+
+          if (!moved) {
+            // tap = quick park (kept, just excluded from the equation)
+            state.arena.splice(originalIndex, 1);
+            renderArena();
+            state.parked.push(item);
+            renderParked();
+            drag = null;
+            return;
+          }
+
+          endGhost();
+          var overUsed = pointerInsideEl(els.usedBox, ev.clientX, ev.clientY);
+          var overDiscard = pointerInsideEl(els.arenaDiscard, ev.clientX, ev.clientY);
+          var overArena = !overUsed && !overDiscard && pointerInsideEl(els.arena, ev.clientX, ev.clientY);
+
+          if (overUsed || overDiscard) {
+            state.parked.push(item);
+            renderParked();
+          } else if (overArena) {
+            var newIdx = getDropIndex(els.arenaCards, ev.clientX, ev.clientY, null);
+            state.arena.splice(newIdx, 0, item);
+            renderArena();
+            var el2 = els.arenaCards.children[newIdx];
+            if (el2) { el2.classList.add('entering'); }
+          } else {
+            state.arena.splice(originalIndex, 0, item);
+            renderArena();
+          }
+          drag = null;
+        }
+
+        document.addEventListener('pointermove', onMove);
+        document.addEventListener('pointerup', onUp, { once: true });
+      }
+
+      /* ---------------- drag: bring a parked card back into play ---------------- */
+
+      function onParkedCardPointerDown(e) {
+        e.preventDefault();
+        var el = e.currentTarget;
+        var id = el.dataset.id;
+        var idx = state.parked.findIndex(function (c) { return c.id === id; });
+        if (idx === -1) return;
+        var item = state.parked[idx];
+
+        var startX = e.clientX, startY = e.clientY;
+        var moved = false;
+        var originalIndex = idx;
+
+        drag = { source: 'parked', id: id, kind: item.kind, value: item.value, x: e.clientX, y: e.clientY };
+
+        function onMove(ev) {
+          var dx = ev.clientX - startX, dy = ev.clientY - startY;
+          if (!moved && Math.hypot(dx, dy) > 6) {
+            moved = true;
+            state.parked.splice(originalIndex, 1);
+            renderParked();
+            startGhost(item.kind, item.value, true);
+          }
+          if (moved) {
+            drag.x = ev.clientX; drag.y = ev.clientY;
+            moveGhost(ev.clientX, ev.clientY);
+            var overDiscardNow = pointerInsideEl(els.arenaDiscard, ev.clientX, ev.clientY);
+            els.arena.classList.toggle('drag-over', !overDiscardNow && pointerInsideEl(els.arena, ev.clientX, ev.clientY));
+          }
+        }
+
+        function onUp(ev) {
+          document.removeEventListener('pointermove', onMove);
+          els.arena.classList.remove('drag-over');
+
+          if (!moved) {
+            // tap = send straight back into the equation
+            state.parked.splice(originalIndex, 1);
+            renderParked();
+            state.arena.push(item);
+            renderArena();
+            drag = null;
+            return;
+          }
+
+          endGhost();
+          var overDiscard = pointerInsideEl(els.arenaDiscard, ev.clientX, ev.clientY);
+          var overArena = !overDiscard && pointerInsideEl(els.arena, ev.clientX, ev.clientY);
+
+          if (overArena) {
+            var newIdx = getDropIndex(els.arenaCards, ev.clientX, ev.clientY, null);
+            state.arena.splice(newIdx, 0, item);
+            renderArena();
+            var el2 = els.arenaCards.children[newIdx];
+            if (el2) { el2.classList.add('entering'); }
+          } else {
+            // stays parked
+            state.parked.splice(originalIndex, 0, item);
+            renderParked();
+          }
+          drag = null;
+        }
+
+        document.addEventListener('pointermove', onMove);
+        document.addEventListener('pointerup', onUp, { once: true });
+      }
+
+      function onDragMove(e) {
+        if (!drag) return;
+        drag.x = e.clientX; drag.y = e.clientY;
+        moveGhost(e.clientX, e.clientY);
+        var overDiscard = pointerInsideEl(els.arenaDiscard, e.clientX, e.clientY) || pointerInsideEl(els.usedBox, e.clientX, e.clientY);
+        els.arenaDiscard.classList.toggle('drag-over', overDiscard);
+        els.arena.classList.toggle('drag-over', !overDiscard && pointerInsideEl(els.arena, e.clientX, e.clientY));
+      }
+
+      function getDropIndex(container, x, y, excludeEl) {
+        var children = Array.prototype.filter.call(container.children, function (c) { return c !== excludeEl; });
+        if (children.length === 0) return 0;
+        var closestIndex = children.length;
+        var closestDist = Infinity;
+        children.forEach(function (child, i) {
+          var r = child.getBoundingClientRect();
+          var cx = r.left + r.width / 2;
+          var cy = r.top + r.height / 2;
+          var dist = Math.hypot(x - cx, y - cy);
+          if (dist < closestDist) {
+            closestDist = dist;
+            closestIndex = x < cx ? i : i + 1;
+          }
+        });
+        return closestIndex;
+      }
+
+      /* ---------------- Done ---------------- */
+
+      function onDone() {
+        var res = evaluateArena();
+        if (state.arena.length === 0) {
+          setResult('Drag a few cards in first.', '');
+          return;
+        }
+        if (!res.valid) {
+          setResult('Finish the expression — numbers and operators should alternate (digits side by side just combine into one number).', 'bad');
+          Array.prototype.forEach.call(els.arenaCards.children, function (c) { c.classList.add('flash-bad'); setTimeout(function () { c.classList.remove('flash-bad'); }, 360); });
+          return;
+        }
+        var value = trimNum(res.value);
+        if (value === state.target) {
+          setResult('Nailed it — ' + state.arena.map(function (i) { return i.value; }).join(' ') + ' = ' + value + '.', 'good');
+          score += 5;
+          document.getElementById("scCount").innerText = score;
+          state.parked = state.parked.concat(state.arena);
+          state.arena = [];
+          renderArena();
+          renderParked();
+        } else {
+          setResult('Close, but that\u2019s ' + value + ', not ' + state.target + '. Cards parked below — try again.', 'bad');
+          state.parked = state.parked.concat(state.arena);
+          score -= 5;
+          document.getElementById("scCount").innerText = score;
+          state.arena = [];
+          renderArena();
+          renderParked();
+        }
+      }
+
+      /* ---------------- wire up ---------------- */
+
+      els.numberDeck.querySelector('.stack-card:nth-child(3)').addEventListener('pointerdown', onDeckPointerDown('number'));
+      els.operatorDeck.querySelector('.stack-card:nth-child(3)').addEventListener('pointerdown', onDeckPointerDown('operator'));
+      els.reroll.addEventListener('click', newRound);
+      els.doneBtn.addEventListener('click', onDone);
+
+      newRound();
+    })();
+  </script>
+</body>
+
+</html>
