@@ -3,17 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>All-in-One PWA</title>
+  <title>PWA Test App</title>
   <meta name="theme-color" content="#4A90E2">
 
   <!-- Favicon (Inline SVG Data URI) -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%234A90E2'/><path d='M30 50 L45 65 L70 35' stroke='white' stroke-width='8' fill='none' stroke-linecap='round'/></svg>">
 
-  <!-- PWA Manifest (Inline JSON Data URI with correct start_url) -->
+  <!-- PWA Manifest with Unique ID & Scope -->
   <link rel="manifest" href='data:application/manifest+json,{
-    "name": "Single File PWA",
-    "short_name": "OnePWA",
+    "id": "/Projects_folder/pwatest.html",
+    "name": "PWA Test App",
+    "short_name": "PWATest",
     "start_url": "./pwatest.html",
+    "scope": "./pwatest.html",
     "display": "standalone",
     "background_color": "#ffffff",
     "theme_color": "#4A90E2",
@@ -101,19 +103,18 @@
       <path d="M30 50 L45 65 L70 35" stroke="white" stroke-width="8" fill="none" stroke-linecap="round"/>
     </svg>
 
-    <h2>Single-File PWA</h2>
-    <p>Install the PWA or download the desktop executable (.exe) installer.</p>
+    <h2>PWA Test App</h2>
+    <p>Install the native web app or download the file for your device.</p>
 
     <div class="button-group">
-      <!-- Direct Download EXE Link -->
-      <!-- Update 'my-setup-file.exe' to match your uploaded executable filename -->
-      <a href="./my-setup-file.exe" download="MyAppInstaller.exe" class="btn btn-download">
+      <!-- Dynamic File Download Button (Changes based on Desktop vs Mobile) -->
+      <a id="fileDownloadBtn" href="./my-setup-file.exe" download="MyAppInstaller.exe" class="btn btn-download">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
           <polyline points="7 10 12 15 17 10"></polyline>
           <line x1="12" y1="15" x2="12" y2="3"></line>
         </svg>
-        Download App (.exe)
+        <span id="downloadBtnText">Download App (.exe)</span>
       </a>
 
       <!-- Native PWA Install Button -->
@@ -128,11 +129,33 @@
   </div>
 
   <script>
-    // Inline Service Worker Setup
+    // 1. Device Detection for APK vs EXE Download
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const fileDownloadBtn = document.getElementById('fileDownloadBtn');
+    const downloadBtnText = document.getElementById('downloadBtnText');
+
+    if (isMobile) {
+      // Update link & label for mobile devices
+      fileDownloadBtn.href = "./pwatest-app.apk"; // Point to your uploaded APK file
+      fileDownloadBtn.setAttribute('download', 'PWATestApp.apk');
+      downloadBtnText.textContent = "Download App (.apk)";
+    }
+
+    // 2. Service Worker with Isolated Scope & Cache Cleaning
     const swCode = `
+      const CACHE_NAME = 'pwatest-cache-v1';
       self.addEventListener('install', (e) => self.skipWaiting());
-      self.addEventListener('activate', (e) => self.clients.claim());
+      self.addEventListener('activate', (e) => {
+        e.waitUntil(
+          caches.keys().then((keys) => {
+            return Promise.all(
+              keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
+            );
+          }).then(() => self.clients.claim())
+        );
+      });
       self.addEventListener('fetch', (e) => {
+        if (e.request.mode === 'navigate' && !e.request.url.includes('pwatest.html')) return;
         e.respondWith(
           fetch(e.request).catch(() => caches.match(e.request))
         );
@@ -145,7 +168,7 @@
       navigator.serviceWorker.register(blobUrl);
     }
 
-    // PWA Installation Handler
+    // 3. Native PWA Install Prompt Handler
     let deferredPrompt;
     const installBtn = document.getElementById('installBtn');
 
